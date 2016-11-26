@@ -61,14 +61,14 @@ public class PostHelper {
 
     }
 
-    public static String sendOcrPost(byte[] data, String apiKey) throws Exception{
+    public static String sendOcrPost(String contentType, byte[] data, String apiKey) throws Exception{
 
         String url = "https://api.projectoxford.ai/vision/v1.0/ocr";
         URL obj = new URL(url);
         HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
 
         conn.setConnectTimeout(5000);
-        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Content-Type", contentType);
         conn.setRequestProperty("Ocp-Apim-Subscription-Key", apiKey);
         conn.setDoOutput(true);
         conn.setDoInput(true);
@@ -94,13 +94,15 @@ public class PostHelper {
     }
 
 
-    public static String sendOcrText(String url) throws Exception{
+    public static String sendOcrText(String contentType, String data) throws Exception {
 
-        String json = "{\n" +
-                "\t\"url\" : \""+ url +"\" \n" +
-                "}";
+        if (contentType.equals("application/json")) {
+            data = "{\n" +
+                    "\t\"url\" : \"" + data + "\" \n" +
+                    "}";
+        }
 
-        return sendOcrPost(json.getBytes("UTF-8"), visionKey);
+        return sendOcrPost(contentType, data.getBytes("UTF-8"), visionKey);
 
     }
 
