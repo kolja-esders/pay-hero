@@ -67,6 +67,7 @@ package edu.pietro.team.payhero;
         import java.util.concurrent.TimeUnit;
 
         import edu.pietro.team.payhero.R;
+        import edu.pietro.team.payhero.helper.LangAnalytics;
         import edu.pietro.team.payhero.helper.PostHelper;
 
 public class ScanActivity extends AppCompatActivity
@@ -235,7 +236,23 @@ public class ScanActivity extends AppCompatActivity
         public void onImageAvailable(ImageReader reader) {
 
 
-            mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage()));
+            mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage(), new ImageSaver.OcrCallback() {
+                @Override
+                public void onResolved(String text) {
+                    String amount = LangAnalytics.getAmount(text);
+                    String iban = LangAnalytics.getIBAN(text);
+
+                    if (amount != "") Log.d("AMOUNT", amount);
+                    if (iban != "") Log.d("IBAN", iban);
+
+                    if (amount != "" && iban != "") {
+                        Intent i = new Intent(ScanActivity.this, ValidationActivity.class);
+                        i.putExtra("iban", iban);
+                        i.putExtra("amount", Double.parseDouble(amount));
+                        startActivity(i);
+                    }
+                }
+            }));
         }
 
     };
@@ -588,14 +605,9 @@ public class ScanActivity extends AppCompatActivity
         configureTransform(width, height);
         CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         try {
-            if (!mCameraOpenCloseLock.tryAcquire(2500, TimeUnit.MILLISECONDS)) {
-                throw new RuntimeException("Time out waiting to lock camera opening.");
-            }
             manager.openCamera(mCameraId, mStateCallback, mBackgroundHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
-            throw new RuntimeException("Interrupted while trying to lock camera opening.", e);
         }
     }
 
@@ -872,15 +884,21 @@ public class ScanActivity extends AppCompatActivity
      */
     private static class ImageSaver implements Runnable {
 
+        public interface OcrCallback {
+            void onResolved(String text);
+        }
+
         /**
          * The JPEG image
          */
         private final Image mImage;
+        private final OcrCallback mCallback;
 
         private Gson mGson = new Gson();
 
-        public ImageSaver(Image image) {
+        public ImageSaver(Image image, OcrCallback callback) {
             mImage = image;
+            mCallback = callback;
         }
 
         @Override
@@ -904,11 +922,10 @@ public class ScanActivity extends AppCompatActivity
                     }
                     Log.d("RESOLVE", str);
                 }
+                mCallback.onResolved(str);
             } catch (Exception e) {
                 Log.e("ERROR", e.toString());
             }
-
-            // Return str
         }
     }
 
