@@ -8,6 +8,7 @@ package edu.pietro.team.payhero;
         import android.app.Fragment;
         import android.content.Context;
         import android.content.DialogInterface;
+        import android.content.Intent;
         import android.content.pm.PackageManager;
         import android.content.res.Configuration;
         import android.graphics.ImageFormat;
@@ -34,6 +35,7 @@ package edu.pietro.team.payhero;
         import android.support.annotation.NonNull;
         import android.support.v4.app.ActivityCompat;
         import android.support.v4.content.ContextCompat;
+        import android.support.v4.content.LocalBroadcastManager;
         import android.support.v7.app.AppCompatActivity;
         import android.support.v7.widget.Toolbar;
         import android.util.Log;
@@ -45,6 +47,12 @@ package edu.pietro.team.payhero;
         import android.view.View;
         import android.view.ViewGroup;
         import android.widget.Toast;
+
+        import com.google.gson.Gson;
+        import com.microsoft.projectoxford.vision.contract.Line;
+        import com.microsoft.projectoxford.vision.contract.OCR;
+        import com.microsoft.projectoxford.vision.contract.Region;
+        import com.microsoft.projectoxford.vision.contract.Word;
 
         import java.io.File;
         import java.io.FileOutputStream;
@@ -59,6 +67,7 @@ package edu.pietro.team.payhero;
         import java.util.concurrent.TimeUnit;
 
         import edu.pietro.team.payhero.R;
+        import edu.pietro.team.payhero.helper.PostHelper;
 
 public class ScanActivity extends AppCompatActivity
         implements View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
@@ -224,6 +233,8 @@ public class ScanActivity extends AppCompatActivity
 
         @Override
         public void onImageAvailable(ImageReader reader) {
+
+
             mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage()));
         }
 
@@ -866,6 +877,8 @@ public class ScanActivity extends AppCompatActivity
          */
         private final Image mImage;
 
+        private Gson mGson = new Gson();
+
         public ImageSaver(Image image) {
             mImage = image;
         }
@@ -876,9 +889,27 @@ public class ScanActivity extends AppCompatActivity
             byte[] bytes = new byte[buffer.remaining()];
             buffer.get(bytes);
 
-            // Do stuff with the byte array
-        }
+            try {
+                String json = PostHelper.sendOcrPost("application/octet-stream", bytes, PostHelper.VISION_KEY);
+                OCR ocr = mGson.fromJson(json, OCR.class);
+                
+                String str = "";
+                if (ocr != null) {
+                    for (Region r : ocr.regions) {
+                        for (Line line : r.lines) {
+                            for (Word w : line.words) {
+                                str += w.text + " ";
+                            }
+                        }
+                    }
+                    Log.d("RESOLVE", str);
+                }
+            } catch (Exception e) {
+                Log.e("ERROR", e.toString());
+            }
 
+            // Return str
+        }
     }
 
     /**
