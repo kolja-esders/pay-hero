@@ -11,89 +11,68 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="edu.pietro.team.payhero.ValidationActivity"
-    tools:showIn="@layout/activity_validation">
-
-    <TextView
-        android:text="Empfänger:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/textView6" />
-
-    <TextView
-        android:text="Max Mustermann"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView6"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="14dp"
-        android:id="@+id/nameTextView" />
-
-    <TextView
-        android:text="( DE23 3847 2784 8374 2837 43 )"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/nameTextView"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="13dp"
-        android:id="@+id/ibanTextView" />
-
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:text="Name"
-        android:ems="10"
-        android:layout_below="@+id/ibanTextView"
-        android:layout_alignParentStart="true"
-        android:id="@+id/ibanTextEdit" />
-
-    <TextView
-        android:text="Betrag:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:id="@+id/textView9"
-        android:layout_below="@+id/ibanTextEdit"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:text="23,45 €"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:id="@+id/amountTextView"
-        android:layout_below="@+id/textView9"
-        android:layout_alignParentLeft="true" />
-
-    <TextView
-        android:text="Verwendungszweck:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:id="@+id/textView11"
-        android:layout_below="@+id/amountTextView"
-        android:layout_alignParentLeft="true" />
+    tools:showIn="@layout/activity_validation"
+    android:gravity="center_horizontal">
 
     <Button
         android:text="Bestätigen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="26dp"
+        android:id="@+id/button"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
-        android:id="@+id/button" />
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp" />
+
+    <EditText
+        android:text="DE23 3847 2784 8374 2837 43"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ibanEdit"
+        android:textColor="?android:attr/textColorSecondary"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_below="@+id/nameEdit"
+        android:layout_centerHorizontal="true"
+        android:textSize="16sp" />
+
+    <EditText
+        android:text="23,45€"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/amountEdit"
+        android:gravity="center_vertical|center_horizontal"
+        android:textSize="30sp"
+        android:width="150dp"
+        android:height="150dp"
+        android:textStyle="normal|bold"
+        android:background="@drawable/circle_green"
+        android:textColor="@android:color/background_light"
+        android:layout_below="@+id/ibanEdit"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"
         android:ems="10"
-        android:layout_below="@+id/textView11"
+        android:id="@+id/reasonTextEdit"
+        android:layout_below="@+id/amountEdit"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="12dp"
-        android:id="@+id/reasonTextEdit" />
+        android:layout_marginTop="24dp"
+        android:layout_alignParentEnd="true"
+        android:hint="Reference" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/nameEdit"
+        android:hint="Recipient"
+        android:gravity="center_vertical|center_horizontal"
+        android:textSize="36sp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:inputType="textPersonName" />
 
 </RelativeLayout>
