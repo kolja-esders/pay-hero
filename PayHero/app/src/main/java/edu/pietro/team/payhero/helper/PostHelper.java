@@ -63,7 +63,8 @@ public class PostHelper {
 
     public static String sendOcrPost(String contentType, byte[] data, String apiKey) throws Exception{
 
-        String url = "https://api.projectoxford.ai/vision/v1.0/ocr";
+        String url = "https://api.projectoxford.ai/vision/v1.0/ocr?language=de&detectOrientation=true";
+        //String url = "https://api.projectoxford.ai/vision/v1.0/ocr";
         URL obj = new URL(url);
         HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
 
