@@ -240,20 +240,30 @@ public class ScanActivity extends AppCompatActivity
 
 
             mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage(), new ImageSaver.OcrCallback() {
+
+                private String mText;
+
                 @Override
                 public void onResolved(String text) {
-                    String amount = LangAnalytics.getAmount(text);
-                    String iban = LangAnalytics.getIBAN(text);
+                    mText = text;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String amount = LangAnalytics.getAmount(mText);
+                            String iban = LangAnalytics.getIBAN(mText);
 
-                    if (amount != "") Log.d("AMOUNT", amount);
-                    if (iban != "") Log.d("IBAN", iban);
+                            if (amount != "") Log.d("AMOUNT", amount);
+                            if (iban != "") Log.d("IBAN", iban);
 
-                    if (amount != "" && iban != "") {
-                        Intent i = new Intent(ScanActivity.this, ValidationActivity.class);
-                        i.putExtra("iban", iban);
-                        i.putExtra("amount", Double.parseDouble(amount));
-                        startActivity(i);
-                    }
+                            if (amount != "" && iban != "") {
+                                Intent i = new Intent(ScanActivity.this, ValidationActivity.class);
+                                i.putExtra("iban", iban);
+                                i.putExtra("amount", Double.parseDouble(amount));
+                                startActivity(i);
+                            }
+                        }
+                    });
+
                 }
             }, new File(ScanActivity.this.getExternalFilesDir(null), "pic.jpg")));
         }
