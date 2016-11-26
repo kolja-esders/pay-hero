@@ -1,10 +1,18 @@
 package edu.pietro.team.payhero.helper;
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * Created by david on 26.11.16.
@@ -15,6 +23,179 @@ public class PostHelper {
 
     public static String lingKey = "e75ee2412fc74adb901a33398ec07696";
     public static String visionKey = "8c7bb9fea8c14560a4d3c000a5f775e9";
+
+    public static String postKey = "485431330021fc2e";
+
+    
+
+
+    public static void transfer(String IBAN, String Name, String amount) throws Exception{
+
+        JSONObject loginJ = loginPB();
+        String token = loginJ.getString("token");
+
+        JSONObject finStatus = getFinanceStatus(token);
+        JSONObject devInfo = getAuthDevice(token);
+
+        JSONObject template = getTransferTemplate(token);
+
+        String ownIban = finStatus.getJSONArray("accounts").getJSONObject(0).getString("iban");
+        devInfo.getJSONObject("bestSign").getJSONArray("devices").getJSONObject(0).put("authorizationState", "SELECTED");
+
+        template.put("authorizationDevice", devInfo);
+
+        template.getJSONObject("creditTransfer").put("amount", amount);
+        template.getJSONObject("creditTransfer").getJSONObject("recipient").put("iban", IBAN);
+        template.getJSONObject("creditTransfer").getJSONObject("recipient").put("paymentName" , Name);
+        template.getJSONObject("creditTransfer").getJSONObject("recipient").put("accountHolder", Name);
+        template.getJSONObject("creditTransfer").getJSONObject("sender").put("iban", ownIban);
+
+        JSONObject trans = creditTransfer(template, token);
+
+        String finLink = trans.getJSONArray("links").getJSONObject(0).getString("href");
+
+        commitTransfer(finLink, token);
+
+
+    }
+
+
+    public static JSONObject loginPB() throws Exception{
+
+        OkHttpClient client = new OkHttpClient();
+
+        MediaType mediaType = MediaType.parse("multipart/form-data; boundary=---011000010111000001101001");
+        RequestBody body = RequestBody.create(mediaType, "-----011000010111000001101001\r\nContent-Disposition: form-data; name=\"username\"\r\n\r\nHackathonNov01_10\r\n-----011000010111000001101001\r\nContent-Disposition: form-data; name=\"password\"\r\n\r\nhat1116\r\n-----011000010111000001101001--");
+        Request request = new Request.Builder()
+                .url("https://hackathon.postbank.de/bank-api/gold/postbankid/token")
+                .post(body)
+                .addHeader("api-key", postKey)
+                .addHeader("device-signatur", "1234567891234567")
+                .addHeader("content-type", "multipart/form-data; boundary=---011000010111000001101001")
+                .addHeader("cache-control", "no-cache")
+                .build();
+
+        Response response = client.newCall(request).execute();
+        String resp = response.body().string();
+        JSONObject loginJ = new JSONObject(resp);
+
+        return loginJ;
+
+    }
+
+
+
+    public static JSONObject getFinanceStatus(String token) throws Exception{
+
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url("https://hackathon.postbank.de:443/bank-api/gold/postbankid/?refreshCache=true")
+                .get()
+                .addHeader("x-auth", token)
+                .addHeader("api-key", postKey)
+                .addHeader("device-signatur", "1234567891234567")
+                .addHeader("cache-control", "no-cache")
+                .build();
+
+        Response response = client.newCall(request).execute();
+        String resp = response.body().string();
+        JSONObject finStatus = new JSONObject(resp);
+
+        return finStatus;
+
+    }
+
+
+
+
+    public static JSONObject getAuthDevice(String token) throws Exception{
+
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url("https://hackathon.postbank.de:443/bank-api/gold/postbankid/authorizations")
+                .get()
+                .addHeader("x-auth", token)
+                .addHeader("api-key", postKey)
+                .addHeader("device-signatur", "1234567891234567")
+                .addHeader("cache-control", "no-cache")
+                .build();
+
+        Response response = client.newCall(request).execute();
+        String resp = response.body().string();
+        JSONObject devInfo = new JSONObject(resp);
+
+        return devInfo;
+
+    }
+
+    public static JSONObject getTransferTemplate(String token) throws Exception{
+
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url("https://hackathon.postbank.de:443/bank-api/gold/postbankid/credittransfer")
+                .get()
+                .addHeader("x-auth", token)
+                .addHeader("api-key", postKey)
+                .addHeader("device-signatur", "1234567891234567")
+                .addHeader("cache-control", "no-cache")
+                .build();
+
+        Response response = client.newCall(request).execute();
+
+
+        String resp = response.body().string();
+        JSONObject template = new JSONObject(resp);
+
+        return template;
+
+    }
+
+    public static JSONObject creditTransfer(JSONObject json, String token) throws Exception{
+
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json.toString());
+
+        Request request = new Request.Builder()
+                .url("https://hackathon.postbank.de:443/bank-api/gold/postbankid/credittransfer")
+                .post(body)
+                .addHeader("x-auth", token)
+                .addHeader("api-key", postKey)
+                .addHeader("content-type", "application/json")
+                .addHeader("device-signatur", "1234567891234567")
+                .addHeader("cache-control", "no-cache")
+                .build();
+
+        Response response = client.newCall(request).execute();
+
+        String resp = response.body().string();
+        JSONObject trans = new JSONObject(resp);
+
+        return trans;
+
+    }
+
+    public static void commitTransfer(String link, String token) throws Exception{
+
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(link)
+                .get()
+                .addHeader("x-auth", token)
+                .addHeader("api-key", postKey)
+                .addHeader("content-type", "application/json")
+                .addHeader("device-signatur", "1234567891234567")
+                .addHeader("cache-control", "no-cache")
+                .build();
+
+        Response response = client.newCall(request).execute();
+
+    }
+
 
     public static String sendMSPost(byte[] data, String apiKey) throws Exception{
 
