@@ -21,8 +21,8 @@ import okhttp3.Response;
 
 public class PostHelper {
 
-    public static String lingKey = "e75ee2412fc74adb901a33398ec07696";
-    public static String visionKey = "8c7bb9fea8c14560a4d3c000a5f775e9";
+    public static String LING_KEY = "e75ee2412fc74adb901a33398ec07696";
+    public static String VISION_KEY = "8c7bb9fea8c14560a4d3c000a5f775e9";
 
     public static String postKey = "485431330021fc2e";
 
@@ -238,18 +238,18 @@ public class PostHelper {
                 "\t\"text\" : \""+ text +"\" \n" +
                 "}";
 
-        return sendMSPost(json.getBytes("UTF-8"), lingKey);
+        return sendMSPost(json.getBytes("UTF-8"), LING_KEY);
 
     }
 
-    public static String sendOcrPost(byte[] data, String apiKey) throws Exception{
+    public static String sendOcrPost(String contentType, byte[] data, String apiKey) throws Exception{
 
         String url = "https://api.projectoxford.ai/vision/v1.0/ocr";
         URL obj = new URL(url);
         HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
 
         conn.setConnectTimeout(5000);
-        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Content-Type", contentType);
         conn.setRequestProperty("Ocp-Apim-Subscription-Key", apiKey);
         conn.setDoOutput(true);
         conn.setDoInput(true);
@@ -275,13 +275,15 @@ public class PostHelper {
     }
 
 
-    public static String sendOcrText(String url) throws Exception{
+    public static String sendOcrText(String contentType, String data) throws Exception {
 
-        String json = "{\n" +
-                "\t\"url\" : \""+ url +"\" \n" +
-                "}";
+        if (contentType.equals("application/json")) {
+            data = "{\n" +
+                    "\t\"url\" : \"" + data + "\" \n" +
+                    "}";
+        }
 
-        return sendOcrPost(json.getBytes("UTF-8"), visionKey);
+        return sendOcrPost(contentType, data.getBytes("UTF-8"), VISION_KEY);
 
     }
 
