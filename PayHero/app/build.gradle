@@ -26,4 +26,7 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.0.1'
     testCompile 'junit:junit:4.12'
+    compile 'commons-validator:commons-validator:1.5.1'
+    compile 'org.apache.commons:commons-lang3:3.4'
+
 }
