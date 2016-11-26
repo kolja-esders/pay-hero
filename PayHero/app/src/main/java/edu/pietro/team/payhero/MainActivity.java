@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = new Intent(this, ScanActivity.class);
+        Intent intent = new Intent(this, PaymentSuccessActivity.class);
         startActivity(intent);
 
         mOcrIntentFilter = new IntentFilter("IMAGE_OCR_RESOLVED");
