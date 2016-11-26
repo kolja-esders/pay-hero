@@ -13,7 +13,7 @@ import java.net.URL;
 
 public class PostHelper {
 
-    public static String lingKey = "e75ee2412fc74adb901a33398ec07696";
+    public static String LING_KEY = "e75ee2412fc74adb901a33398ec07696";
     public static String VISION_KEY = "8c7bb9fea8c14560a4d3c000a5f775e9";
 
     public static String sendMSPost(byte[] data, String apiKey) throws Exception{
@@ -57,7 +57,7 @@ public class PostHelper {
                 "\t\"text\" : \""+ text +"\" \n" +
                 "}";
 
-        return sendMSPost(json.getBytes("UTF-8"), lingKey);
+        return sendMSPost(json.getBytes("UTF-8"), LING_KEY);
 
     }
 
@@ -102,7 +102,7 @@ public class PostHelper {
                     "}";
         }
 
-        return sendOcrPost(contentType, data.getBytes("UTF-8"), visionKey);
+        return sendOcrPost(contentType, data.getBytes("UTF-8"), VISION_KEY);
 
     }
 

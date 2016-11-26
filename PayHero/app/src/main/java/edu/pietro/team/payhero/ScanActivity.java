@@ -892,7 +892,7 @@ public class ScanActivity extends AppCompatActivity
             try {
                 String json = PostHelper.sendOcrPost("application/octet-stream", bytes, PostHelper.VISION_KEY);
                 OCR ocr = mGson.fromJson(json, OCR.class);
-                
+
                 String str = "";
                 if (ocr != null) {
                     for (Region r : ocr.regions) {
