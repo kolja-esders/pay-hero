@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">PayHero</string>
     <string name="title_activity_scan">ScanActivity</string>
+    <string name="title_activity_validation">ValidationActivity</string>
 </resources>

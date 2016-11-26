@@ -30,9 +30,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mOcrServiceIntent = new Intent(this, OcrResolveService.class);
+        /*mOcrServiceIntent = new Intent(this, OcrResolveService.class);
         mOcrServiceIntent.putExtra("url", "https://images.gutefrage.net/media/fragen/bilder/ueberweisung--iban-sparkasse-wie-geht-das/0_original.jpg?v=1330352238000");
-        this.startService(mOcrServiceIntent);
+        this.startService(mOcrServiceIntent);*/
+        Intent i = new Intent(this, ValidationActivity.class);
+        i.putExtra("name", "Max");
+        i.putExtra("iban", "DE23 5767 4875 432784");
+        i.putExtra("amount", 23.46);
+        i.putExtra("reason", "VWZ");
+        startActivity(i);
+
         mOcrResolveReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
