@@ -23,6 +23,11 @@ public class PostHelper {
 
     public static String LING_KEY = "e75ee2412fc74adb901a33398ec07696";
     public static String VISION_KEY = "8c7bb9fea8c14560a4d3c000a5f775e9";
+    public static String FACE_KEY = "9b2ecf2bc1a24ed8ac7c059deb5fab7c";
+
+    public static String KOLJA_KEY = "2f154220-39bf-4b64-8b36-b2cce3a68492";
+    public static String DAVID_KEY = "0704a7f3-dda2-4001-b064-e082f9ee036c";
+    public static String MAXIM_KEY = "829e847e-29d4-45aa-aba2-4704981d27f1";
 
     public static String postKey = "485431330021fc2e";
 
