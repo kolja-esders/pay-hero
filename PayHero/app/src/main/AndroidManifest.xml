@@ -47,7 +47,9 @@
             android:label="@string/title_activity_validation"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
-        <activity android:name=".PaymentSuccessActivity"></activity>
+        <activity android:name=".PaymentSuccessActivity">
+
+        </activity>
     </application>
 
 </manifest>

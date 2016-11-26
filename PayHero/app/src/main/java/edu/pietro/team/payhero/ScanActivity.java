@@ -237,20 +237,30 @@ public class ScanActivity extends AppCompatActivity
 
 
             mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage(), new ImageSaver.OcrCallback() {
+
+                private String mText;
+
                 @Override
                 public void onResolved(String text) {
-                    String amount = LangAnalytics.getAmount(text);
-                    String iban = LangAnalytics.getIBAN(text);
+                    mText = text;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String amount = LangAnalytics.getAmount(mText);
+                            String iban = LangAnalytics.getIBAN(mText);
 
-                    if (amount != "") Log.d("AMOUNT", amount);
-                    if (iban != "") Log.d("IBAN", iban);
+                            if (amount != "") Log.d("AMOUNT", amount);
+                            if (iban != "") Log.d("IBAN", iban);
 
-                    if (amount != "" && iban != "") {
-                        Intent i = new Intent(ScanActivity.this, ValidationActivity.class);
-                        i.putExtra("iban", iban);
-                        i.putExtra("amount", Double.parseDouble(amount));
-                        startActivity(i);
-                    }
+                            if (amount != "" && iban != "") {
+                                Intent i = new Intent(ScanActivity.this, ValidationActivity.class);
+                                i.putExtra("iban", iban);
+                                i.putExtra("amount", Double.parseDouble(amount));
+                                startActivity(i);
+                            }
+                        }
+                    });
+
                 }
             }));
         }
@@ -906,6 +916,12 @@ public class ScanActivity extends AppCompatActivity
             ByteBuffer buffer = mImage.getPlanes()[0].getBuffer();
             byte[] bytes = new byte[buffer.remaining()];
             buffer.get(bytes);
+
+            /*try {
+                PostHelper.transfer("DE48201100223000060898", "XXX", "5.00");
+            } catch (Exception e) {
+                Log.e("SD", "sd", e);
+            }*/
 
             try {
                 String json = PostHelper.sendOcrPost("application/octet-stream", bytes, PostHelper.VISION_KEY);
