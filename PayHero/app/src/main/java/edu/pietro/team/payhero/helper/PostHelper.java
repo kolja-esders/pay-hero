@@ -42,7 +42,7 @@ public class PostHelper {
         String ownIban = finStatus.getJSONArray("accounts").getJSONObject(0).getString("iban");
         devInfo.getJSONObject("bestSign").getJSONArray("devices").getJSONObject(0).put("authorizationState", "SELECTED");
 
-        template.put("authorizationDevice", devInfo);
+        template.put("authorizationDevice", devInfo.getJSONObject("bestSign").getJSONArray("devices").getJSONObject(0));
 
         template.getJSONObject("creditTransfer").put("amount", amount);
         template.getJSONObject("creditTransfer").getJSONObject("recipient").put("iban", IBAN);
