@@ -224,10 +224,7 @@ public class ScanActivity extends AppCompatActivity
 
         @Override
         public void onImageAvailable(ImageReader reader) {
-            //Log.d("TEST", String.valueOf(reader.getImageFormat()));
-            //Log.d("TEST", String.valueOf(ImageFormat.JPEG));
-            Image i = reader.acquireNextImage();
-            //mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage(), mFile));
+            mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage()));
         }
 
     };
