@@ -63,6 +63,7 @@ package edu.pietro.team.payhero;
         import java.util.Collections;
         import java.util.Comparator;
         import java.util.List;
+        import java.util.UUID;
         import java.util.concurrent.Semaphore;
         import java.util.concurrent.TimeUnit;
 
@@ -79,6 +80,8 @@ public class ScanActivity extends AppCompatActivity
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static final String FRAGMENT_DIALOG = "dialog";
+
+    private File mExtFilesDir;
 
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
@@ -262,7 +265,7 @@ public class ScanActivity extends AppCompatActivity
                     });
 
                 }
-            }));
+            }, new File(ScanActivity.this.getExternalFilesDir(null), "pic.jpg")));
         }
 
     };
@@ -446,6 +449,8 @@ public class ScanActivity extends AppCompatActivity
 
         mTextureView = (AutoFitTextureView) findViewById(R.id.preview);
         mTextureView.setOnClickListener(this);
+
+        mExtFilesDir = this.getExternalFilesDir(null);
     }
 
     @Override
@@ -903,12 +908,14 @@ public class ScanActivity extends AppCompatActivity
          */
         private final Image mImage;
         private final OcrCallback mCallback;
+        private final File mFile;
 
         private Gson mGson = new Gson();
 
-        public ImageSaver(Image image, OcrCallback callback) {
+        public ImageSaver(Image image, OcrCallback callback, File file) {
             mImage = image;
             mCallback = callback;
+            mFile = file;
         }
 
         @Override
@@ -917,11 +924,25 @@ public class ScanActivity extends AppCompatActivity
             byte[] bytes = new byte[buffer.remaining()];
             buffer.get(bytes);
 
-            /*try {
-                PostHelper.transfer("DE48201100223000060898", "XXX", "5.00");
-            } catch (Exception e) {
-                Log.e("SD", "sd", e);
-            }*/
+            FileOutputStream output = null;
+            try {
+                if (!mFile.exists())
+                    mFile.createNewFile();
+                output = new FileOutputStream(mFile);
+                output.write(bytes);
+                Log.d("IMAGE", "written to "  + mFile.getPath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                mImage.close();
+                if (null != output) {
+                    try {
+                        output.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
 
             try {
                 String json = PostHelper.sendOcrPost("application/octet-stream", bytes, PostHelper.VISION_KEY);
