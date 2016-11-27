@@ -19,11 +19,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:gravity="center"
         android:layout_marginBottom="26dp">
 
         <Button
             android:drawableRight="@drawable/send_white_24dp"
-            android:text="Bestätigen  "
+            android:text="Confirm  "
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/button"
@@ -35,14 +36,10 @@
             android:paddingBottom="20dp" />
 
         <ProgressBar
+            android:id="@+id/progressTransaction"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-
             android:layout_gravity="center"
-            android:indeterminate="true"
-            android:layout_toRightOf="@id/button"
-            android:layout_alignBottom="@id/button"
             />
     </LinearLayout>
 
@@ -66,10 +63,10 @@
         android:id="@+id/amountEdit"
         android:gravity="center_vertical|center_horizontal"
         android:textSize="50sp"
-        android:paddingTop="35dp"
-        android:paddingBottom="35dp"
-        android:paddingLeft="50dp"
-        android:paddingRight="50dp"
+        android:paddingTop="32dp"
+        android:paddingBottom="32dp"
+        android:paddingLeft="45dp"
+        android:paddingRight="45dp"
         android:textStyle="normal|bold"
         android:layout_centerHorizontal="true"
         android:background="@color/bgColorAmount"
@@ -90,11 +87,11 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profileImage"
-        android:layout_width="128dp"
-        android:layout_height="128dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:src="@drawable/person_black_256dp"
-        app:civ_border_width="2dp"
-        app:civ_border_color="#FF000000"
+        app:civ_border_width="4dp"
+        app:civ_border_color="#FFD4D4D4"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
