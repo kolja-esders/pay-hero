@@ -31,7 +31,8 @@ public class LangAnalytics {
 
     public static void main(String args[]){
 
-        System.out.println(getAmount("4.00 Euro DE277DE2779666548000 3292312 34trr"));
+        //System.out.println(getAmount("4.00 Euro DE277DE2779666548000 3292312 34trr"));
+        System.out.println(findFamiliarFriends("Hallo Kolja wie geht es dir ?"));
 
     }
 
@@ -112,8 +113,8 @@ public class LangAnalytics {
     public static String findFamiliarFriends(String text){
 
         for(AddressBook.Contact c : AddressBook.CONTACTS){
-            if(text.contains(c.getName())){
-                return c.getName();
+            if(text.contains(c.getName().split(" ")[0])){
+                return c.getName().split(" ")[0];
             }
         }
 
