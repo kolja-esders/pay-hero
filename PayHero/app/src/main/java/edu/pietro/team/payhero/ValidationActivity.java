@@ -80,6 +80,9 @@ public class ValidationActivity extends AppCompatActivity {
                                 intent.putExtra("name", ValidationActivity.this.mName);
                                 intent.putExtra("amount", ValidationActivity.this.mAmount);
                                 startActivity(intent);
+                            } else {
+                                ((Button) findViewById(R.id.button)).setVisibility(View.VISIBLE);
+                                ((ProgressBar) findViewById(R.id.progressTransaction)).setVisibility(View.INVISIBLE);
                             }
                         }
                     }.execute(new String[][]{{mIban,mName,mAmount}});
