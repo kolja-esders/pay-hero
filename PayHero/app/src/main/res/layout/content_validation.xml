@@ -9,11 +9,14 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="edu.pietro.team.payhero.ValidationActivity"
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:layout_marginRight="@dimen/activity_horizontal_margin"
     tools:showIn="@layout/activity_validation"
     android:gravity="center_horizontal">
 
     <Button
-        android:text="Bestätigen"
+        android:drawableRight="@drawable/send_white_24dp"
+        android:text="Bestätigen  "
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="26dp"
@@ -21,7 +24,11 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:paddingLeft="50dp"
-        android:paddingRight="50dp" />
+        android:paddingRight="50dp"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:background="@android:color/holo_green_dark"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp" />
 
     <EditText
         android:text="DE23 3847 2784 8374 2837 43"
@@ -33,9 +40,7 @@
         android:layout_below="@+id/nameEdit"
         android:layout_centerHorizontal="true"
         android:textSize="16sp"
-        android:background="@android:color/transparent"
-        android:imeOptions="actionDone"
-        android:inputType="text"/>
+        android:background="@android:color/transparent" />
 
     <EditText
         android:text="23,45€"
@@ -51,23 +56,8 @@
         android:textStyle="normal|bold"
         android:layout_centerHorizontal="true"
         android:background="@color/colorAccent"
-        android:textColor="@android:color/background_light"
         android:layout_below="@+id/ibanEdit"
         android:layout_marginTop="20dp" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
-        android:ems="10"
-        android:id="@+id/reasonTextEdit"
-        android:layout_below="@+id/amountEdit"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="24dp"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_alignParentEnd="true"
-        android:hint="Reference" />
 
     <EditText
         android:layout_width="wrap_content"
