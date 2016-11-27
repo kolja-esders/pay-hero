@@ -42,8 +42,9 @@ public class ValidationActivity extends AppCompatActivity {
                 new AsyncTask<String[],Void,Boolean>() {
                         @Override
                         protected Boolean doInBackground(String[]... strings) {
+                            Log.d("HELP", strings.toString());
                             try {
-                                PostHelper.transfer(strings[0][0], strings[0][1], strings[0][2].replace(",",".").replace("€", "").replace(" ",""));
+                                PostHelper.transfer(strings[0][0].replace(" ", ""), strings[0][1], strings[0][2].replace(",",".").replace("€", "").replace(" ",""));
                                 return true;
                             } catch (Exception e) {
                                 Log.e("PAYMENT", "Payment failed :/", e);
@@ -59,7 +60,7 @@ public class ValidationActivity extends AppCompatActivity {
                                 startActivity(intent);
                             }
                         }
-                    }.execute(new String[][]{{name,iban,amount}});
+                    }.execute(new String[][]{{iban, name,amount}});
 
             }
         });
