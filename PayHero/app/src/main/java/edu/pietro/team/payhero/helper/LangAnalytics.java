@@ -68,6 +68,7 @@ public class LangAnalytics {
 
     public static String getAmount(String text){
 
+        text = text.replace("?", "");
         String[] splitText = text.split(" ");
 
         for(int i = 0; i < splitText.length ; i++){

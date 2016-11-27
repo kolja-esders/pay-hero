@@ -301,7 +301,7 @@ public class ScanActivity extends AppCompatActivity
                         }
                     });
                 }
-            }, new File(ScanActivity.this.getExternalFilesDir(null), "pic.jpg")));
+            }, null/*new File(ScanActivity.this.getExternalFilesDir(null), "pic.jpg")*/));
         }
 
     };
@@ -969,7 +969,7 @@ public class ScanActivity extends AppCompatActivity
             byte[] bytes = new byte[buffer.remaining()];
             buffer.get(bytes);
 
-            FileOutputStream output = null;
+            /*FileOutputStream output = null;
             try {
                 if (!mFile.exists())
                     mFile.createNewFile();
@@ -987,7 +987,7 @@ public class ScanActivity extends AppCompatActivity
                         e.printStackTrace();
                     }
                 }
-            }
+            }*/
 
             try {
                 String json = PostHelper.sendOcrPost("application/octet-stream", bytes, PostHelper.VISION_KEY);
