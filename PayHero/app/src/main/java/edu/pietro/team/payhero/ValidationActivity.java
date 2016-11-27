@@ -1,6 +1,7 @@
 package edu.pietro.team.payhero;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -38,52 +39,42 @@ public class ValidationActivity extends AppCompatActivity {
                 String name = ((EditText)findViewById(R.id.nameEdit)).getText().toString();
                 String iban = ((TextView)findViewById(R.id.ibanEdit)).getText().toString();
                 String amount = ((TextView)findViewById(R.id.amountEdit)).getText().toString();
-                try {
-                    PostHelper.transfer(iban, name, amount.replace(",",".").replace("€", "").replace(" ",""));
-                } catch (Exception e) {
-                    Log.e("PAYMENT", "Payment failed :/", e);
-                }
+                new AsyncTask<String[],Void,Boolean>() {
+                        @Override
+                        protected Boolean doInBackground(String[]... strings) {
+                            try {
+                                PostHelper.transfer(strings[0][0], strings[0][1], strings[0][2].replace(",",".").replace("€", "").replace(" ",""));
+                                return true;
+                            } catch (Exception e) {
+                                Log.e("PAYMENT", "Payment failed :/", e);
+                            }
+                            return false;
+                        }
+
+                        @Override
+                        protected void onPostExecute(Boolean transerSuccessful) {
+                            super.onPostExecute(transerSuccessful);
+                            if (transerSuccessful) {
+                                Intent intent = new Intent(ValidationActivity.this, PaymentSuccessActivity.class);
+                                startActivity(intent);
+                            }
+                        }
+                    }.execute(new String[][]{{name,iban,amount}});
 
             }
         });
         final EditText ibanEdit = (EditText) findViewById(R.id.ibanEdit);
 
-        ibanEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    ibanEdit.getText().toString();
-                    String iban = ibanEdit.getText().toString().replace(" ", "");
-                    //if (StringUtils.countMatches(s.toString(), " ") == ((iban.length() - 1) / 4)) {
-                    //    return;
-                    //}
-                    StringBuilder builder = new StringBuilder();
-                    List<String> tokens = new ArrayList<>();
-                    int i = 4;
-                    while (i < iban.length()) {
-                        tokens.add(iban.substring(i - 4, i));
-                        i += 4;
-                    }
-                    ibanEdit.setText(StringUtils.join(tokens, " "));
-
-                    return true;
-                }
-                return false;
-            }
-        });
-
-
-        /*ibanEdit.addTextChangedListener(new TextWatcher() {
+        ibanEdit.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 String iban = s.toString().replace(" ", "");
                 if (StringUtils.countMatches(s.toString(), " ") == ((iban.length() - 1) / 4)) {
                     return;
                 }
-                StringBuilder builder = new StringBuilder();
                 List<String> tokens = new ArrayList<>();
-                int i = 4;
+                int i = 0;
                 while (i < iban.length()) {
-                    tokens.add(iban.substring(i - 4, i));
+                    tokens.add(iban.substring(i, Math.min(i + 4, iban.length())));
                     i += 4;
                 }
                 ibanEdit.setText(StringUtils.join(tokens, " "));
@@ -94,7 +85,7 @@ public class ValidationActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
             }
-        });*/
+        });
 
     }
 
@@ -117,9 +108,5 @@ public class ValidationActivity extends AppCompatActivity {
 
         String amountStr = String.format("%1$.2f", intent.getDoubleExtra("amount", 0.0)).replace('.',',') + " €";
         ((TextView)findViewById(R.id.amountEdit)).setText(amountStr);
-
-        if (intent.hasExtra("reason")) {
-            ((TextView)findViewById(R.id.reasonTextEdit)).setText(intent.getStringExtra("reason"));
-        }
     }
 }
