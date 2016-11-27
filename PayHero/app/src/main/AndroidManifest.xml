@@ -50,8 +50,6 @@
         <activity
             android:name=".PaymentSuccessActivity"
             android:label="@string/title_activity_success"></activity>
-
-        </activity>
     </application>
 
 </manifest>

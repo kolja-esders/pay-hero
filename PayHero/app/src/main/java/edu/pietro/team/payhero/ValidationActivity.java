@@ -22,6 +22,8 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+import edu.pietro.team.payhero.helper.AddressBook;
 import edu.pietro.team.payhero.helper.PostHelper;
 
 public class ValidationActivity extends AppCompatActivity {
@@ -114,5 +116,10 @@ public class ValidationActivity extends AppCompatActivity {
 
         String amountStr = String.format("%1$.2f", intent.getDoubleExtra("amount", 0.0)).replace('.',',') + " €";
         ((TextView)findViewById(R.id.amountEdit)).setText(amountStr);
+
+        int img = AddressBook.getImgForName(intent.getStringExtra("name"));
+        if (img >= 0) {
+            ((CircleImageView)findViewById(R.id.profileImage)).setImageResource(img);
+        }
     }
 }
