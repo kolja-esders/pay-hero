@@ -45,9 +45,30 @@ public class AddressBook {
     }
 
     public static final Contact[] CONTACTS = {
-            new Contact("Kolja Esders", "DE32266500011101040705", null),
-            new Contact("Maxim Köhler", "DE32266500011101040705", null),
-            new Contact("David Zimmerer", "DE32266500011101040705", null)
+            new Contact("Kolja Esders", "DE32266500011101040705", "2f154220-39bf-4b64-8b36-b2cce3a68492"),
+            new Contact("Maxim Köhler", "DE32266500011101040705", "0704a7f3-dda2-4001-b064-e082f9ee036c"),
+            new Contact("David Zimmerer", "DE32266500011101040705", "829e847e-29d4-45aa-aba2-4704981d27f1")
     };
+
+
+    public static String getIBANforName(String name){
+        for(Contact c : CONTACTS){
+            if (c.getName().equals(name)){
+                return c.getIban();
+            }
+        }
+        return "";
+    }
+
+
+    public static String getNameforIBAN(String iban){
+        for(Contact c : CONTACTS){
+            if (c.getIban().equals(iban)){
+                return c.getName();
+            }
+        }
+        return "";
+    }
+
 
 }
