@@ -32,7 +32,9 @@ public class LangAnalytics {
     public static void main(String args[]){
 
         //System.out.println(getAmount("4.00 Euro DE277DE2779666548000 3292312 34trr"));
-        System.out.println(AddressBook.getIBANforName(findFamiliarFriends("Hallo Kolja wie geht es dir ?"))) ;
+        System.out.println(AddressBook.getIBANforName(findFamiliarFriends("Hallo Kolja, wie geht es dir ?"))) ;
+
+
 
     }
 
@@ -71,7 +73,7 @@ public class LangAnalytics {
         for(int i = 0; i < splitText.length ; i++){
             String subText = splitText[i];
             Matcher matcher = pattern2.matcher(subText);
-            if(matcher.matches()){
+            if(matcher.matches() && (subText.contains(".") || subText.contains(",")) ){
                 subText = subText.replace(",",".");
                 subText = subText.replace("€","");
                 return subText;
@@ -81,7 +83,7 @@ public class LangAnalytics {
         for(int i = 0; i < splitText.length ; i++){
             String subText = splitText[i];
             Matcher matcher = pattern1.matcher(subText);
-            if(matcher.matches()){
+            if(matcher.matches() && (subText.contains(".") || subText.contains(",") || subText.contains("€"))){
                 subText = subText.replace(",",".");
                 subText = subText.replace("€","");
                 return subText;
@@ -112,6 +114,9 @@ public class LangAnalytics {
 
     public static String findFamiliarFriends(String text){
 
+
+        text = text.replaceAll("[.,!-]" , " ") + " ";
+
         for(AddressBook.Contact c : AddressBook.CONTACTS){
             if(text.contains(c.getName().split(" ")[0])){
                 return c.getName();
@@ -124,8 +129,10 @@ public class LangAnalytics {
 
     public static String findStrangerThings(String text){
 
+        text = text.replaceAll("[.,!-]" , " ") + " ";
+
         for(String name : nameList){
-            if(text.contains(name)){
+            if(text.contains(name+" ")){
                 return name;
             }
         }
