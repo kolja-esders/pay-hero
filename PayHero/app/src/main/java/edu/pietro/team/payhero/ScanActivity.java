@@ -252,14 +252,26 @@ public class ScanActivity extends AppCompatActivity
                         public void run() {
                             String amount = LangAnalytics.getAmount(mText);
                             String iban = LangAnalytics.getIBAN(mText);
+                            String fame = LangAnalytics.findFamiliarFriends(mText);
+                            String stranger = LangAnalytics.findStrangerThings(mText);
 
-                            if (amount != "") Log.d("AMOUNT", amount);
-                            if (iban != "") Log.d("IBAN", iban);
+                            if (!amount.equals("")) Log.d("AMOUNT", amount);
+                            if (!iban.equals("")) Log.d("IBAN", iban);
+                            if (!fame.equals("")) Log.d("FRIEND", fame);
+                            if (!stranger.equals("")) Log.d("STRANGER", stranger);
 
-                            if (amount != "" && iban != "") {
+                            if (!amount.equals("") && (!iban.equals("") || !fame.equals("") || !stranger.equals("") )) {
+                                if(iban.equals("") && !fame.equals("")){
+                                    iban = AddressBook.getIBANforName(fame);
+                                }
+                                String name = fame;
+                                if(name.equals("")){
+                                    name = stranger;
+                                }
                                 Intent i = new Intent(ScanActivity.this, ValidationActivity.class);
                                 i.putExtra("iban", iban);
                                 i.putExtra("amount", Double.parseDouble(amount));
+                                i.putExtra("name", name);
                                 startActivity(i);
                             }
                         }
