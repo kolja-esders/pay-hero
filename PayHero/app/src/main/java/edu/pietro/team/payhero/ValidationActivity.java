@@ -6,11 +6,20 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.pietro.team.payhero.helper.PostHelper;
 
@@ -37,6 +46,56 @@ public class ValidationActivity extends AppCompatActivity {
 
             }
         });
+        final EditText ibanEdit = (EditText) findViewById(R.id.ibanEdit);
+
+        ibanEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    ibanEdit.getText().toString();
+                    String iban = ibanEdit.getText().toString().replace(" ", "");
+                    //if (StringUtils.countMatches(s.toString(), " ") == ((iban.length() - 1) / 4)) {
+                    //    return;
+                    //}
+                    StringBuilder builder = new StringBuilder();
+                    List<String> tokens = new ArrayList<>();
+                    int i = 4;
+                    while (i < iban.length()) {
+                        tokens.add(iban.substring(i - 4, i));
+                        i += 4;
+                    }
+                    ibanEdit.setText(StringUtils.join(tokens, " "));
+
+                    return true;
+                }
+                return false;
+            }
+        });
+
+
+        /*ibanEdit.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                String iban = s.toString().replace(" ", "");
+                if (StringUtils.countMatches(s.toString(), " ") == ((iban.length() - 1) / 4)) {
+                    return;
+                }
+                StringBuilder builder = new StringBuilder();
+                List<String> tokens = new ArrayList<>();
+                int i = 4;
+                while (i < iban.length()) {
+                    tokens.add(iban.substring(i - 4, i));
+                    i += 4;
+                }
+                ibanEdit.setText(StringUtils.join(tokens, " "));
+            }
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+            }
+        });*/
+
     }
 
     @Override
