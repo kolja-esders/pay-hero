@@ -50,4 +50,25 @@ public class AddressBook {
             new Contact("David Zimmerer", "DE32266500011101040705", "829e847e-29d4-45aa-aba2-4704981d27f1")
     };
 
+
+    public static String getIBANforName(String name){
+        for(Contact c : CONTACTS){
+            if (c.getName().equals(name)){
+                return c.getIban();
+            }
+        }
+        return "";
+    }
+
+
+    public static String getNameforIBAN(String iban){
+        for(Contact c : CONTACTS){
+            if (c.getIban().equals(iban)){
+                return c.getName();
+            }
+        }
+        return "";
+    }
+
+
 }
