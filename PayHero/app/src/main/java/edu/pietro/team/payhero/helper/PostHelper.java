@@ -2,11 +2,13 @@ package edu.pietro.team.payhero.helper;
 
 import android.hardware.camera2.params.Face;
 import android.util.JsonReader;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -312,11 +314,18 @@ public class PostHelper {
 
         conn.setConnectTimeout(5000);
         conn.setRequestProperty("Content-Type", "application/octet-stream");
+        //conn.setRequestProperty("Content-Type", "application/json");
+        //image = "{\"url\": \"http://pngsammlung.com/thumbs/people/face/face-02.png\"}".getBytes("UTF-8");
         conn.setRequestProperty("Ocp-Apim-Subscription-Key", FACE_KEY);
         conn.setDoOutput(true);
         conn.setDoInput(true);
         conn.setRequestMethod("POST");
 
+        int status = conn.getResponseCode();
+        if (status >= 400 && status < 600) {
+            Log.e("CONNECTION", status + ": " +  IOUtils.toString(conn.getErrorStream(), "UTF-8"));
+            return "";
+        }
         OutputStream os = conn.getOutputStream();
         os.write(image);
         os.close();
