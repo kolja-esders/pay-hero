@@ -16,6 +16,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
@@ -42,6 +43,8 @@ public class ValidationActivity extends AppCompatActivity {
         ((Button) findViewById(R.id.button)).setVisibility(View.VISIBLE);
         ((ProgressBar) findViewById(R.id.progressTransaction)).setVisibility(View.INVISIBLE);
 
+        ((RelativeLayout) findViewById(R.id.content_validation)).requestFocus();
+
         setSupportActionBar(toolbar);
         Button okay = (Button) findViewById(R.id.button);
         okay.setOnClickListener(new View.OnClickListener() {
@@ -50,6 +53,8 @@ public class ValidationActivity extends AppCompatActivity {
                 // Hide button and show loading
                 ((Button) findViewById(R.id.button)).setVisibility(View.INVISIBLE);
                 ((ProgressBar) findViewById(R.id.progressTransaction)).setVisibility(View.VISIBLE);
+                ((RelativeLayout) findViewById(R.id.content_validation)).requestFocus();
+
 
                 mName = ((EditText)findViewById(R.id.nameEdit)).getText().toString();
                 mIban = ((TextView)findViewById(R.id.ibanEdit)).getText().toString();

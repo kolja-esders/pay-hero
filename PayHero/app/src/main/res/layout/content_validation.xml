@@ -12,7 +12,9 @@
     android:layout_marginLeft="@dimen/activity_horizontal_margin"
     android:layout_marginRight="@dimen/activity_horizontal_margin"
     tools:showIn="@layout/activity_validation"
-    android:gravity="center_horizontal">
+    android:gravity="center_horizontal"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
         <Button
             android:drawableRight="@drawable/send_white_24dp"
