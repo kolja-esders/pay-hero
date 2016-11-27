@@ -321,16 +321,17 @@ public class PostHelper {
         conn.setDoInput(true);
         conn.setRequestMethod("POST");
 
+        OutputStream os = conn.getOutputStream();
+        os.write(image);
+        os.close();
+
         int status = conn.getResponseCode();
         if (status >= 400 && status < 600) {
             Log.e("CONNECTION", status + ": " +  IOUtils.toString(conn.getErrorStream(), "UTF-8"));
             return "";
         }
-        OutputStream os = conn.getOutputStream();
-        os.write(image);
-        os.close();
 
-        BufferedReader in = new BufferedReader(
+        /*BufferedReader in = new BufferedReader(
                 new InputStreamReader(conn.getInputStream()));
         String inputLine;
         StringBuffer response = new StringBuffer();
@@ -338,10 +339,11 @@ public class PostHelper {
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
         }
-        in.close();
+        in.close();*/
 
         //print result
-        String res = response.toString();
+        //String res = response.toString();
+        String res = IOUtils.toString(conn.getInputStream(), "UTF-8");
         try {
             JSONArray ja = new JSONArray(res);
             return ja.getJSONObject(0).getString("faceId");
@@ -364,7 +366,7 @@ public class PostHelper {
         conn.setRequestMethod("POST");
 
         String data = "{    \n" +
-                "    \"personGroupId\":\"sample_group\",\n" +
+                "    \"personGroupId\":\"12345\",\n" +
                 "    \"faceIds\":[\n" +
                 "        \"" + faceId + "\",\n" +
                 "    ],\n" +
@@ -375,6 +377,12 @@ public class PostHelper {
         OutputStream os = conn.getOutputStream();
         os.write(data.getBytes("UTF-8"));
         os.close();
+
+        int status = conn.getResponseCode();
+        if (status >= 400 && status < 600) {
+            Log.e("CONNECTION", status + ": " + IOUtils.toString(conn.getErrorStream(), "UTF-8"));
+            return "";
+        }
 
         BufferedReader in = new BufferedReader(
                 new InputStreamReader(conn.getInputStream()));
