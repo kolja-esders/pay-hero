@@ -109,7 +109,7 @@ public class ValidationActivity extends AppCompatActivity {
             ((TextView)findViewById(R.id.nameEdit)).setText(intent.getStringExtra("name"));
         } else /* hasIban == true !! */ {
             ((TextView)findViewById(R.id.ibanEdit)).setText(intent.getStringExtra("iban"));
-            findViewById(R.id.ibanEdit).setVisibility(View.VISIBLE);
+            //findViewById(R.id.ibanEdit).setVisibility(View.VISIBLE);
         }
 
         String amountStr = String.format("%1$.2f", intent.getDoubleExtra("amount", 0.0)).replace('.',',') + " €";
