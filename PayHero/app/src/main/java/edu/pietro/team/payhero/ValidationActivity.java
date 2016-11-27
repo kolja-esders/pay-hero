@@ -91,9 +91,5 @@ public class ValidationActivity extends AppCompatActivity {
 
         String amountStr = String.format("%1$.2f", intent.getDoubleExtra("amount", 0.0)).replace('.',',') + " €";
         ((TextView)findViewById(R.id.amountEdit)).setText(amountStr);
-
-        if (intent.hasExtra("reason")) {
-            ((TextView)findViewById(R.id.reasonTextEdit)).setText(intent.getStringExtra("reason"));
-        }
     }
 }
