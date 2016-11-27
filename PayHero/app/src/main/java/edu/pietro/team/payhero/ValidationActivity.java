@@ -39,7 +39,7 @@ public class ValidationActivity extends AppCompatActivity {
                 String iban = ((TextView)findViewById(R.id.ibanEdit)).getText().toString();
                 String amount = ((TextView)findViewById(R.id.amountEdit)).getText().toString();
                 try {
-                    PostHelper.transfer(iban, name, amount.replace(",","."));
+                    PostHelper.transfer(iban, name, amount.replace(",",".").replace("€", "").replace(" ",""));
                 } catch (Exception e) {
                     Log.e("PAYMENT", "Payment failed :/", e);
                 }
