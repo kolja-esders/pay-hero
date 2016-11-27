@@ -54,6 +54,8 @@ package edu.pietro.team.payhero;
         import com.microsoft.projectoxford.vision.contract.Region;
         import com.microsoft.projectoxford.vision.contract.Word;
 
+        import org.apache.commons.lang3.StringUtils;
+
         import java.io.File;
         import java.io.FileOutputStream;
         import java.io.IOException;
@@ -238,8 +240,6 @@ public class ScanActivity extends AppCompatActivity
 
         @Override
         public void onImageAvailable(ImageReader reader) {
-
-
             mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage(), new ImageSaver.OcrCallback() {
 
                 private String mText;
@@ -912,12 +912,19 @@ public class ScanActivity extends AppCompatActivity
             mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
                     CameraMetadata.CONTROL_AF_TRIGGER_CANCEL);
             setAutoFlash(mPreviewRequestBuilder);
-            mCaptureSession.capture(mPreviewRequestBuilder.build(), mCaptureCallback,
-                    mBackgroundHandler);
+            try {
+                if (mCaptureSession != null) {
+                    mCaptureSession.capture(mPreviewRequestBuilder.build(), mCaptureCallback,
+                            mBackgroundHandler);
+                    mCaptureSession.setRepeatingRequest(mPreviewRequest, mCaptureCallback,
+                            mBackgroundHandler);
+                }
+            } catch (IllegalStateException | NullPointerException e) {
+                Log.w("BAD", "What is happening?", e);
+            }
             // After this, the camera will go back to the normal state of preview.
             mState = STATE_PREVIEW;
-            mCaptureSession.setRepeatingRequest(mPreviewRequest, mCaptureCallback,
-                    mBackgroundHandler);
+
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -950,6 +957,7 @@ public class ScanActivity extends AppCompatActivity
         private Gson mGson = new Gson();
 
         public ImageSaver(Image image, OcrCallback callback, File file) {
+            Log.d("HALLO", image.toString());
             mImage = image;
             mCallback = callback;
             mFile = file;

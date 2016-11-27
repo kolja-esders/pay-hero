@@ -46,8 +46,9 @@ public class ValidationActivity extends AppCompatActivity {
                 new AsyncTask<String[],Void,Boolean>() {
                         @Override
                         protected Boolean doInBackground(String[]... strings) {
+                            Log.d("HELP", strings.toString());
                             try {
-                                PostHelper.transfer(strings[0][0], strings[0][1], strings[0][2].replace(",",".").replace("€", "").replace(" ",""));
+                                PostHelper.transfer(strings[0][0].replace(" ", ""), strings[0][1], strings[0][2].replace(",",".").replace("€", "").replace(" ",""));
                                 return true;
                             } catch (Exception e) {
                                 Log.e("PAYMENT", "Payment failed :/", e);
@@ -66,7 +67,6 @@ public class ValidationActivity extends AppCompatActivity {
                             }
                         }
                     }.execute(new String[][]{{mIban,mName,mAmount}});
-
             }
         });
         final EditText ibanEdit = (EditText) findViewById(R.id.ibanEdit);
@@ -109,7 +109,7 @@ public class ValidationActivity extends AppCompatActivity {
             ((TextView)findViewById(R.id.nameEdit)).setText(intent.getStringExtra("name"));
         } else /* hasIban == true !! */ {
             ((TextView)findViewById(R.id.ibanEdit)).setText(intent.getStringExtra("iban"));
-            findViewById(R.id.ibanEdit).setVisibility(View.VISIBLE);
+            //findViewById(R.id.ibanEdit).setVisibility(View.VISIBLE);
         }
 
         String amountStr = String.format("%1$.2f", intent.getDoubleExtra("amount", 0.0)).replace('.',',') + " €";
