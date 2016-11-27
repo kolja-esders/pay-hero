@@ -14,6 +14,15 @@
     tools:showIn="@layout/activity_validation"
     android:gravity="center_horizontal">
 
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/profile_image"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:src="@android:drawable/ic_menu_send"
+        app:civ_border_width="2dp"
+        app:civ_border_color="#FF000000"/>
+
     <Button
         android:drawableRight="@drawable/send_white_24dp"
         android:text="Bestätigen  "
