@@ -58,7 +58,7 @@ public class PostHelper {
 
         JSONObject template = getTransferTemplate(token);
 
-        String ownIban = finStatus.getJSONArray("accounts").getJSONObject(0).getString("iban");
+        String ownIban = "DE48201100223000060898";//finStatus.getJSONArray("accounts").getJSONObject(0).getString("iban");
         devInfo.getJSONObject("bestSign").getJSONArray("devices").getJSONObject(0).put("authorizationState", "SELECTED");
 
         template.put("authorizationDevice", devInfo.getJSONObject("bestSign").getJSONArray("devices").getJSONObject(0));
