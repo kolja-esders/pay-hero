@@ -26,6 +26,10 @@ import edu.pietro.team.payhero.helper.PostHelper;
 
 public class ValidationActivity extends AppCompatActivity {
 
+    private String mName;
+    private String mIban;
+    private String mAmount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,9 +40,9 @@ public class ValidationActivity extends AppCompatActivity {
         okay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String name = ((EditText)findViewById(R.id.nameEdit)).getText().toString();
-                String iban = ((TextView)findViewById(R.id.ibanEdit)).getText().toString();
-                String amount = ((TextView)findViewById(R.id.amountEdit)).getText().toString();
+                mName = ((EditText)findViewById(R.id.nameEdit)).getText().toString();
+                mIban = ((TextView)findViewById(R.id.ibanEdit)).getText().toString();
+                mAmount = ((TextView)findViewById(R.id.amountEdit)).getText().toString();
                 new AsyncTask<String[],Void,Boolean>() {
                         @Override
                         protected Boolean doInBackground(String[]... strings) {
@@ -56,10 +60,12 @@ public class ValidationActivity extends AppCompatActivity {
                             super.onPostExecute(transerSuccessful);
                             if (transerSuccessful) {
                                 Intent intent = new Intent(ValidationActivity.this, PaymentSuccessActivity.class);
+                                intent.putExtra("name", ValidationActivity.this.mName);
+                                intent.putExtra("amount", ValidationActivity.this.mAmount);
                                 startActivity(intent);
                             }
                         }
-                    }.execute(new String[][]{{name,iban,amount}});
+                    }.execute(new String[][]{{mIban,mName,mAmount}});
 
             }
         });

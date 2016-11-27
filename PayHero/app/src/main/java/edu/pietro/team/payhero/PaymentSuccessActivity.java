@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 
 public class PaymentSuccessActivity extends AppCompatActivity {
 
@@ -11,6 +12,12 @@ public class PaymentSuccessActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_success);
+
+        Intent i = getIntent();
+        String name = i.getStringExtra("name");
+        String amount = i.getStringExtra("amount");
+
+        ((TextView)findViewById(R.id.msg_success)).setText("Es werden " + amount + " € an " + name + " überwiesen!");
 
         new Handler().postDelayed(new Runnable() {
             @Override
