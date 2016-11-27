@@ -32,7 +32,7 @@ public class LangAnalytics {
     public static void main(String args[]){
 
         //System.out.println(getAmount("4.00 Euro DE277DE2779666548000 3292312 34trr"));
-        System.out.println(AddressBook.getIBANforName(findFamiliarFriends("Hallo Kolja wie geht es dir ?")));
+        System.out.println(AddressBook.getIBANforName(findFamiliarFriends("Hallo Kolja wie geht es dir ?"))) ;
 
     }
 
