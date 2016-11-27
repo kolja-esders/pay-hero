@@ -1,6 +1,7 @@
 package edu.pietro.team.payhero;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -38,11 +39,27 @@ public class ValidationActivity extends AppCompatActivity {
                 String name = ((EditText)findViewById(R.id.nameEdit)).getText().toString();
                 String iban = ((TextView)findViewById(R.id.ibanEdit)).getText().toString();
                 String amount = ((TextView)findViewById(R.id.amountEdit)).getText().toString();
-                try {
-                    PostHelper.transfer(iban, name, amount.replace(",",".").replace("€", "").replace(" ",""));
-                } catch (Exception e) {
-                    Log.e("PAYMENT", "Payment failed :/", e);
-                }
+                new AsyncTask<String[],Void,Boolean>() {
+                        @Override
+                        protected Boolean doInBackground(String[]... strings) {
+                            try {
+                                PostHelper.transfer(strings[0][0], strings[0][1], strings[0][2].replace(",",".").replace("€", "").replace(" ",""));
+                                return true;
+                            } catch (Exception e) {
+                                Log.e("PAYMENT", "Payment failed :/", e);
+                            }
+                            return false;
+                        }
+
+                        @Override
+                        protected void onPostExecute(Boolean transerSuccessful) {
+                            super.onPostExecute(transerSuccessful);
+                            if (transerSuccessful) {
+                                Intent intent = new Intent(ValidationActivity.this, PaymentSuccessActivity.class);
+                                startActivity(intent);
+                            }
+                        }
+                    }.execute(new String[][]{{name,iban,amount}});
 
             }
         });
