@@ -265,13 +265,14 @@ public class ScanActivity extends AppCompatActivity
                                     iban = AddressBook.getIBANforName(fame);
                                 }
                                 String name = fame;
-                                if(name.equals("")){
+                                if (name.equals("")) {
                                     name = stranger;
                                 }
                                 Intent i = new Intent(ScanActivity.this, ValidationActivity.class);
                                 i.putExtra("iban", iban);
                                 i.putExtra("amount", Double.parseDouble(amount));
                                 i.putExtra("name", name);
+                                Log.d("THREAD-ID", Thread.currentThread().toString());
                                 startActivity(i);
                             }
                         }
