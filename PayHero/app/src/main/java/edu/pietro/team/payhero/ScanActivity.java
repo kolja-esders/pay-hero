@@ -268,6 +268,9 @@ public class ScanActivity extends AppCompatActivity
                                 if (name.equals("")) {
                                     name = stranger;
                                 }
+                                if(name.equals("")){
+                                    name = AddressBook.getNameforIBAN(iban);
+                                }
                                 Intent i = new Intent(ScanActivity.this, ValidationActivity.class);
                                 i.putExtra("iban", iban);
                                 i.putExtra("amount", Double.parseDouble(amount));
