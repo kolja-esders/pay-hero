@@ -17,7 +17,7 @@ public class PaymentSuccessActivity extends AppCompatActivity {
         String name = i.getStringExtra("name");
         String amount = i.getStringExtra("amount");
 
-        ((TextView)findViewById(R.id.msg_success)).setText("Es werden " + amount + " an " + name + " überwiesen!");
+        ((TextView)findViewById(R.id.msg_success)).setText("Transferred " + amount + " to " + name);
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -26,6 +26,6 @@ public class PaymentSuccessActivity extends AppCompatActivity {
                 startActivity(i);
                 finish();
             }
-        }, 2000);
+        }, 3000);
     }
 }
