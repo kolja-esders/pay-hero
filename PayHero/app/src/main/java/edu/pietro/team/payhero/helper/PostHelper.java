@@ -73,9 +73,10 @@ public class PostHelper {
 
         String finLink = trans.getJSONArray("links").getJSONObject(0).getString("href");
 
-        commitTransfer(finLink, token);
-
-
+        boolean success = commitTransfer(finLink, token);
+        if (!success) {
+            Log.w("PAYMENT", "Unable to pay!");
+        }
     }
 
 
@@ -197,7 +198,7 @@ public class PostHelper {
 
     }
 
-    public static void commitTransfer(String link, String token) throws Exception{
+    public static boolean commitTransfer(String link, String token) throws Exception{
 
         OkHttpClient client = new OkHttpClient();
 
@@ -213,6 +214,7 @@ public class PostHelper {
 
         Response response = client.newCall(request).execute();
 
+        return response.isSuccessful();
     }
 
 
