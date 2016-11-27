@@ -1,5 +1,7 @@
 package edu.pietro.team.payhero.helper;
 
+import edu.pietro.team.payhero.R;
+
 /**
  * Created by kolja on 26/11/2016.
  */
@@ -13,10 +15,13 @@ public class AddressBook {
 
         private String mFaceId;
 
-        public Contact(String name, String iban, String faceId) {
+        private int mImgRes;
+
+        public Contact(String name, String iban, String faceId, int imgRes) {
             mName = name;
             mIban = iban;
             mFaceId = faceId;
+            mImgRes = imgRes;
         }
 
         public String getName() {
@@ -42,12 +47,14 @@ public class AddressBook {
         public void setFaceId(String faceId) {
             this.mFaceId = mFaceId;
         }
+
+        public int getImgRes() { return mImgRes;}
     }
 
     public static final Contact[] CONTACTS = {
-            new Contact("Kolja Esders", "DE81100100100005578146", "2f154220-39bf-4b64-8b36-b2cce3a68492"),
-            new Contact("Maxim Köhler", "DE81100100100005578146", "829e847e-29d4-45aa-aba2-4704981d27f1"),
-            new Contact("David Zimmerer", "DE81100100100005578146", "0704a7f3-dda2-4001-b064-e082f9ee036c")
+            new Contact("Kolja Esders", "DE81100100100005578146", "2f154220-39bf-4b64-8b36-b2cce3a68492", R.drawable.kolja),
+            new Contact("Maxim Köhler", "DE81100100100005578146", "829e847e-29d4-45aa-aba2-4704981d27f1", R.drawable.maxim),
+            new Contact("David Zimmerer", "DE81100100100005578146", "0704a7f3-dda2-4001-b064-e082f9ee036c", R.drawable.david)
     };
 
 
@@ -68,6 +75,15 @@ public class AddressBook {
             }
         }
         return "";
+    }
+
+    public static int getImgForName(String name) {
+        for(Contact c : CONTACTS){
+            if (c.getName().equals(name)){
+                return c.getImgRes();
+            }
+        }
+        return -1;
     }
 
 
