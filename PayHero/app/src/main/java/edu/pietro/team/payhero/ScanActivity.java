@@ -68,6 +68,7 @@ package edu.pietro.team.payhero;
         import java.util.concurrent.TimeUnit;
 
         import edu.pietro.team.payhero.R;
+        import edu.pietro.team.payhero.helper.AddressBook;
         import edu.pietro.team.payhero.helper.LangAnalytics;
         import edu.pietro.team.payhero.helper.PostHelper;
 
@@ -264,6 +265,25 @@ public class ScanActivity extends AppCompatActivity
                         }
                     });
 
+                }
+
+                @Override
+                public void onFaceDetected(String personGuid) {
+                    mText = personGuid;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            for (AddressBook.Contact c : AddressBook.CONTACTS) {
+                                if (mText.equals(c.getFaceId())) {
+                                    Intent i = new Intent(ScanActivity.this, ValidationActivity.class);
+                                    i.putExtra("name", c.getName());
+                                    i.putExtra("iban", c.getIban());
+                                    startActivity(i);
+                                    return;
+                                }
+                            }
+                        }
+                    });
                 }
             }, new File(ScanActivity.this.getExternalFilesDir(null), "pic.jpg")));
         }
@@ -901,6 +921,7 @@ public class ScanActivity extends AppCompatActivity
 
         public interface OcrCallback {
             void onResolved(String text);
+            void onFaceDetected(String personGuid);
         }
 
         /**
@@ -961,8 +982,23 @@ public class ScanActivity extends AppCompatActivity
                 }
                 mCallback.onResolved(str);
             } catch (Exception e) {
-                Log.e("ERROR", e.toString());
+                Log.e("ERROR", e.toString(),e);
             }
+
+            try {
+                String faceId = PostHelper.detectFace(bytes);
+                if (faceId != "") {
+                    String personId = PostHelper.identifyFace(faceId);
+                    if (personId != "") {
+                        Log.d("PERSON", personId);
+                        mCallback.onFaceDetected(personId);
+                    }
+                }
+            } catch (Exception e) {
+                Log.e("ERROR", e.toString(),e);
+            }
+
+
         }
     }
 

@@ -1,12 +1,24 @@
 package edu.pietro.team.payhero.helper;
 
+import android.hardware.camera2.params.Face;
+import android.util.JsonReader;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.StringReader;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
+import java.net.Proxy;
 import java.net.URL;
+import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -293,5 +305,84 @@ public class PostHelper {
 
     }
 
+    public static String detectFace(byte[] image) throws Exception {
+        String url = "https://api.projectoxford.ai/face/v1.0/detect";
+        URL obj = new URL(url);
+        HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
+
+        conn.setConnectTimeout(5000);
+        conn.setRequestProperty("Content-Type", "application/octet-stream");
+        conn.setRequestProperty("Ocp-Apim-Subscription-Key", FACE_KEY);
+        conn.setDoOutput(true);
+        conn.setDoInput(true);
+        conn.setRequestMethod("POST");
+
+        OutputStream os = conn.getOutputStream();
+        os.write(image);
+        os.close();
+
+        BufferedReader in = new BufferedReader(
+                new InputStreamReader(conn.getInputStream()));
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+
+        //print result
+        String res = response.toString();
+        try {
+            JSONArray ja = new JSONArray(res);
+            return ja.getJSONObject(0).getString("faceId");
+        } catch (Exception e) {
+            return "";
+        }
+
+    }
+
+    public static String identifyFace(String faceId) throws Exception {
+        String url = "https://api.projectoxford.ai/face/v1.0/identify";
+        URL obj = new URL(url);
+        HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
+
+        conn.setConnectTimeout(5000);
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Ocp-Apim-Subscription-Key", FACE_KEY);
+        conn.setDoOutput(true);
+        conn.setDoInput(true);
+        conn.setRequestMethod("POST");
+
+        String data = "{    \n" +
+                "    \"personGroupId\":\"sample_group\",\n" +
+                "    \"faceIds\":[\n" +
+                "        \"" + faceId + "\",\n" +
+                "    ],\n" +
+                "    \"maxNumOfCandidatesReturned\":1,\n" +
+                "    \"confidenceThreshold\": 0.5\n" +
+                "}";
+
+        OutputStream os = conn.getOutputStream();
+        os.write(data.getBytes("UTF-8"));
+        os.close();
+
+        BufferedReader in = new BufferedReader(
+                new InputStreamReader(conn.getInputStream()));
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+
+        try {
+            JSONArray ja = new JSONArray(response.toString());
+            return ja.getJSONObject(0).getJSONArray("candidates").getJSONObject(0).getString("personId");
+        } catch (Exception e) {
+            return "";
+        }
+    }
 
 }
