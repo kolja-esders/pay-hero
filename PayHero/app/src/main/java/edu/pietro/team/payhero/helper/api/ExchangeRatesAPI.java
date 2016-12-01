@@ -22,8 +22,6 @@ import edu.pietro.team.payhero.helper.HttpClient;
 
 public class ExchangeRatesAPI {
 
-    //private static final String CACHE_PREFIX = "EXCHANGE_RATES";
-
     private static final String BASE_URL = "http://api.fixer.io/";
 
     private static final String LATEST_RATES_WITH_BASE_RESOURCE = "latest?base=";
@@ -33,12 +31,12 @@ public class ExchangeRatesAPI {
     private static final SimpleDateFormat CACHE_KEY_DATE_FORMAT
             = new SimpleDateFormat("yyyy-MM-dd");
 
-    private AbstractCache<HashMap<String,Double>> mCache;
+    private AbstractCache<HashMap<Currency,Double>> mCache;
 
     public ExchangeRatesAPI() {
     }
 
-    public ExchangeRatesAPI(AbstractCache<HashMap<String,Double>> cache) {
+    public ExchangeRatesAPI(AbstractCache<HashMap<Currency,Double>> cache) {
         mCache = cache;
     }
 
@@ -51,10 +49,10 @@ public class ExchangeRatesAPI {
      * @param callback to be called on success/failure.
      */
     public void getRatesForCurrency(final Currency baseCurrency,
-                                    final GenericCallbackInterface<HashMap<String,Double>>callback) {
+                                    final GenericCallbackInterface<HashMap<Currency,Double>>callback) {
         if (mCache != null) {
             try {
-                HashMap<String, Double> rates = mCache.get(constructCacheKey(baseCurrency));
+                HashMap<Currency, Double> rates = mCache.get(constructCacheKey(baseCurrency));
                 if (rates != null) {
                     callback.onSuccess(rates);
                     return;
@@ -67,14 +65,14 @@ public class ExchangeRatesAPI {
                 null, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                HashMap<String, Double> rates = new HashMap<>();
+                HashMap<Currency, Double> rates = new HashMap<>();
                 try {
                     JSONObject jsonRates = response.getJSONObject("rates");
                     Iterator<String> keyIter = jsonRates.keys();
                     while (keyIter.hasNext()) {
-                        String currencySymbol = keyIter.next();
-                        Double rate = jsonRates.getDouble(currencySymbol);
-                        rates.put(currencySymbol, rate);
+                        String currencyCode = keyIter.next();
+                        Double rate = jsonRates.getDouble(currencyCode);
+                        rates.put(Currency.getInstance(currencyCode), rate);
                     }
                     try {
                         mCache.put(constructCacheKey(baseCurrency), rates);
