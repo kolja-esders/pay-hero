@@ -1,13 +1,11 @@
 package edu.pietro.team.payhero.helper.api;
 
-
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
@@ -28,13 +26,12 @@ public class ExchangeRatesAPI {
      * The exchange rates are updated daily around 4PM CET and are published by the
      * European Central Bank.
      *
-     * @param baseCurrencySymbol Currency to return rates for. The format is case-insensitive and
-     *                           expected to be a currency symbol like {@code USD} or {@code EUR}.
+     * @param baseCurrency Currency to return rates for
      * @return the most recent exchange rates for the given currency
      */
-    public static void getRatesForCurrency(String baseCurrencySymbol,
+    public static void getRatesForCurrency(Currency baseCurrency,
                                            final GenericCallback<Map<String, Double>> callback) {
-        mClient.get("latest?base=" + baseCurrencySymbol, null, new JsonHttpResponseHandler() {
+        mClient.get("latest?base=" + baseCurrency.getCurrencyCode(), null, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Map<String, Double> rates = new HashMap<>();
