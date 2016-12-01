@@ -4,8 +4,9 @@ package edu.pietro.team.payhero.helper;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.io.Serializable;
 
-public abstract class AbstractCache<T> {
+public abstract class AbstractCache<T extends Serializable> {
 
     private String mPrefix;
 
