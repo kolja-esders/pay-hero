@@ -9,6 +9,7 @@ package edu.pietro.team.payhero;
         import android.content.Context;
         import android.content.DialogInterface;
         import android.content.Intent;
+        import android.content.pm.ActivityInfo;
         import android.content.pm.PackageManager;
         import android.content.res.Configuration;
         import android.graphics.ImageFormat;
@@ -38,6 +39,7 @@ package edu.pietro.team.payhero;
         import android.support.v4.content.LocalBroadcastManager;
         import android.support.v7.app.AppCompatActivity;
         import android.support.v7.widget.Toolbar;
+        import android.util.DisplayMetrics;
         import android.util.Log;
         import android.util.Size;
         import android.util.SparseIntArray;
@@ -64,15 +66,21 @@ package edu.pietro.team.payhero;
         import java.util.Arrays;
         import java.util.Collections;
         import java.util.Comparator;
+        import java.util.Currency;
+        import java.util.HashMap;
         import java.util.List;
         import java.util.UUID;
         import java.util.concurrent.Semaphore;
         import java.util.concurrent.TimeUnit;
 
         import edu.pietro.team.payhero.R;
+        import edu.pietro.team.payhero.helper.AbstractCache;
         import edu.pietro.team.payhero.helper.AddressBook;
+        import edu.pietro.team.payhero.helper.GenericCallbackInterface;
         import edu.pietro.team.payhero.helper.LangAnalytics;
         import edu.pietro.team.payhero.helper.PostHelper;
+        import edu.pietro.team.payhero.helper.api.ExchangeRatesAPI;
+        import edu.pietro.team.payhero.helper.api.InternalStorageCache;
 
 public class ScanActivity extends AppCompatActivity
         implements View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
@@ -167,9 +175,9 @@ public class ScanActivity extends AppCompatActivity
     private String mCameraId;
 
     /**
-     * An {@link AutoFitTextureView} for camera preview.
+     * An {@link TextureView} for camera preview.
      */
-    private AutoFitTextureView mTextureView;
+    private TextureView mTextureView;
 
     /**
      * A {@link CameraCaptureSession } for camera preview.
@@ -480,10 +488,12 @@ public class ScanActivity extends AppCompatActivity
         setContentView(R.layout.activity_scan);
 
         // Toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
 
-        mTextureView = (AutoFitTextureView) findViewById(R.id.preview);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        mTextureView = (TextureView) findViewById(R.id.preview);
         mTextureView.setOnClickListener(this);
 
         mExtFilesDir = this.getExternalFilesDir(null);
@@ -505,6 +515,11 @@ public class ScanActivity extends AppCompatActivity
                 mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
             }
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -544,7 +559,6 @@ public class ScanActivity extends AppCompatActivity
                 CameraCharacteristics characteristics
                         = manager.getCameraCharacteristics(cameraId);
 
-                // We don't use a front facing camera in this sample.
                 Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
                 if (facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
                     continue;
@@ -565,67 +579,12 @@ public class ScanActivity extends AppCompatActivity
                 mImageReader.setOnImageAvailableListener(
                         mOnImageAvailableListener, mBackgroundHandler);
 
-                // Find out if we need to swap dimension to get the preview size relative to sensor
-                // coordinate.
-                int displayRotation = getWindowManager().getDefaultDisplay().getRotation();
-                //noinspection ConstantConditions
                 mSensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
-                boolean swappedDimensions = false;
-                switch (displayRotation) {
-                    case Surface.ROTATION_0:
-                    case Surface.ROTATION_180:
-                        if (mSensorOrientation == 90 || mSensorOrientation == 270) {
-                            swappedDimensions = true;
-                        }
-                        break;
-                    case Surface.ROTATION_90:
-                    case Surface.ROTATION_270:
-                        if (mSensorOrientation == 0 || mSensorOrientation == 180) {
-                            swappedDimensions = true;
-                        }
-                        break;
-                    default:
-                        Log.e(TAG, "Display rotation is invalid: " + displayRotation);
-                }
 
                 Point displaySize = new Point();
-                getWindowManager().getDefaultDisplay().getSize(displaySize);
-                int rotatedPreviewWidth = width;
-                int rotatedPreviewHeight = height;
-                int maxPreviewWidth = displaySize.x;
-                int maxPreviewHeight = displaySize.y;
-
-                if (swappedDimensions) {
-                    rotatedPreviewWidth = height;
-                    rotatedPreviewHeight = width;
-                    maxPreviewWidth = displaySize.y;
-                    maxPreviewHeight = displaySize.x;
-                }
-
-                if (maxPreviewWidth > MAX_PREVIEW_WIDTH) {
-                    maxPreviewWidth = MAX_PREVIEW_WIDTH;
-                }
-
-                if (maxPreviewHeight > MAX_PREVIEW_HEIGHT) {
-                    maxPreviewHeight = MAX_PREVIEW_HEIGHT;
-                }
-
-                // Danger, W.R.! Attempting to use too large a preview size could  exceed the camera
-                // bus' bandwidth limitation, resulting in gorgeous previews but the storage of
-                // garbage capture data.
-                mPreviewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class),
-                        rotatedPreviewWidth, rotatedPreviewHeight, maxPreviewWidth,
-                        maxPreviewHeight, largest);
-
-                // We fit the aspect ratio of TextureView to the size of preview we picked.
-                int orientation = getResources().getConfiguration().orientation;
-                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    mTextureView.setAspectRatio(
-                            mPreviewSize.getWidth(), mPreviewSize.getHeight());
-                } else {
-                    mTextureView.setAspectRatio(
-                            mPreviewSize.getHeight(), mPreviewSize.getWidth());
-                }
+                getWindowManager().getDefaultDisplay().getRealSize(displaySize);
+                // We need to reverse since we are in portrait.
+                mPreviewSize = new Size(displaySize.y, displaySize.x);
 
                 // Check if the flash is supported.
                 Boolean available = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
