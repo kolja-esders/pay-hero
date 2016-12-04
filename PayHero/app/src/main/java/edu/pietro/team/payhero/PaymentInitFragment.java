@@ -54,9 +54,7 @@ public class PaymentInitFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.SideTheme);
-        LayoutInflater localInflater = inflater.cloneInContext(contextThemeWrapper);
-        return localInflater.inflate(R.layout.fragment_payment_init, container, false);
+        return inflater.inflate(R.layout.fragment_payment_init, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
