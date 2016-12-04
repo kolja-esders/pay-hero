@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
@@ -18,7 +19,7 @@
         android:id="@+id/logo"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="36dp"
         android:textColor="@color/transparentWhite"
         android:textSize="28sp"
         android:letterSpacing="-0.05"
@@ -30,13 +31,44 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/todo"
-        android:layout_marginBottom="64dp"
+        android:layout_marginBottom="66dp"
         android:textSize="16sp"
         android:textColor="@color/transparentWhite"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:shadowColor="@color/transparentBlack"
-        android:shadowRadius="2" />
+        android:shadowRadius="2"
+        android:textStyle="normal|bold" />
+
+    <ProgressBar
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="40dp"
+        android:id="@+id/processing"
+        android:layout_alignBottom="@+id/logo"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"/>
+
+    <ImageView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:srcCompat="@drawable/payment_white_trans_128dp"
+        android:layout_marginBottom="60dp"
+        android:layout_marginRight="16dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/payment_icon" />
+
+    <ImageView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:srcCompat="@drawable/list_white_trans_128dp"
+        android:layout_marginBottom="60dp"
+        android:layout_marginLeft="16dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/list_icon" />
 
 
 </RelativeLayout>
