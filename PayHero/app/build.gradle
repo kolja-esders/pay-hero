@@ -24,14 +24,19 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    // API calls
+    // Mobile Vision API
     compile 'com.android.support:appcompat-v7:25.0.1'
     compile 'com.microsoft.projectoxford:vision:1.0.354'
     compile 'com.android.support:design:25.0.1'
-    testCompile 'junit:junit:4.12'
     compile 'commons-validator:commons-validator:1.5.1'
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'com.squareup.okhttp3:okhttp:3.4.2'
     compile 'com.microsoft.projectoxford:face:1.0.0'
     compile 'de.hdodenhof:circleimageview:2.1.0'
-    compile 'com.loopj.android:android-async-http:1.4.9' // Used for API calls
+    compile 'com.loopj.android:android-async-http:1.4.9'
+    compile 'com.google.android.gms:play-services-vision:10.0.1'
+    compile 'com.android.support:support-v4:25.0.1'
+    compile 'com.android.support:support-v13:25.0.1'
+    testCompile 'junit:junit:4.12'
 }
