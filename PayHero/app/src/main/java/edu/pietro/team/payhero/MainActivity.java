@@ -104,15 +104,6 @@ public class MainActivity extends AppCompatActivity
      */
     private static final int STATE_PICTURE_TAKEN = 4;
 
-    /**
-     * Max preview width that is guaranteed by Camera2 API
-     */
-    private static final int MAX_PREVIEW_WIDTH = 1920;
-
-    /**
-     * Max preview height that is guaranteed by Camera2 API
-     */
-    private static final int MAX_PREVIEW_HEIGHT = 1080;
 
     /**
      * {@link TextureView.SurfaceTextureListener} handles several lifecycle events on a
@@ -343,10 +334,6 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    public static ScanOverlayFragment newInstance() {
-        return new ScanOverlayFragment();
     }
 
     @Override
@@ -874,6 +861,7 @@ public class MainActivity extends AppCompatActivity
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mCollectionPagerAdapter);
         mViewPager.setOffscreenPageLimit(2);
+        mViewPager.setCurrentItem(1);
 
         mTextureView = (TextureView) findViewById(R.id.preview);
         mTextureView.setOnClickListener(this);
