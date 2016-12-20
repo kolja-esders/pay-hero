@@ -57,17 +57,17 @@ public class FriendFeedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_story_list, container, false);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.story_list);
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+        if (recyclerView != null) {
+            Context context = recyclerView.getContext();
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyStoryRecyclerViewAdapter(Stories.ITEMS, mListener));
+            recyclerView.setAdapter(new StoryRecyclerViewAdapter(Stories.ITEMS, mListener));
         }
         return view;
     }

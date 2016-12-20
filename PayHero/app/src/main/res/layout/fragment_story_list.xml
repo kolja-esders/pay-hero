@@ -10,15 +10,15 @@
     <android.support.v7.widget.RecyclerView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/list"
-        android:name="edu.pietro.team.payhero.FeedFragment"
+        android:id="@+id/story_list"
+        android:name="edu.pietro.team.payhero.FriendFeedFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
         tools:context="edu.pietro.team.payhero.FriendFeedFragment"
-        tools:listitem="@layout/fragment_story" />
+        tools:listitem="@layout/fragment_story"
+        android:paddingTop="24dp"
+        android:paddingBottom="48dp"/>
 
     <ImageView
         android:layout_width="fill_parent"

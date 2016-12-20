@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import edu.pietro.team.payhero.FriendFeedFragment.OnFriendFeedFragmentInteractionListener;
-import edu.pietro.team.payhero.content.Stories;
 import edu.pietro.team.payhero.content.Stories.Story;
 
 import java.util.List;
@@ -16,12 +15,12 @@ import java.util.List;
  * {@link RecyclerView.Adapter} that can display a {@link Story} and makes a call to the
  * specified {@link OnFriendFeedFragmentInteractionListener}.
  */
-public class MyStoryRecyclerViewAdapter extends RecyclerView.Adapter<MyStoryRecyclerViewAdapter.ViewHolder> {
+public class StoryRecyclerViewAdapter extends RecyclerView.Adapter<StoryRecyclerViewAdapter.ViewHolder> {
 
     private final List<Story> mValues;
     private final OnFriendFeedFragmentInteractionListener mListener;
 
-    public MyStoryRecyclerViewAdapter(List<Story> items, OnFriendFeedFragmentInteractionListener listener) {
+    public StoryRecyclerViewAdapter(List<Story> items, OnFriendFeedFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
