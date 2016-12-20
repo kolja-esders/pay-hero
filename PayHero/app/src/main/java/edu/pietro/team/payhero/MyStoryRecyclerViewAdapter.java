@@ -6,22 +6,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import edu.pietro.team.payhero.FeedFragment.OnListFragmentInteractionListener;
-import edu.pietro.team.payhero.dummy.DummyContent.DummyItem;
+import edu.pietro.team.payhero.FriendFeedFragment.OnFriendFeedFragmentInteractionListener;
+import edu.pietro.team.payhero.content.Stories;
+import edu.pietro.team.payhero.content.Stories.Story;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
+ * {@link RecyclerView.Adapter} that can display a {@link Story} and makes a call to the
+ * specified {@link OnFriendFeedFragmentInteractionListener}.
  */
 public class MyStoryRecyclerViewAdapter extends RecyclerView.Adapter<MyStoryRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private final List<Story> mValues;
+    private final OnFriendFeedFragmentInteractionListener mListener;
 
-    public MyStoryRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public MyStoryRecyclerViewAdapter(List<Story> items, OnFriendFeedFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -35,7 +35,7 @@ public class MyStoryRecyclerViewAdapter extends RecyclerView.Adapter<MyStoryRecy
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
+        holder.mStory = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).id);
         holder.mContentView.setText(mValues.get(position).content);
 
@@ -45,7 +45,7 @@ public class MyStoryRecyclerViewAdapter extends RecyclerView.Adapter<MyStoryRecy
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onFriendFeedFragmentInteraction(holder.mStory);
                 }
             }
         });
@@ -60,7 +60,7 @@ public class MyStoryRecyclerViewAdapter extends RecyclerView.Adapter<MyStoryRecy
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public DummyItem mItem;
+        public Story mStory;
 
         public ViewHolder(View view) {
             super(view);

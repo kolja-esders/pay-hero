@@ -17,7 +17,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
-        tools:context="edu.pietro.team.payhero.FeedFragment"
+        tools:context="edu.pietro.team.payhero.FriendFeedFragment"
         tools:listitem="@layout/fragment_story" />
 
     <ImageView

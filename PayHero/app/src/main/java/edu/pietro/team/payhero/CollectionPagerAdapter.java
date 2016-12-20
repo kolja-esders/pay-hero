@@ -14,7 +14,7 @@ public class CollectionPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int i) {
         if (i == 0) {
-            return FeedFragment.newInstance(1);
+            return FriendFeedFragment.newInstance(1);
         } else if (i == 1) {
             return ScanOverlayFragment.newInstance();
         } else if (i == 2) {
