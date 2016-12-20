@@ -14,8 +14,10 @@ public class CollectionPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int i) {
         if (i == 0) {
-            return ScanOverlayFragment.newInstance();
+            return FeedFragment.newInstance(1);
         } else if (i == 1) {
+            return ScanOverlayFragment.newInstance();
+        } else if (i == 2) {
             return PaymentInitFragment.newInstance();
         }
         return null;
@@ -23,7 +25,7 @@ public class CollectionPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 
 }
