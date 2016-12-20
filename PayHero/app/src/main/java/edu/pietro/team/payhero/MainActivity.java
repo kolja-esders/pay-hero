@@ -31,7 +31,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
-import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -39,11 +38,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
-import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.io.File;
@@ -207,18 +204,13 @@ public class MainActivity extends AppCompatActivity
     /**
      * An {@link ImageReader} that handles still image capture.
      */
-    private ImageReader mImageReader;
-
-    /**
-     * This is the output file for our picture.
-     */
-    private File mFile;
+    private ImageReader mStillImageReader;
 
     /**
      * This a callback object for the {@link ImageReader}. "onImageAvailable" will be called when a
      * still image is ready to be saved.
      */
-    private final ImageReader.OnImageAvailableListener mOnImageAvailableListener
+    private final ImageReader.OnImageAvailableListener mOnStillImageAvailableListener
             = new ImageReader.OnImageAvailableListener() {
 
         @Override
@@ -227,6 +219,30 @@ public class MainActivity extends AppCompatActivity
         }
 
     };
+
+    /**
+     * An {@link ImageReader} that handles preview images.
+     */
+    private ImageReader mPreviewImageReader;
+
+    /**
+     * This a callback object for the {@link ImageReader}. "onImageAvailable" will be called when a
+     * preview image is ready to be evaluated.
+     */
+    private final ImageReader.OnImageAvailableListener mOnPreviewImageAvailableListener
+            = new ImageReader.OnImageAvailableListener() {
+
+        @Override
+        public void onImageAvailable(ImageReader reader) {
+            //Log.d("PREVIEW", "image available");
+        }
+
+    };
+
+    /**
+     * This is the output file for our picture.
+     */
+    private File mFile;
 
     /**
      * {@link CaptureRequest.Builder} for the camera preview
@@ -408,10 +424,16 @@ public class MainActivity extends AppCompatActivity
                 Size largest = Collections.max(
                         Arrays.asList(map.getOutputSizes(ImageFormat.JPEG)),
                         new MainActivity.CompareSizesByArea());
-                mImageReader = ImageReader.newInstance(largest.getWidth(), largest.getHeight(),
+
+                mStillImageReader = ImageReader.newInstance(largest.getWidth(), largest.getHeight(),
                         ImageFormat.JPEG, /*maxImages*/2);
-                mImageReader.setOnImageAvailableListener(
-                        mOnImageAvailableListener, mBackgroundHandler);
+                mStillImageReader.setOnImageAvailableListener(
+                        mOnStillImageAvailableListener, mBackgroundHandler);
+
+                mPreviewImageReader = ImageReader.newInstance(largest.getWidth(), largest.getHeight(),
+                        ImageFormat.YUV_420_888, 30 * 600);
+                mPreviewImageReader.setOnImageAvailableListener(
+                        mOnPreviewImageAvailableListener, null);
 
                 mSensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
 
@@ -474,9 +496,13 @@ public class MainActivity extends AppCompatActivity
                 mCameraDevice.close();
                 mCameraDevice = null;
             }
-            if (null != mImageReader) {
-                mImageReader.close();
-                mImageReader = null;
+            if (null != mStillImageReader) {
+                mStillImageReader.close();
+                mStillImageReader = null;
+            }
+            if (null != mPreviewImageReader) {
+                mPreviewImageReader.close();
+                mPreviewImageReader = null;
             }
         } catch (InterruptedException e) {
             throw new RuntimeException("Interrupted while trying to lock camera closing.", e);
@@ -526,9 +552,11 @@ public class MainActivity extends AppCompatActivity
             mPreviewRequestBuilder
                     = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             mPreviewRequestBuilder.addTarget(surface);
+            mPreviewRequestBuilder.addTarget(mPreviewImageReader.getSurface());
 
             // Here, we create a CameraCaptureSession for camera preview.
-            mCameraDevice.createCaptureSession(Arrays.asList(surface, mImageReader.getSurface()),
+            mCameraDevice.createCaptureSession(Arrays.asList(surface,
+                    mStillImageReader.getSurface(), mPreviewImageReader.getSurface()),
                     new CameraCaptureSession.StateCallback() {
 
                         @Override
@@ -654,7 +682,7 @@ public class MainActivity extends AppCompatActivity
             // This is the CaptureRequest.Builder that we use to take a picture.
             final CaptureRequest.Builder captureBuilder =
                     mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
-            captureBuilder.addTarget(mImageReader.getSurface());
+            captureBuilder.addTarget(mStillImageReader.getSurface());
 
             // Use the same AE and AF modes as the preview.
             captureBuilder.set(CaptureRequest.CONTROL_AF_MODE,
