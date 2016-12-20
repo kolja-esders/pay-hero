@@ -58,7 +58,8 @@ import java.util.concurrent.TimeUnit;
 
 
 public class MainActivity extends AppCompatActivity
-        implements View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
+        implements View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback,
+        ScanOverlayFragment.OnScanOverlayFragmentInteractionListener{
 
     /**
      * Conversion from screen rotation to JPEG orientation.
@@ -132,6 +133,11 @@ public class MainActivity extends AppCompatActivity
         }
 
     };
+
+    /**
+     * Whether we are supposed to scan the camera for objects right now.
+     */
+    private Boolean mIsScanning = false;
 
     /**
      * ID of the current {@link CameraDevice}.
@@ -321,6 +327,11 @@ public class MainActivity extends AppCompatActivity
         }
 
     };
+
+    @Override
+    public void onScannerVisibilityChange(boolean isVisible) {
+        mIsScanning = isVisible;
+    }
 
     /**
      * Shows a {@link Toast} on the UI thread.
@@ -812,7 +823,6 @@ public class MainActivity extends AppCompatActivity
                     })
                     .create();
         }
-
     }
 
     /**
