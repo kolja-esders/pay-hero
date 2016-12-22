@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import edu.pietro.team.payhero.FriendFeedFragment.OnFriendFeedFragmentInteractionListener;
-import edu.pietro.team.payhero.content.Stories.Story;
+import edu.pietro.team.payhero.social.Stories.Story;
 
 import java.util.List;
 
@@ -35,8 +35,10 @@ public class StoryRecyclerViewAdapter extends RecyclerView.Adapter<StoryRecycler
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mStory = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mTitleView.setText(mValues.get(position).getBuyerName() + " just bought "
+                + mValues.get(position).getPurchasableName() + " from "
+                + mValues.get(position).getSellerName() + ".");
+        holder.mMessageView.setText(mValues.get(position).getMessage());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,20 +59,20 @@ public class StoryRecyclerViewAdapter extends RecyclerView.Adapter<StoryRecycler
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
+        public final TextView mTitleView;
+        public final TextView mMessageView;
         public Story mStory;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mTitleView = (TextView) view.findViewById(R.id.title);
+            mMessageView = (TextView) view.findViewById(R.id.message);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return "";
         }
     }
 }

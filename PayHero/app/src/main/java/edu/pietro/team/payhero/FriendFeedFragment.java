@@ -10,8 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import edu.pietro.team.payhero.content.Stories;
-import edu.pietro.team.payhero.content.Stories.Story;
+import edu.pietro.team.payhero.social.Stories;
+import edu.pietro.team.payhero.social.Stories.Story;
 
 /**
  * A fragment representing a list of Items.
@@ -71,7 +71,6 @@ public class FriendFeedFragment extends Fragment {
         }
         return view;
     }
-
 
     @Override
     public void onAttach(Context context) {
