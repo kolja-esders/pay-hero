@@ -5,8 +5,22 @@ import java.util.Currency;
 
 public class AmountOfMoney {
 
-    private Double mAmount;
+    private final Double mAmount;
 
-    private Currency mCurrency;
+    private final Currency mCurrency;
+
+    /**
+     * Defaulting to EUR as currency.
+     * @param amount of money
+     */
+    public AmountOfMoney(Double amount) {
+        mAmount = amount;
+        mCurrency = Currency.getInstance("EUR");
+    }
+
+    public AmountOfMoney(Double amount, Currency currency) {
+        mAmount = amount;
+        mCurrency = currency;
+    }
 
 }
