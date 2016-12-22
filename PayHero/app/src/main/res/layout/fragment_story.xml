@@ -4,7 +4,12 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:rowCount="2">
+    android:rowCount="2"
+    android:layout_marginBottom="4dp"
+    android:layout_marginTop="4dp"
+    android:elevation="2dp"
+    android:background="@android:color/background_light"
+    android:addStatesFromChildren="true">
 
     <ImageView
         android:layout_width="48dp"
