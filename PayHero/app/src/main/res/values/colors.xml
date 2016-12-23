@@ -5,4 +5,8 @@
     <color name="bgColorAmount">#d4d4d4</color>
     <color name="transparentBlack">#96000000</color>
     <color name="transparentWhite">#c8ffffff</color>
+    <color name="bgFeed">#e9ebee</color>
+    <color name="titleBlack">#242628</color>
+    <color name="subtitleGrey">#90949c</color>
+    <color name="contentBlack">#1d2129</color>
 </resources>

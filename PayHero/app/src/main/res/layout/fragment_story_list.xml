@@ -6,7 +6,7 @@
     android:fitsSystemWindows="true"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:background="@android:color/background_light">
+    android:background="@color/bgFeed">
     <android.support.v7.widget.RecyclerView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -17,10 +17,10 @@
         app:layoutManager="LinearLayoutManager"
         tools:context="edu.pietro.team.payhero.FriendFeedFragment"
         tools:listitem="@layout/fragment_story"
-        android:paddingTop="4dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:paddingBottom="4dp"
+        android:paddingTop="6dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingBottom="6dp"
         android:layout_marginBottom="48dp"
         android:layout_marginTop="24dp"
         android:clipToPadding="false"/>
