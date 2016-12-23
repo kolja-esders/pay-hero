@@ -37,15 +37,15 @@ public class ValidationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_validation);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setContentView(R.layout.activity_validation);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         ((Button) findViewById(R.id.button)).setVisibility(View.VISIBLE);
         ((ProgressBar) findViewById(R.id.progressTransaction)).setVisibility(View.INVISIBLE);
 
-        ((RelativeLayout) findViewById(R.id.content_validation)).requestFocus();
+        //((RelativeLayout) findViewById(R.id.content_validation)).requestFocus();
 
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
         Button okay = (Button) findViewById(R.id.button);
         okay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,7 +53,7 @@ public class ValidationActivity extends AppCompatActivity {
                 // Hide button and show loading
                 ((Button) findViewById(R.id.button)).setVisibility(View.INVISIBLE);
                 ((ProgressBar) findViewById(R.id.progressTransaction)).setVisibility(View.VISIBLE);
-                ((RelativeLayout) findViewById(R.id.content_validation)).requestFocus();
+                //((RelativeLayout) findViewById(R.id.content_validation)).requestFocus();
 
 
                 mName = ((EditText)findViewById(R.id.nameEdit)).getText().toString();
