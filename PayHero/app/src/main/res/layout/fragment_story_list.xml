@@ -7,6 +7,26 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:background="@color/bgFeed">
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="24dp"
+        app:srcCompat="@color/testColor"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/status_bar_background" />
+
+    <Toolbar
+        android:id="@+id/feed_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/testColor"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:layout_marginTop="24dp" />
+
     <android.support.v7.widget.RecyclerView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -22,7 +42,7 @@
         android:paddingRight="12dp"
         android:paddingBottom="6dp"
         android:layout_marginBottom="48dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="80dp"
         android:clipToPadding="false"/>
 
     <ImageView

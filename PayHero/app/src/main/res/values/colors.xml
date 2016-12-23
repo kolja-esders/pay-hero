@@ -9,4 +9,6 @@
     <color name="titleBlack">#242628</color>
     <color name="subtitleGrey">#90949c</color>
     <color name="contentBlack">#1d2129</color>
+    <color name="bgFeedToolbar">#4267b2</color>
+    <color name="testColor">#b71c1c</color>
 </resources>

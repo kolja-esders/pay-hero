@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toolbar;
 
 import edu.pietro.team.payhero.social.Stories;
 import edu.pietro.team.payhero.social.Stories.Story;
@@ -58,6 +59,10 @@ public class FriendFeedFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_story_list, container, false);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.story_list);
+
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.feed_toolbar);
+        getActivity().setActionBar(toolbar);
+        toolbar.setTitle("Feed");
 
         // Set the adapter
         if (recyclerView != null) {
