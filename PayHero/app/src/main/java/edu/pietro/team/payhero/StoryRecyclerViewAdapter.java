@@ -35,9 +35,7 @@ public class StoryRecyclerViewAdapter extends RecyclerView.Adapter<StoryRecycler
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mStory = mValues.get(position);
-        holder.mTitleView.setText(mValues.get(position).getBuyerName() + " just bought "
-                + mValues.get(position).getPurchasableName() + " from "
-                + mValues.get(position).getSellerName() + ".");
+        holder.mTitleView.setText(mValues.get(position).getBuyerName());
         holder.mMessageView.setText(mValues.get(position).getMessage());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
