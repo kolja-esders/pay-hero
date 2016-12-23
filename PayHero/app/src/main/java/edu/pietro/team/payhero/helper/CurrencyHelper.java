@@ -30,7 +30,7 @@ public class CurrencyHelper {
             }
         });
 
-        return new AmountOfMoney();
+        return null;
     }
 
 }
