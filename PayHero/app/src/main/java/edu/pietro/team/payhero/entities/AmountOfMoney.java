@@ -5,11 +5,17 @@ import java.util.Currency;
 
 public class AmountOfMoney {
 
-    private Double mAmount;
+    private final Double mAmount;
 
-    private Currency mCurrency;
+    private final Currency mCurrency;
 
-    public AmountOfMoney() {
+    /**
+     * Defaulting to EUR as currency.
+     * @param amount of money
+     */
+    public AmountOfMoney(Double amount) {
+        mAmount = amount;
+        mCurrency = Currency.getInstance("EUR");
     }
 
     public AmountOfMoney(Double amount, Currency currency) {
@@ -21,15 +27,7 @@ public class AmountOfMoney {
         return mAmount;
     }
 
-    public void setAmount(Double amount) {
-        this.mAmount = amount;
-    }
-
     public Currency getCurrency() {
         return mCurrency;
-    }
-
-    public void setCurrency(Currency currency) {
-        this.mCurrency = currency;
     }
 }

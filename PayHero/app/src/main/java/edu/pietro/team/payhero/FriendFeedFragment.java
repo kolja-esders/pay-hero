@@ -9,41 +9,58 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toolbar;
 
-import edu.pietro.team.payhero.dummy.DummyContent;
-import edu.pietro.team.payhero.dummy.DummyContent.DummyItem;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
-import java.util.List;
+import edu.pietro.team.payhero.event.FeedFilterClicked;
+import edu.pietro.team.payhero.social.Stories;
+import edu.pietro.team.payhero.social.Stories.Story;
 
 /**
  * A fragment representing a list of Items.
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
+ * Activities containing this fragment MUST implement the {@link OnFriendFeedFragmentInteractionListener}
  * interface.
  */
-public class FeedFragment extends Fragment {
+public class FriendFeedFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
-    private OnListFragmentInteractionListener mListener;
+    private OnFriendFeedFragmentInteractionListener mListener;
+
+    private RecyclerView.Adapter mAdapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public FeedFragment() {
+    public FriendFeedFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static FeedFragment newInstance(int columnCount) {
-        FeedFragment fragment = new FeedFragment();
+    public static FriendFeedFragment newInstance(int columnCount) {
+        FriendFeedFragment fragment = new FriendFeedFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -59,21 +76,25 @@ public class FeedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_story_list, container, false);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.story_list);
+
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.feed_toolbar);
+        getActivity().setActionBar(toolbar);
+        toolbar.setTitle("Feed");
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+        if (recyclerView != null) {
+            Context context = recyclerView.getContext();
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyStoryRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            mAdapter = new StoryRecyclerViewAdapter(Stories.DISPLAYED_ITEMS, mListener);
+            recyclerView.setAdapter(mAdapter);
         }
         return view;
     }
-
 
     @Override
     public void onAttach(Context context) {
@@ -92,6 +113,16 @@ public class FeedFragment extends Fragment {
         mListener = null;
     }
 
+    @Subscribe
+    public void onEvent(FeedFilterClicked event) {
+        if (event.showOnlyPersonalStories) {
+            Stories.filterPersonalStories();
+        } else {
+            Stories.filterReset();
+        }
+        mAdapter.notifyDataSetChanged();
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -102,8 +133,7 @@ public class FeedFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+    public interface OnFriendFeedFragmentInteractionListener {
+        void onFriendFeedFragmentInteraction(Story story);
     }
 }

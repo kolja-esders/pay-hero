@@ -1,20 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:rowCount="2"
+    android:layout_marginBottom="6dp"
+    android:padding="8dp"
+    android:layout_marginTop="6dp"
+    android:elevation="2dp"
+    android:background="@android:color/background_light"
+    android:addStatesFromChildren="true">
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:srcCompat="@drawable/kolja"
+        android:id="@+id/profileImage"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
 
     <TextView
-        android:id="@+id/id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="18dp"
+        android:layout_marginTop="2dp"
+        android:gravity="center_vertical"
+        android:layout_marginStart="4dp"
+        android:textStyle="normal|bold"
+        android:layout_toEndOf="@id/profileImage"
+        android:layout_alignTop="@id/profileImage"
+        android:textColor="@color/titleBlack" />
 
     <TextView
-        android:id="@+id/content"
+        android:text="12/19/2016"
         android:layout_width="wrap_content"
+        android:layout_height="18dp"
+        android:layout_marginBottom="2dp"
+        android:textSize="12sp"
+        android:id="@+id/subtitle"
+        android:layout_marginStart="4dp"
+        android:layout_toEndOf="@id/profileImage"
+        android:layout_alignBottom="@id/profileImage"
+        android:gravity="center_vertical"
+        android:textColor="@color/subtitleGrey" />
+
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
-</LinearLayout>
+        android:text="test"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="48dp"
+        android:textColor="@color/contentBlack" />
+
+</RelativeLayout>
