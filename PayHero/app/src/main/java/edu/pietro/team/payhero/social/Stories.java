@@ -15,7 +15,9 @@ public class Stories {
     /**
      * An array of sample (dummy) items.
      */
-    public static final List<Story> ITEMS = new ArrayList<>();
+    public static final List<Story> DISPLAYED_ITEMS = new ArrayList<>();
+
+    public static final List<Story> ALL_ITEMS = new ArrayList<>();
 
     private static final int COUNT = 25;
 
@@ -38,10 +40,27 @@ public class Stories {
             Purchase p = new Purchase(buyer, seller, purchasable, amount, c);
             addItem(createDummyItem(p, messages[ThreadLocalRandom.current().nextInt(messages.length)]));
         }
+        DISPLAYED_ITEMS.addAll(ALL_ITEMS);
+    }
+
+    // TODO(kolja): Could change later on to void filter(Filter.ALL_STORIES).
+    public static void filterReset() {
+        DISPLAYED_ITEMS.clear();
+        DISPLAYED_ITEMS.addAll(ALL_ITEMS);
+    }
+
+    // TODO(kolja): Could change later on to void filter(Filter.PERSONAL_STORIES).
+    public static void filterPersonalStories() {
+        DISPLAYED_ITEMS.clear();
+        for (Story s : ALL_ITEMS) {
+            if (s.getBuyerName().equals("Kolja")) {
+                DISPLAYED_ITEMS.add(s);
+            }
+        }
     }
 
     private static void addItem(Story item) {
-        ITEMS.add(item);
+        ALL_ITEMS.add(item);
     }
 
     private static Story createDummyItem(Purchase purchase, String message) {
