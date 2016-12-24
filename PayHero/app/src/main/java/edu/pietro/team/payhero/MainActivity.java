@@ -40,11 +40,16 @@ import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -55,6 +60,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+
+import edu.pietro.team.payhero.event.FeedFilterClicked;
+import edu.pietro.team.payhero.social.Stories;
 
 
 public class MainActivity extends AppCompatActivity
@@ -133,6 +141,8 @@ public class MainActivity extends AppCompatActivity
         }
 
     };
+
+    public Boolean mFeedFilterIsPublic = true;
 
     /**
      * Whether we are supposed to scan the camera for objects right now.
@@ -240,12 +250,6 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-        mTextureView = (TextureView) findViewById(R.id.preview);
     }
 
     private void requestCameraPermission() {
@@ -542,6 +546,36 @@ public class MainActivity extends AppCompatActivity
         mViewPager.setOffscreenPageLimit(2);
         mViewPager.setCurrentItem(1);
         mTextureView = (TextureView) findViewById(R.id.preview);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.friend_feed, menu);
+        if (menu.size() > 0) {
+            menu.getItem(0).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_favorite:
+                String newTitle;
+                if (mFeedFilterIsPublic) {
+                    newTitle = "Show all purchases";
+                } else {
+                    newTitle = "Show your purchases";
+                }
+                mFeedFilterIsPublic ^= true;
+                EventBus.getDefault().post(new FeedFilterClicked(!mFeedFilterIsPublic));
+                item.setTitle(newTitle);
+                return true;
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

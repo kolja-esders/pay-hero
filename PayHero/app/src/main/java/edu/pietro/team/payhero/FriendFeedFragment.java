@@ -11,6 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toolbar;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import edu.pietro.team.payhero.event.FeedFilterClicked;
 import edu.pietro.team.payhero.social.Stories;
 import edu.pietro.team.payhero.social.Stories.Story;
 
@@ -28,6 +32,8 @@ public class FriendFeedFragment extends Fragment {
     private int mColumnCount = 1;
     private OnFriendFeedFragmentInteractionListener mListener;
 
+    private RecyclerView.Adapter mAdapter;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -43,6 +49,18 @@ public class FriendFeedFragment extends Fragment {
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -72,7 +90,8 @@ public class FriendFeedFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new StoryRecyclerViewAdapter(Stories.ITEMS, mListener));
+            mAdapter = new StoryRecyclerViewAdapter(Stories.DISPLAYED_ITEMS, mListener);
+            recyclerView.setAdapter(mAdapter);
         }
         return view;
     }
@@ -92,6 +111,16 @@ public class FriendFeedFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Subscribe
+    public void onEvent(FeedFilterClicked event) {
+        if (event.showOnlyPersonalStories) {
+            Stories.filterPersonalStories();
+        } else {
+            Stories.filterReset();
+        }
+        mAdapter.notifyDataSetChanged();
     }
 
     /**
