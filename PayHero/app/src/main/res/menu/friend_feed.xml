@@ -3,6 +3,5 @@
     xmlns:app="http://schemas.android.com/apk/res-auto" >
     <item
         android:id="@+id/action_favorite"
-        android:title="Show personal purchases"
-        android:icon="@drawable/ic_only_me_48dp" />
+        android:title="Show your purchases" />
 </menu>
