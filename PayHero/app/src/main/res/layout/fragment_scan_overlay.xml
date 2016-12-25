@@ -3,19 +3,14 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <TextView
-        android:text="PayHero"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/logo"
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:srcCompat="@mipmap/ic_pay_hero_logo"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="36dp"
-        android:textColor="@color/transparentWhite"
-        android:textSize="28sp"
-        android:letterSpacing="-0.05"
-        android:shadowRadius="3"
-        android:shadowColor="@color/transparentBlack" />
+        android:layout_marginTop="24dp"
+        android:id="@+id/payhero_logo" />
 
     <TextView
         android:text="Touch to pay"
@@ -35,9 +30,9 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="28dp"
         android:id="@+id/processing"
-        android:layout_alignBottom="@+id/logo"
+        android:layout_alignBottom="@+id/payhero_logo"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"/>
 
