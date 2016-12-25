@@ -27,7 +27,6 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
 
         <service
@@ -35,20 +34,17 @@
             android:exported="false" />
 
         <activity
-            android:name=".ScanActivity"
-            android:label="@string/title_activity_scan"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-
-        <activity
             android:name=".ValidationActivity"
             android:label="@string/title_activity_validation"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".PaymentSuccessActivity"
-            android:label="@string/title_activity_success"></activity>
+            android:label="@string/title_activity_success" />
+
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="barcode,face, ocr" />
     </application>
 
 </manifest>
