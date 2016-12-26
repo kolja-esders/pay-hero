@@ -1,4 +1,4 @@
-package edu.pietro.team.payhero;
+package edu.pietro.team.payhero.vision;
 
 import android.content.Context;
 import android.content.res.Configuration;

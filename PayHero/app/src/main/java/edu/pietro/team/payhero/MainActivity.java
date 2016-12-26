@@ -1,15 +1,9 @@
 package edu.pietro.team.payhero;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
-import android.graphics.SurfaceTexture;
-import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraCaptureSession;
-import android.hardware.camera2.CameraDevice;
-import android.hardware.camera2.CaptureRequest;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
@@ -18,26 +12,24 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.Surface;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.TextureView;
-import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.CameraSource;
+import com.google.android.gms.vision.MultiDetector;
 import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.face.FaceDetector;
 import com.google.android.gms.vision.face.LargestFaceFocusingProcessor;
+import com.google.android.gms.vision.text.TextRecognizer;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
-import java.util.Arrays;
 
+import edu.pietro.team.payhero.vision.CameraSourcePreview;
+import edu.pietro.team.payhero.vision.FaceTracker;
 import edu.pietro.team.payhero.event.FeedFilterClicked;
+import edu.pietro.team.payhero.vision.OcrDetectionProcessor;
 
 
 public class MainActivity extends AppCompatActivity
@@ -116,6 +108,8 @@ public class MainActivity extends AppCompatActivity
      */
     private void createCameraSource() {
         Context context = getApplicationContext();
+
+        // Face detection
         FaceDetector faceDetector = new FaceDetector.Builder(context)
                 .setProminentFaceOnly(true)
                 .setClassificationType(FaceDetector.ALL_CLASSIFICATIONS)
@@ -126,10 +120,22 @@ public class MainActivity extends AppCompatActivity
         if (!faceDetector.isOperational()) {
             Log.w(TAG, "Face detector dependencies are not yet available.");
         }
+
+        // OCR
+        TextRecognizer textDetector = new TextRecognizer.Builder(context).build();
+        textDetector.setProcessor(new OcrDetectionProcessor());
+
+        // Merge detectors
+        MultiDetector multiDetector = new MultiDetector.Builder()
+                .add(faceDetector)
+                .add(textDetector)
+                .build();
+
+
         Point displaySize = new Point();
         getWindowManager().getDefaultDisplay().getRealSize(displaySize);
-        mCameraSource = new CameraSource.Builder(getApplicationContext(), faceDetector)
-                .setFacing(CameraSource.CAMERA_FACING_FRONT)
+        mCameraSource = new CameraSource.Builder(getApplicationContext(), multiDetector)
+                .setFacing(CameraSource.CAMERA_FACING_BACK)
                 .setAutoFocusEnabled(true)
                 .setRequestedFps(30.0f)
                 .setRequestedPreviewSize(displaySize.y, displaySize.x)
