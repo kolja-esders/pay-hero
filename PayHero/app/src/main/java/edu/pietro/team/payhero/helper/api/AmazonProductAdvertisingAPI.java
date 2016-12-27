@@ -41,7 +41,7 @@ public class AmazonProductAdvertisingAPI {
 
     private static final String ENDPOINT = "webservices.amazon.de";
 
-    public static Item findByEAN13(String ean) {
+    public static Item findByEAN(String ean) {
         AmazonSignedRequestsHelper helper = null;
         try {
              helper = AmazonSignedRequestsHelper.getInstance(ENDPOINT, AWS_ACCESS_KEY_ID, AWS_SECRET_KEY);

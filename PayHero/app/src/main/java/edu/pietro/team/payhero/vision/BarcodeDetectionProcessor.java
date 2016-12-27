@@ -21,7 +21,7 @@ public class BarcodeDetectionProcessor implements Detector.Processor<Barcode> {
             Barcode item = items.valueAt(i);
             Log.d(TAG, item.displayValue);
 
-            Item foundItem = AmazonProductAdvertisingAPI.findByEAN13(item.displayValue);
+            Item foundItem = AmazonProductAdvertisingAPI.findByEAN(item.displayValue);
             if (foundItem != null) {
                 Log.d(TAG, "Found an item on amazon.de: " + foundItem.toString());
             }
