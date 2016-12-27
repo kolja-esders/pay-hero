@@ -26,8 +26,8 @@ public class Stories {
                 new User("Maxim", "ZZZ"), new User("Random Dude", "ABC")};
         String[] messages = {"Fuck yeah!", "Dabbing all the way O_o", "#teampietro",
                 "Du bist die Schlampe, ich bin normaler Mensch!!!", "AIAIAIAIIII"};
-        Purchasable[] stuff = {new Purchasable("Dopen shit", users[0]),
-                new Purchasable("Fitz Backpacks", users[2])};
+        Item[] stuff = {new Item("Dopen shit"),
+                new Item("Fitz Backpacks")};
 
         for (int i = 1; i <= COUNT; i++) {
             Calendar c = GregorianCalendar.getInstance();
@@ -36,7 +36,7 @@ public class Stories {
             int randUserIndex = ThreadLocalRandom.current().nextInt(users.length);
             User buyer = users[randUserIndex];
             User seller = users[(randUserIndex + 1) % users.length];
-            Purchasable purchasable = stuff[ThreadLocalRandom.current().nextInt(stuff.length)];
+            Item purchasable = stuff[ThreadLocalRandom.current().nextInt(stuff.length)];
             Purchase p = new Purchase(buyer, seller, purchasable, amount, c);
             addItem(createDummyItem(p, messages[ThreadLocalRandom.current().nextInt(messages.length)]));
         }
@@ -90,7 +90,7 @@ public class Stories {
         }
 
         public String getPurchasableName() {
-            return mPurchase.getPurchasable().getName();
+            return mPurchase.getItem().name;
         }
 
         public String getFormattedDate() {
