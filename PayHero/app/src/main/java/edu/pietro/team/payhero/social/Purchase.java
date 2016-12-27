@@ -11,18 +11,15 @@ public class Purchase {
 
     private final User mSeller;
 
-    private final Purchasable mPurchasable;
-
-    private final AmountOfMoney mPrice;
+    private final Item mItem;
 
     private final Calendar mTimeOfPurchase;
 
-    public Purchase(User buyer, User seller, Purchasable purchasable, AmountOfMoney price,
+    public Purchase(User buyer, User seller, Item item, AmountOfMoney price,
                     Calendar timeOfPurchase) {
         mBuyer = buyer;
         mSeller = seller;
-        mPurchasable = purchasable;
-        mPrice = price;
+        mItem = item;
         mTimeOfPurchase = timeOfPurchase;
     }
 
@@ -34,12 +31,8 @@ public class Purchase {
         return mSeller;
     }
 
-    public final Purchasable getPurchasable() {
-        return mPurchasable;
-    }
-
-    public final AmountOfMoney getPrice() {
-        return mPrice;
+    public final Item getItem() {
+        return mItem;
     }
 
     public final Calendar getTimeOfPurchase() {
