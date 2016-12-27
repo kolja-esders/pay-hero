@@ -18,6 +18,8 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.MultiDetector;
 import com.google.android.gms.vision.MultiProcessor;
+import com.google.android.gms.vision.barcode.Barcode;
+import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.google.android.gms.vision.face.FaceDetector;
 import com.google.android.gms.vision.face.LargestFaceFocusingProcessor;
 import com.google.android.gms.vision.text.TextRecognizer;
@@ -26,6 +28,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 
+import edu.pietro.team.payhero.vision.BarcodeDetectionProcessor;
 import edu.pietro.team.payhero.vision.CameraSourcePreview;
 import edu.pietro.team.payhero.vision.FaceTracker;
 import edu.pietro.team.payhero.event.FeedFilterClicked;
@@ -125,10 +128,17 @@ public class MainActivity extends AppCompatActivity
         TextRecognizer textDetector = new TextRecognizer.Builder(context).build();
         textDetector.setProcessor(new OcrDetectionProcessor());
 
+        // OCR
+        BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(context)
+                .setBarcodeFormats(Barcode.EAN_13 | Barcode.QR_CODE)
+                .build();
+        barcodeDetector.setProcessor(new BarcodeDetectionProcessor());
+
         // Merge detectors
         MultiDetector multiDetector = new MultiDetector.Builder()
                 .add(faceDetector)
                 .add(textDetector)
+                .add(barcodeDetector)
                 .build();
 
 
