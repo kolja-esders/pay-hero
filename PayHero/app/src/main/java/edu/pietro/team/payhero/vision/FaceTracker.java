@@ -12,16 +12,13 @@ public class FaceTracker extends Tracker<Face> {
     private final static String TAG = "FaceTracker";
 
     public void onNewItem(int id, Face face) {
-        Log.i(TAG, "Face detected :o");
+        Log.i(TAG, "Face entered.");
     }
 
     public void onUpdate(Detector.Detections<Face> detections, Face face) {
-        if (face.getIsSmilingProbability() > 0.75) {
-            Log.i(TAG, "Keep smiling!");
-        }
     }
 
     public void onDone() {
-        Log.i(TAG, "Don't leave!");
+        Log.i(TAG, "Face left.");
     }
 }
