@@ -30,4 +30,9 @@ public class AmountOfMoney {
     public Currency getCurrency() {
         return mCurrency;
     }
+
+    @Override
+    public String toString() {
+        return mAmount.toString() + " " + mCurrency.toString();
+    }
 }

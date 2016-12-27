@@ -6,6 +6,9 @@ import android.util.SparseArray;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 
+import edu.pietro.team.payhero.helper.api.AmazonProductAdvertisingAPI;
+import edu.pietro.team.payhero.social.Item;
+
 
 public class BarcodeDetectionProcessor implements Detector.Processor<Barcode> {
 
@@ -17,6 +20,11 @@ public class BarcodeDetectionProcessor implements Detector.Processor<Barcode> {
         for (int i = 0; i < items.size(); ++i) {
             Barcode item = items.valueAt(i);
             Log.d(TAG, item.displayValue);
+
+            Item foundItem = AmazonProductAdvertisingAPI.findByEAN13(item.displayValue);
+            if (foundItem != null) {
+                Log.d(TAG, "Found an item on amazon.de: " + foundItem.toString());
+            }
         }
     }
 

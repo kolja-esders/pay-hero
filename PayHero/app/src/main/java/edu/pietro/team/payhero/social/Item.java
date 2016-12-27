@@ -35,4 +35,9 @@ public class Item {
         this.name = name;
     }
 
+    @Override
+    public String toString() {
+        return String.format("name = %s, price = %s, producer = %s]",
+                this.name, this.price.toString(), this.producer);
+    }
 }
