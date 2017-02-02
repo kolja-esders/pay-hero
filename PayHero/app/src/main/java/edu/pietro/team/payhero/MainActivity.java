@@ -16,28 +16,20 @@ import android.view.MenuItem;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.CameraSource;
-import com.google.android.gms.vision.MultiDetector;
-import com.google.android.gms.vision.MultiProcessor;
-import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.google.android.gms.vision.face.FaceDetector;
-import com.google.android.gms.vision.face.LargestFaceFocusingProcessor;
-import com.google.android.gms.vision.text.TextRecognizer;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 
-import edu.pietro.team.payhero.vision.BarcodeDetectionProcessor;
+import edu.pietro.team.payhero.event.OnImageCaptureRequested;
 import edu.pietro.team.payhero.vision.CameraSourcePreview;
-import edu.pietro.team.payhero.vision.FaceTracker;
 import edu.pietro.team.payhero.event.FeedFilterClicked;
-import edu.pietro.team.payhero.vision.OcrDetectionProcessor;
 
 
-public class MainActivity extends AppCompatActivity
-        implements ActivityCompat.OnRequestPermissionsResultCallback,
-        ScanOverlayFragment.OnScanOverlayFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     /**
      * Tag for the {@link Log}.
@@ -50,21 +42,11 @@ public class MainActivity extends AppCompatActivity
 
     private Boolean mFeedFilterIsPublic = true;
 
-    /**
-     * Whether we are supposed to scan the camera for objects right now.
-     */
-    private Boolean mIsScanning = false;
-
     private CameraSourcePreview mPreview;
 
     private CollectionPagerAdapter mCollectionPagerAdapter;
 
     private ViewPager mViewPager;
-
-    @Override
-    public void onScannerVisibilityChange(boolean isVisible) {
-        mIsScanning = isVisible;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,51 +82,20 @@ public class MainActivity extends AppCompatActivity
         if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.CAMERA)) {
             ActivityCompat.requestPermissions(this, permissions, RC_HANDLE_CAMERA_PERM);
-            return;
         }
     }
 
     /**
-     * Creates and starts the camera.  Note that this uses a higher resolution in comparison
-     * to other detection examples to enable the barcode detector to detect small barcodes
-     * at long distances.
+     * Creates and starts the camera.
      */
     private void createCameraSource() {
-        Context context = getApplicationContext();
-
-        // Face detection
-        FaceDetector faceDetector = new FaceDetector.Builder(context)
-                .setProminentFaceOnly(true)
-                .setClassificationType(FaceDetector.ALL_CLASSIFICATIONS)
-                .build();
-        faceDetector.setProcessor(
-                new LargestFaceFocusingProcessor.Builder(faceDetector, new FaceTracker())
-                        .build());
-        if (!faceDetector.isOperational()) {
-            Log.w(TAG, "Face detector dependencies are not yet available.");
-        }
-
-        // OCR
-        TextRecognizer textDetector = new TextRecognizer.Builder(context).build();
-        textDetector.setProcessor(new OcrDetectionProcessor());
-
-        // OCR
-        BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(context)
-                .setBarcodeFormats(Barcode.EAN_13 | Barcode.QR_CODE)
-                .build();
-        barcodeDetector.setProcessor(new BarcodeDetectionProcessor());
-
-        // Merge detectors
-        MultiDetector multiDetector = new MultiDetector.Builder()
-                .add(faceDetector)
-                .add(textDetector)
-                .add(barcodeDetector)
-                .build();
-
-
+        Context ctx = getApplicationContext();
         Point displaySize = new Point();
         getWindowManager().getDefaultDisplay().getRealSize(displaySize);
-        mCameraSource = new CameraSource.Builder(getApplicationContext(), multiDetector)
+
+        FaceDetector faceDetector = new FaceDetector.Builder(ctx).build();
+
+        mCameraSource = new CameraSource.Builder(ctx, faceDetector)
                 .setFacing(CameraSource.CAMERA_FACING_BACK)
                 .setAutoFocusEnabled(true)
                 .setRequestedFps(30.0f)
@@ -202,6 +153,18 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         startCameraSource();
@@ -220,4 +183,11 @@ public class MainActivity extends AppCompatActivity
             mCameraSource.release();
         }
     }
+
+    @Subscribe
+    public void onMessageEvent(OnImageCaptureRequested e) {
+        Log.d("EVENT_BUS", "Image capture requested.");
+
+        mCameraSource.takePicture(null, null);
+    };
 }

@@ -9,7 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.greenrobot.eventbus.EventBus;
+
+import edu.pietro.team.payhero.event.OnImageCaptureRequested;
+
 public class ScanOverlayFragment extends Fragment {
+
+    private EventBus mDefaultEventBus;
 
     private OnScanOverlayFragmentInteractionListener mListener;
 
@@ -27,13 +33,28 @@ public class ScanOverlayFragment extends Fragment {
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mDefaultEventBus = EventBus.getDefault();
+
+        View scanOverlay = getActivity().findViewById(R.id.scan_overlay);
+        scanOverlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mDefaultEventBus.post(new OnImageCaptureRequested());
+            }
+        });
+    }
+
+    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         if (activity instanceof OnScanOverlayFragmentInteractionListener) {
             mListener = (OnScanOverlayFragmentInteractionListener) activity;
         } else {
-            throw new RuntimeException(activity.toString()
-                    + " must implement OnScanOverlayFragmentInteractionListener");
+            /*throw new RuntimeException(activity.toString()
+                    + " must implement OnScanOverlayFragmentInteractionListener");*/
         }
     }
 
@@ -43,8 +64,8 @@ public class ScanOverlayFragment extends Fragment {
         if (context instanceof OnScanOverlayFragmentInteractionListener) {
             mListener = (OnScanOverlayFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnScanOverlayFragmentInteractionListener");
+            /*throw new RuntimeException(context.toString()
+                    + " must implement OnScanOverlayFragmentInteractionListener");*/
         }
     }
 
