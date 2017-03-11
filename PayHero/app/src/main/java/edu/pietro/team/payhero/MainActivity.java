@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         Point displaySize = new Point();
         getWindowManager().getDefaultDisplay().getRealSize(displaySize);
 
+        // We need to provide at least one detector to the camera :x
         FaceDetector faceDetector = new FaceDetector.Builder(ctx).build();
 
         mCameraSource = new CameraSource.Builder(ctx, faceDetector)
@@ -188,6 +189,11 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     public void onMessageEvent(OnImageCaptureRequested e) {
         Log.d("EVENT_BUS", "Image capture requested.");
 
-        mCameraSource.takePicture(null, null);
+        mCameraSource.takePicture(null, new CameraSource.PictureCallback() {
+            @Override
+            public void onPictureTaken(byte[] bytes) {
+                // @David: Da ist das IMG :)
+            }
+        });
     };
 }
