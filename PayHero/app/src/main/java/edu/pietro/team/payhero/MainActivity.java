@@ -3,8 +3,13 @@ package edu.pietro.team.payhero;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -12,21 +17,42 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.google.android.gms.vision.face.FaceDetector;
+import com.google.android.gms.vision.face.LargestFaceFocusingProcessor;
 
+import org.apache.commons.io.IOUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import edu.pietro.team.payhero.event.OnImageCaptureRequested;
 import edu.pietro.team.payhero.vision.CameraSourcePreview;
 import edu.pietro.team.payhero.event.FeedFilterClicked;
+import edu.pietro.team.payhero.vision.FaceTracker;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 
 public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
@@ -95,6 +121,10 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
         // We need to provide at least one detector to the camera :x
         FaceDetector faceDetector = new FaceDetector.Builder(ctx).build();
+
+        faceDetector.setProcessor(
+                               new LargestFaceFocusingProcessor.Builder(faceDetector, new FaceTracker())
+                                                .build());
 
         mCameraSource = new CameraSource.Builder(ctx, faceDetector)
                 .setFacing(CameraSource.CAMERA_FACING_BACK)
@@ -185,15 +215,97 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         }
     }
 
+
+
     @Subscribe
     public void onMessageEvent(OnImageCaptureRequested e) {
         Log.d("EVENT_BUS", "Image capture requested.");
 
         mCameraSource.takePicture(null, new CameraSource.PictureCallback() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
-            public void onPictureTaken(byte[] bytes) {
+            public void onPictureTaken(final byte[] bytes) {
                 // @David: Da ist das IMG :)
+
+                Log.d("xP", "Image captured !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+
+                Thread thread = new Thread(new Runnable(){
+                    @Override
+                    public void run() {
+                        try {
+
+                            String url = "http://1027cf3f.ngrok.io/obrec/";
+                            URL obj = new URL(url);
+
+
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes , 0, bytes.length);
+                            bitmap = Bitmap.createScaledBitmap(bitmap, 227 , 227, false );
+
+                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 80, stream);
+                            byte[] byteArray = stream.toByteArray();
+
+
+                            long timeNow = System.currentTimeMillis();
+
+                            String filename = timeNow + ".png";
+                            FileOutputStream outputStream;
+
+                            File file = File.createTempFile(filename, null, getCacheDir());
+
+
+                            try {
+                                outputStream = new FileOutputStream(file);
+                                outputStream.write(byteArray);
+                                outputStream.close();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                            final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
+
+                            RequestBody req = new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart("userid", "8457851245")
+                                    .addFormDataPart("file",filename, RequestBody.create(MEDIA_TYPE_PNG, file)).build();
+
+                            Request request = new Request.Builder()
+                                    .url(url)
+                                    .post(req)
+                                    .build();
+
+                            OkHttpClient client = new OkHttpClient();
+                            Response response = client.newCall(request).execute();
+
+                            String prdResp = response.body().string();
+
+                            Log.d("response", "uploadImage:"+prdResp);
+
+                            final JSONObject jsonProd = new JSONObject(prdResp);
+
+                            
+                            Context context = getApplicationContext();
+
+                            MainActivity.this.runOnUiThread(new Runnable() {
+                                public void run() {
+                                    try {
+                                        Toast.makeText(MainActivity.this, jsonProd.getString("name"), Toast.LENGTH_LONG).show();
+                                    } catch (JSONException e1) {
+                                        e1.printStackTrace();
+                                    }
+                                }
+                            });
+
+
+                        }
+                        catch(Exception x){
+                            x.printStackTrace();
+                        }
+                    }
+                });
+                thread.start();
+
             }
+
         });
     };
 }
