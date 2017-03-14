@@ -39,6 +39,7 @@ import edu.pietro.team.payhero.vision.CameraSourcePreview;
 import edu.pietro.team.payhero.event.FeedFilterClicked;
 import edu.pietro.team.payhero.vision.FaceTracker;
 import edu.pietro.team.payhero.vision.FirstFocusingProcessor;
+import edu.pietro.team.payhero.vision.ImageFetchingDetector;
 import edu.pietro.team.payhero.vision.OcrDetectionProcessor;
 
 
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     private static final String TAG = "MainActivity";
 
     private static final int RC_HANDLE_CAMERA_PERM = 2;
+    private static final int RC_HANDLE_STORAGE_PERM = 3;
 
     private CameraSource mCameraSource;
 
@@ -71,6 +73,12 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        String[] permissions = {
+                "android.permission.READ_EXTERNAL_STORAGE",
+                "android.permission.WRITE_EXTERNAL_STORAGE"
+        };
+        ActivityCompat.requestPermissions(this, permissions, RC_HANDLE_STORAGE_PERM);
 
         mCollectionPagerAdapter =
                 new CollectionPagerAdapter(getFragmentManager());
@@ -112,10 +120,13 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         Point displaySize = new Point();
         getWindowManager().getDefaultDisplay().getRealSize(displaySize);
 
+        // dummy detector saving the last frame in order to send it to Microsoft in case of face detection
+        ImageFetchingDetector imageFetchingDetector = new ImageFetchingDetector();
+
         // We need to provide at least one detector to the camera :x
         FaceDetector faceDetector = new FaceDetector.Builder(ctx).build();
         faceDetector.setProcessor(
-                               new LargestFaceFocusingProcessor.Builder(faceDetector, new FaceTracker())
+                               new LargestFaceFocusingProcessor.Builder(faceDetector, new FaceTracker(imageFetchingDetector))
                                                 .build());
 
         BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(ctx).build();
@@ -129,13 +140,14 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         // TODO: Check if the TextRecognizer is operational.
 
         MultiDetector multiDetector = new MultiDetector.Builder()
+                .add(imageFetchingDetector)
                 .add(faceDetector)
                 .add(barcodeDetector)
                 .add(textRecognizer)
                 .build();
 
         mCameraSource = new CameraSource.Builder(ctx, multiDetector)
-                .setFacing(CameraSource.CAMERA_FACING_BACK)
+                .setFacing(CameraSource.CAMERA_FACING_FRONT)
                 .setAutoFocusEnabled(true)
                 .setRequestedFps(5.0f)
                 .setRequestedPreviewSize(displaySize.y, displaySize.x)
