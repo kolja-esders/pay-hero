@@ -7,6 +7,10 @@ import android.support.v13.app.FragmentPagerAdapter;
 
 public class CollectionPagerAdapter extends FragmentPagerAdapter {
 
+    FriendFeedFragment fff = FriendFeedFragment.newInstance(1);
+    ScanOverlayFragment scf = ScanOverlayFragment.newInstance();
+    PaymentInitFragment pif = PaymentInitFragment.newInstance();
+
     public CollectionPagerAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -14,11 +18,11 @@ public class CollectionPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int i) {
         if (i == 0) {
-            return FriendFeedFragment.newInstance(1);
+            return fff;
         } else if (i == 1) {
-            return ScanOverlayFragment.newInstance();
+            return scf;
         } else if (i == 2) {
-            return PaymentInitFragment.newInstance();
+            return pif;
         }
         return null;
     }

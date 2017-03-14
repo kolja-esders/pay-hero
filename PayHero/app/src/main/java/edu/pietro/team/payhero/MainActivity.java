@@ -1,6 +1,7 @@
 package edu.pietro.team.payhero;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -17,14 +18,20 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.CameraSource;
+import com.google.android.gms.vision.MultiDetector;
+import com.google.android.gms.vision.MultiProcessor;
+import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.google.android.gms.vision.face.FaceDetector;
 import com.google.android.gms.vision.face.LargestFaceFocusingProcessor;
+import com.google.android.gms.vision.text.TextRecognizer;
 
 import org.apache.commons.io.IOUtils;
 import org.greenrobot.eventbus.EventBus;
@@ -43,10 +50,15 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import edu.pietro.team.payhero.entities.AmountOfMoney;
 import edu.pietro.team.payhero.event.OnImageCaptureRequested;
+import edu.pietro.team.payhero.vision.BarcodeDetectionProcessor;
+import edu.pietro.team.payhero.vision.BarcodeTracker;
 import edu.pietro.team.payhero.vision.CameraSourcePreview;
 import edu.pietro.team.payhero.event.FeedFilterClicked;
 import edu.pietro.team.payhero.vision.FaceTracker;
+import edu.pietro.team.payhero.vision.FirstFocusingProcessor;
+import edu.pietro.team.payhero.vision.OcrDetectionProcessor;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -73,6 +85,12 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     private CollectionPagerAdapter mCollectionPagerAdapter;
 
     private ViewPager mViewPager;
+
+    private static MainActivity currentActivity = null;
+
+    public static MainActivity getCurrentActivity() {
+        return currentActivity;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,15 +139,30 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
         // We need to provide at least one detector to the camera :x
         FaceDetector faceDetector = new FaceDetector.Builder(ctx).build();
-
         faceDetector.setProcessor(
                                new LargestFaceFocusingProcessor.Builder(faceDetector, new FaceTracker())
                                                 .build());
 
-        mCameraSource = new CameraSource.Builder(ctx, faceDetector)
+        BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(ctx).build();
+        //barcodeDetector.setProcessor(new BarcodeDetectionProcessor());
+        barcodeDetector.setProcessor(
+                new FirstFocusingProcessor<Barcode>(barcodeDetector, new BarcodeTracker())
+        );
+
+        TextRecognizer textRecognizer = new TextRecognizer.Builder(ctx).build();
+        textRecognizer.setProcessor(new OcrDetectionProcessor());
+        // TODO: Check if the TextRecognizer is operational.
+
+        MultiDetector multiDetector = new MultiDetector.Builder()
+                .add(faceDetector)
+                .add(barcodeDetector)
+                .add(textRecognizer)
+                .build();
+
+        mCameraSource = new CameraSource.Builder(ctx, multiDetector)
                 .setFacing(CameraSource.CAMERA_FACING_BACK)
                 .setAutoFocusEnabled(true)
-                .setRequestedFps(30.0f)
+                .setRequestedFps(5.0f)
                 .setRequestedPreviewSize(displaySize.y, displaySize.x)
                 .build();
     }
@@ -199,6 +232,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     protected void onResume() {
         super.onResume();
         startCameraSource();
+        currentActivity = this;
     }
 
     @Override
@@ -215,13 +249,34 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         }
     }
 
+    public void showPaymentInit(final AmountOfMoney amount, final String iban, final String name) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(mViewPager.getCurrentItem() == 1) {
+                    View view = mCollectionPagerAdapter.getItem(2).getView();
+                    EditText nameEdit = (EditText) view.findViewById(R.id.nameEdit);
+                    nameEdit.setText(name);
+                    EditText ibanEdit = (EditText) view.findViewById(R.id.ibanEdit);
+                    ibanEdit.setText(iban);
+                    EditText amountEdit = (EditText) view.findViewById(R.id.amountEdit);
+                    amountEdit.setText(amount.getAmount().toString());
 
+                    mViewPager.setCurrentItem(2);
+                }
+            }
+        });
+    }
 
     @Subscribe
     public void onMessageEvent(OnImageCaptureRequested e) {
         Log.d("EVENT_BUS", "Image capture requested.");
 
-        mCameraSource.takePicture(null, new CameraSource.PictureCallback() {
+        EditText et = (EditText) mCollectionPagerAdapter.getItem(2).getView().findViewById(R.id.nameEdit);
+        et.setText("Test");
+        mViewPager.setCurrentItem(2);
+
+        /*mCameraSource.takePicture(null, new CameraSource.PictureCallback() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onPictureTaken(final byte[] bytes) {
@@ -306,6 +361,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
             }
 
-        });
+        });*/
     };
 }
