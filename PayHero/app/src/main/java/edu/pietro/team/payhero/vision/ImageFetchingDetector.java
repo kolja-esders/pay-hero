@@ -156,18 +156,8 @@ public class ImageFetchingDetector extends Detector {
                                 ImageFormat.NV21, h,w, null);
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         //yuvimage.compressToJpeg(new Rect(0, 0, w, h), 100, baos); // Where 100 is the quality of the generated jpeg
-                        yuvimage.compressToJpeg(new Rect(0, 0, h, w), 100, baos); // Where 100 is the quality of the generated jpeg
+                        yuvimage.compressToJpeg(new Rect(0, 0, h, w), 80, baos); // Where 100 is the quality of the generated jpeg
                         byte[] jpegArray = baos.toByteArray();
-
-                        //test;
-                        /*Bitmap bitmap= BitmapFactory.decodeByteArray(jpegArray, 0, jpegArray.length);
-                        int width = bitmap.getWidth();
-                        int height = bitmap.getHeight();
-
-                        int size = bitmap.getRowBytes() * bitmap.getHeight();
-                        ByteBuffer byteBuffer = ByteBuffer.allocate(size);
-                        bitmap.copyPixelsToBuffer(byteBuffer);
-                        byte[] byteArray = byteBuffer.array();*/
 
                         new SavePhotoTask().execute(jpegArray);
                         Log.d("ImageFetchingDetector", "saving pic");
@@ -175,7 +165,6 @@ public class ImageFetchingDetector extends Detector {
 
                         String faceId = PostHelper.detectFace(jpegArray);
                         Log.d("detectFace", faceId);
-                        //String faceId = PostHelper.detectFace(byteArray);
                         if (faceId != "") {
                             String personId = PostHelper.identifyFace(faceId);
                             if (personId != "") {
