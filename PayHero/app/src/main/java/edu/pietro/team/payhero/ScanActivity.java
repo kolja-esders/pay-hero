@@ -81,6 +81,7 @@ package edu.pietro.team.payhero;
         import edu.pietro.team.payhero.helper.PostHelper;
         import edu.pietro.team.payhero.helper.api.ExchangeRatesAPI;
         import edu.pietro.team.payhero.helper.api.InternalStorageCache;
+        import edu.pietro.team.payhero.social.User;
 
 public class ScanActivity extends AppCompatActivity
         implements View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
@@ -297,7 +298,7 @@ public class ScanActivity extends AppCompatActivity
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            for (AddressBook.Contact c : AddressBook.CONTACTS) {
+                            for (User c : AddressBook.CONTACTS) {
                                 if (mText.equals(c.getFaceId())) {
                                     Intent i = new Intent(ScanActivity.this, ValidationActivity.class);
                                     i.putExtra("name", c.getName());

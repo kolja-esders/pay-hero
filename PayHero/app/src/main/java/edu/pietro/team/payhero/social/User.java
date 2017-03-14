@@ -1,6 +1,7 @@
 package edu.pietro.team.payhero.social;
 
 import edu.pietro.team.payhero.R;
+import edu.pietro.team.payhero.helper.AddressBook;
 
 public final class User {
 
@@ -14,6 +15,8 @@ public final class User {
 
     private int mImageResourceId = -1;
 
+    private String mFaceId = null;
+
     public User(String name, String iban) {
         mName = name;
         mIban = iban;
@@ -23,6 +26,13 @@ public final class User {
         mName = name;
         mIban = iban;
         mImageResourceId = imageResourceId;
+    }
+
+    public User(String name, String iban, int imageResourceId, String faceId) {
+        mName = name;
+        mIban = iban;
+        mImageResourceId = imageResourceId;
+        mFaceId = faceId;
     }
 
     public String getName() {
@@ -35,6 +45,10 @@ public final class User {
 
     public int getImageResourceId() {
         return mImageResourceId;
+    }
+
+    public String getFaceId() {
+        return mFaceId;
     }
 
 }
