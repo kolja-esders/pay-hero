@@ -249,7 +249,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     String name = purchase.getRecipient().getName();
                     String iban = purchase.getRecipient().getIban();
                     String amount = purchase.getAmount().getAmount().toString();
-                    String imageUrl = purchase.getItem().getImageUrl();
+                    String imageUrl = purchase.getItem() == null ?
+                            null : purchase.getItem().getImageUrl();
                     int recipientImageResourceId = purchase.getRecipient().getImageResourceId();
 
                     if (name != null && iban != null && amount != null) {

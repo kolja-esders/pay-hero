@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.validator.routines.IBANValidator;
 import org.apache.commons.lang3.*;
 
+import edu.pietro.team.payhero.social.User;
 
 
 public class LangAnalytics {
@@ -118,7 +119,7 @@ public class LangAnalytics {
 
         text = text.replaceAll("[.,!-]" , " ") + " ";
 
-        for(AddressBook.Contact c : AddressBook.CONTACTS){
+        for(User c : AddressBook.CONTACTS){
             if(text.contains(c.getName().split(" ")[0])){
                 return c.getName();
             }
