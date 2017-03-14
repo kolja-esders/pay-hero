@@ -13,6 +13,8 @@ public class MoneyTransfer {
 
     private final Item mItem;
 
+    private final AmountOfMoney mAmount;
+
     private final Calendar mTimeOfPurchase;
 
     public MoneyTransfer(User recipient, Item item, AmountOfMoney price) {
@@ -20,6 +22,7 @@ public class MoneyTransfer {
         mSender = null;
         mRecipient = recipient;
         mItem = item;
+        mAmount = price;
         mTimeOfPurchase = Calendar.getInstance();
     }
 
@@ -29,6 +32,7 @@ public class MoneyTransfer {
         mRecipient = recipient;
         mItem = item;
         mTimeOfPurchase = timeOfPurchase;
+        mAmount = price;
     }
 
     public final User getSender() {
@@ -45,6 +49,10 @@ public class MoneyTransfer {
 
     public final Calendar getTimeOfPurchase() {
         return mTimeOfPurchase;
+    }
+
+    public final AmountOfMoney getAmount() {
+        return mAmount;
     }
 
 }

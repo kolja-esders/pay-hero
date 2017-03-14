@@ -230,15 +230,20 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             @Override
             public void run() {
                 if(mViewPager.getCurrentItem() == 1) {
-                    View view = mCollectionPagerAdapter.getItem(2).getView();
-                    EditText nameEdit = (EditText) view.findViewById(R.id.nameEdit);
-                    nameEdit.setText(purchase.getRecipient().getName());
-                    EditText ibanEdit = (EditText) view.findViewById(R.id.ibanEdit);
-                    ibanEdit.setText(purchase.getRecipient().getIban());
-                    EditText amountEdit = (EditText) view.findViewById(R.id.amountEdit);
-                    amountEdit.setText(purchase.getItem().getRetailPrice().getAmount().toString());
+                    String name = purchase.getRecipient().getName();
+                    String iban = purchase.getRecipient().getIban();
+                    String amount = purchase.getAmount().getAmount().toString();
 
-                    mViewPager.setCurrentItem(2);
+                    if (name != null && iban != null && amount != null) {
+                        View view = mCollectionPagerAdapter.getItem(2).getView();
+                        EditText nameEdit = (EditText) view.findViewById(R.id.nameEdit);
+                        nameEdit.setText(name);
+                        EditText ibanEdit = (EditText) view.findViewById(R.id.ibanEdit);
+                        ibanEdit.setText(iban);
+                        EditText amountEdit = (EditText) view.findViewById(R.id.amountEdit);
+                        amountEdit.setText(amount);
+                        mViewPager.setCurrentItem(2);
+                    }
                 }
             }
         });

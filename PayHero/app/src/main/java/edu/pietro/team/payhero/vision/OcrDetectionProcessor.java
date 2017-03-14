@@ -13,6 +13,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.List;
 
 import edu.pietro.team.payhero.entities.AmountOfMoney;
+import edu.pietro.team.payhero.event.OnPaymentInit;
 import edu.pietro.team.payhero.helper.AddressBook;
 import edu.pietro.team.payhero.helper.LangAnalytics;
 import edu.pietro.team.payhero.social.Item;
@@ -53,7 +54,9 @@ public class OcrDetectionProcessor implements Detector.Processor<TextBlock> {
             }
             User recipient = new User(contact, iban);
             Item moneyTransferItem = new Item("Money Transfer", null, null, null);
-            EventBus.getDefault().post(new MoneyTransfer(recipient, moneyTransferItem, new AmountOfMoney(Double.valueOf(amount))));
+            EventBus.getDefault().post(new OnPaymentInit(
+                    new MoneyTransfer(recipient, moneyTransferItem,
+                            new AmountOfMoney(Double.valueOf(amount)))));
         }
     }
 

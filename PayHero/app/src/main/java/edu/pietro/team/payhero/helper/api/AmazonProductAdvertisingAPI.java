@@ -63,35 +63,45 @@ public class AmazonProductAdvertisingAPI {
         try {
             Document response = getResponse(url);
             printResponse(response);
-            return parseFirstItem(response);
+            return doStuff(response);
         } catch (Exception ex) {
             // Catching responses is for losers (is it though?!)
         }
         return null;
     }
 
+    private static boolean isPopulated(Item item) {
+        return item != null && item.getImageUrl() != null && item.getName() != null && item.getRetailPrice() != null;
+    }
 
-    private static Item parseFirstItem(Document response) {
+    private static Item doStuff(Document response) {
         NodeList items = response.getElementsByTagName("Item");
+        Item result = null;
         if (items.getLength() > 0) {
+            for (int i = 0; i < items.getLength(); ++i) {
+                Element item = (Element) items.item(i);
+                items = item.getElementsByTagName("ProductGroup");
+                if (items.getLength() > 0) {
+                    result = parseItem(item);
+                    if (isPopulated(result)) {
+                        return result;
+                    }
+                }
+            }
+            // Fallback: Just pick the first element and get any price.
             Element firstElement = (Element) items.item(0);
             items = firstElement.getElementsByTagName("ProductGroup");
 
-            // Special treatment in case it is a book
             if (items.getLength() > 0 ) {
-                if (items.item(0).getTextContent().equals("Book")) {
-                    return parseBookItem(firstElement);
-                } else {
-                    return parseGenericItem(firstElement);
-                }
+                return parseItemAnyPrice(firstElement);
             }
         }
-        return null;
+        return isPopulated(result) ? result : null;
     }
 
-    private static Item parseGenericItem(Element foundItem) {
+    private static Item parseItemAnyPrice(Element foundItem) {
         Item item = new Item();
-        NodeList prices = foundItem.getElementsByTagName("Price");
+        NodeList prices = foundItem.getElementsByTagName("LowestNewPrice");
         if (prices.getLength() > 0) {
             NodeList childNodes = prices.item(0).getChildNodes();
             Double amount = 0.d;
@@ -128,9 +138,12 @@ public class AmazonProductAdvertisingAPI {
     }
 
     // We are just going to parse the first item for now.
-    private static Item parseBookItem(Element foundItem) {
+    private static Item parseItem(Element foundItem) {
         Item item = new Item();
-        NodeList prices = foundItem.getElementsByTagName("Price");
+        NodeList prices = foundItem.getElementsByTagName("LowestNewPrice");
+        if (prices.getLength() == 0) {
+            prices = foundItem.getElementsByTagName("LowestUsedPrice");
+        }
         if (prices.getLength() > 0) {
             NodeList childNodes = prices.item(0).getChildNodes();
             Double amount = 0.d;
