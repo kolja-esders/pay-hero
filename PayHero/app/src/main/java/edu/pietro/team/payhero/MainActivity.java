@@ -1,16 +1,10 @@
 package edu.pietro.team.payhero;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -20,51 +14,31 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.MultiDetector;
-import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.google.android.gms.vision.face.FaceDetector;
 import com.google.android.gms.vision.face.LargestFaceFocusingProcessor;
 import com.google.android.gms.vision.text.TextRecognizer;
 
-import org.apache.commons.io.IOUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
-import edu.pietro.team.payhero.entities.AmountOfMoney;
 import edu.pietro.team.payhero.event.OnImageCaptureRequested;
-import edu.pietro.team.payhero.vision.BarcodeDetectionProcessor;
+import edu.pietro.team.payhero.event.OnPaymentInit;
+import edu.pietro.team.payhero.social.MoneyTransfer;
 import edu.pietro.team.payhero.vision.BarcodeTracker;
 import edu.pietro.team.payhero.vision.CameraSourcePreview;
 import edu.pietro.team.payhero.event.FeedFilterClicked;
 import edu.pietro.team.payhero.vision.FaceTracker;
 import edu.pietro.team.payhero.vision.FirstFocusingProcessor;
 import edu.pietro.team.payhero.vision.OcrDetectionProcessor;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 
 public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
@@ -249,18 +223,20 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         }
     }
 
-    public void showPaymentInit(final AmountOfMoney amount, final String iban, final String name) {
+    @Subscribe
+    public void showPaymentInit(OnPaymentInit e) {
+        final MoneyTransfer purchase = e.getPurchase();
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if(mViewPager.getCurrentItem() == 1) {
                     View view = mCollectionPagerAdapter.getItem(2).getView();
                     EditText nameEdit = (EditText) view.findViewById(R.id.nameEdit);
-                    nameEdit.setText(name);
+                    nameEdit.setText(purchase.getRecipient().getName());
                     EditText ibanEdit = (EditText) view.findViewById(R.id.ibanEdit);
-                    ibanEdit.setText(iban);
+                    ibanEdit.setText(purchase.getRecipient().getIban());
                     EditText amountEdit = (EditText) view.findViewById(R.id.amountEdit);
-                    amountEdit.setText(amount.getAmount().toString());
+                    amountEdit.setText(purchase.getItem().getRetailPrice().getAmount().toString());
 
                     mViewPager.setCurrentItem(2);
                 }

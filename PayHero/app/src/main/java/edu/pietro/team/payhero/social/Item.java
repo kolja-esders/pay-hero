@@ -11,22 +11,22 @@ public class Item {
     /**
      * Name used to identify the purchasable.
      */
-    public String name;
+    private String name;
 
     /**
      * Producer or provider of the purchasable.
      */
-    public String producer;
+    private String producer;
 
     /**
      * URL of an image of the product / service.
      */
-    public String imageUrl;
+    private String imageUrl;
 
     /**
-     * For the sake of simplicity we will include the price in the Item.
+     * Retail price.
      */
-    public AmountOfMoney price;
+    private AmountOfMoney retailPrice;
 
     public Item() {
     }
@@ -35,4 +35,42 @@ public class Item {
         this.name = name;
     }
 
+    public Item(String name, String producer, String imageUrl, AmountOfMoney price) {
+        this.name = name;
+        this.producer = producer;
+        this.imageUrl = imageUrl;
+        this.retailPrice = price;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setProducer(String producer) {
+        this.producer = producer;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void setRetailPrice(AmountOfMoney price) {
+        this.retailPrice = price;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getProducer() {
+        return producer;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public AmountOfMoney getRetailPrice() {
+        return retailPrice;
+    }
 }

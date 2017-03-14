@@ -6,15 +6,27 @@ import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.barcode.Barcode;
 
-/**
- * Created by maxim on 14.03.17.
- */
+import org.greenrobot.eventbus.EventBus;
+
+import edu.pietro.team.payhero.event.OnPaymentInit;
+import edu.pietro.team.payhero.helper.api.AmazonProductAdvertisingAPI;
+import edu.pietro.team.payhero.social.Item;
+import edu.pietro.team.payhero.social.MoneyTransfer;
+import edu.pietro.team.payhero.social.User;
+
 
 public class BarcodeTracker extends Tracker<Barcode> {
     private final static String TAG = "BarcodeTracker";
 
     public void onNewItem(int id, Barcode face) {
         Log.i(TAG, "Barcode entered.");
+        Log.d(TAG, Thread.currentThread().toString());
+        String ean13 = face.displayValue;
+        Item item = AmazonProductAdvertisingAPI.findByEAN13(ean13);
+        if (item != null) {
+            User seller = new User("Amazon", "DE64700700100203477500");
+            EventBus.getDefault().post(new OnPaymentInit(new MoneyTransfer(seller, item, item.getRetailPrice())));
+        }
     }
 
     public void onUpdate(Detector.Detections<Barcode> detections, Barcode face) {

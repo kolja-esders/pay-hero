@@ -3,19 +3,21 @@ package edu.pietro.team.payhero.vision;
 
 import android.util.Log;
 import android.util.SparseArray;
-import android.util.StringBuilderPrinter;
 
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.text.Line;
-import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.vision.text.TextBlock;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
-import edu.pietro.team.payhero.MainActivity;
 import edu.pietro.team.payhero.entities.AmountOfMoney;
 import edu.pietro.team.payhero.helper.AddressBook;
 import edu.pietro.team.payhero.helper.LangAnalytics;
+import edu.pietro.team.payhero.social.Item;
+import edu.pietro.team.payhero.social.MoneyTransfer;
+import edu.pietro.team.payhero.social.User;
 
 public class OcrDetectionProcessor implements Detector.Processor<TextBlock> {
 
@@ -45,16 +47,13 @@ public class OcrDetectionProcessor implements Detector.Processor<TextBlock> {
 
         if (amount != "") {
             if (contact != "") {
-                MainActivity.getCurrentActivity().showPaymentInit(
-                        new AmountOfMoney(Double.valueOf(amount)),
-                        AddressBook.getIBANforName(contact),
-                        contact);
+                iban = AddressBook.getIBANforName(contact);
             } else if (iban != "") {
-                MainActivity.getCurrentActivity().showPaymentInit(
-                        new AmountOfMoney(Double.valueOf(amount)),
-                        iban,
-                        AddressBook.getNameforIBAN(iban));
+                contact = AddressBook.getNameforIBAN(iban);
             }
+            User recipient = new User(contact, iban);
+            Item moneyTransferItem = new Item("Money Transfer", null, null, null);
+            EventBus.getDefault().post(new MoneyTransfer(recipient, moneyTransferItem, new AmountOfMoney(Double.valueOf(amount))));
         }
     }
 

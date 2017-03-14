@@ -34,7 +34,7 @@ public class ItemDetector {
         }
     }
 
-    public getDetectedItem() {
+    public void getDetectedItem() {
 
     }
 

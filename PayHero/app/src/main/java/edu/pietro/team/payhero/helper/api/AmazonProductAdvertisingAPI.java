@@ -78,12 +78,53 @@ public class AmazonProductAdvertisingAPI {
             items = firstElement.getElementsByTagName("ProductGroup");
 
             // Special treatment in case it is a book
-            if (items.getLength() > 0 && items.item(0).getTextContent().equals("Book")) {
-                return parseBookItem(firstElement);
+            if (items.getLength() > 0 ) {
+                if (items.item(0).getTextContent().equals("Book")) {
+                    return parseBookItem(firstElement);
+                } else {
+                    return parseGenericItem(firstElement);
+                }
             }
         }
-        // TODO: Implement parsing for other product groups.
         return null;
+    }
+
+    private static Item parseGenericItem(Element foundItem) {
+        Item item = new Item();
+        NodeList prices = foundItem.getElementsByTagName("Price");
+        if (prices.getLength() > 0) {
+            NodeList childNodes = prices.item(0).getChildNodes();
+            Double amount = 0.d;
+            Currency currency = Currency.getInstance("EUR");
+            for (int i = 0; i < childNodes.getLength(); ++i) {
+                Node n = childNodes.item(i);
+                if (n.getNodeName().equals("Amount")) {
+                    String rawAmount = n.getTextContent();
+                    amount = Double.valueOf(rawAmount) / 100;
+                } else if (n.getNodeName().equals("CurrencyCode")) {
+                    String rawCurrencyCode = n.getTextContent();
+                    currency = Currency.getInstance(rawCurrencyCode);
+                }
+            }
+            item.setRetailPrice(new AmountOfMoney(amount, currency));
+        }
+        NodeList titles = foundItem.getElementsByTagName("Title");
+        if (titles.getLength() > 0) {
+            item.setName(titles.item(0).getTextContent());
+        }
+        NodeList publishers = foundItem.getElementsByTagName("Publisher");
+        if (publishers.getLength() > 0) {
+            item.setProducer(publishers.item(0).getTextContent());
+        }
+        NodeList largeImages = foundItem.getElementsByTagName("LargeImage");
+        if (largeImages.getLength() > 0) {
+            Element largeImage = (Element) largeImages.item(0);
+            NodeList urls = largeImage.getElementsByTagName("URL");
+            if (urls.getLength() > 0) {
+                item.setImageUrl(urls.item(0).getTextContent());
+            }
+        }
+        return item;
     }
 
     // We are just going to parse the first item for now.
@@ -104,22 +145,22 @@ public class AmazonProductAdvertisingAPI {
                     currency = Currency.getInstance(rawCurrencyCode);
                 }
             }
-            item.price = new AmountOfMoney(amount, currency);
+            item.setRetailPrice(new AmountOfMoney(amount, currency));
         }
         NodeList titles = foundItem.getElementsByTagName("Title");
         if (titles.getLength() > 0) {
-            item.name = titles.item(0).getTextContent();
+            item.setName(titles.item(0).getTextContent());
         }
         NodeList publishers = foundItem.getElementsByTagName("Publisher");
         if (publishers.getLength() > 0) {
-            item.producer = publishers.item(0).getTextContent();
+            item.setProducer(publishers.item(0).getTextContent());
         }
         NodeList largeImages = foundItem.getElementsByTagName("LargeImage");
         if (largeImages.getLength() > 0) {
             Element largeImage = (Element) largeImages.item(0);
             NodeList urls = largeImage.getElementsByTagName("URL");
             if (urls.getLength() > 0) {
-                item.imageUrl = urls.item(0).getTextContent();
+                item.setImageUrl(urls.item(0).getTextContent());
             }
         }
         return item;
