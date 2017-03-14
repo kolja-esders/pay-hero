@@ -46,17 +46,19 @@ public class OcrDetectionProcessor implements Detector.Processor<TextBlock> {
         String amount = LangAnalytics.getAmount(ocrText);
         String contact = LangAnalytics.findFamiliarFriends(ocrText);
 
-        if (amount != "") {
-            if (contact != "") {
+        if (!amount.equals("")) {
+            if (!contact.equals("")) {
                 iban = AddressBook.getIBANforName(contact);
-            } else if (iban != "") {
+            } else if (!iban.equals("")) {
                 contact = AddressBook.getNameforIBAN(iban);
             }
-            User recipient = new User(contact, iban);
-            Item moneyTransferItem = new Item("Money Transfer", null, null, null);
-            EventBus.getDefault().post(new OnPaymentInit(
-                    new MoneyTransfer(recipient, moneyTransferItem,
-                            new AmountOfMoney(Double.valueOf(amount)))));
+            if (!contact.equals("") && !iban.equals("")) {
+                User recipient = new User(contact, iban);
+                Item moneyTransferItem = new Item("Money Transfer", null, null, null);
+                EventBus.getDefault().post(new OnPaymentInit(
+                        new MoneyTransfer(recipient, moneyTransferItem,
+                                new AmountOfMoney(Double.valueOf(amount)))));
+            }
         }
     }
 
