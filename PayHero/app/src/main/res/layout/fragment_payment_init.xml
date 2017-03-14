@@ -95,7 +95,7 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         app:fabSize="normal"
-        app:srcCompat="@android:drawable/ic_menu_send"
+        app:srcCompat="@drawable/send_white_24dp"
         android:id="@+id/floatingActionButton"
         android:layout_above="@+id/navigation_background"
         android:layout_alignParentEnd="true"
