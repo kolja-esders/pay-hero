@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
@@ -14,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -33,6 +35,7 @@ import java.io.IOException;
 
 import edu.pietro.team.payhero.event.OnImageCaptureRequested;
 import edu.pietro.team.payhero.event.OnPaymentInit;
+import edu.pietro.team.payhero.helper.DownloadImageTask;
 import edu.pietro.team.payhero.social.MoneyTransfer;
 import edu.pietro.team.payhero.vision.BarcodeTracker;
 import edu.pietro.team.payhero.vision.CameraSourcePreview;
@@ -147,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 .build();
 
         mCameraSource = new CameraSource.Builder(ctx, multiDetector)
-                .setFacing(CameraSource.CAMERA_FACING_FRONT)
+                .setFacing(CameraSource.CAMERA_FACING_BACK)
                 .setAutoFocusEnabled(true)
                 .setRequestedFps(5.0f)
                 .setRequestedPreviewSize(displaySize.y, displaySize.x)
@@ -246,6 +249,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     String name = purchase.getRecipient().getName();
                     String iban = purchase.getRecipient().getIban();
                     String amount = purchase.getAmount().getAmount().toString();
+                    String imageUrl = purchase.getItem().getImageUrl();
+                    int recipientImageResourceId = purchase.getRecipient().getImageResourceId();
 
                     if (name != null && iban != null && amount != null) {
                         View view = mCollectionPagerAdapter.getItem(2).getView();
@@ -255,6 +260,15 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                         ibanEdit.setText(iban);
                         EditText amountEdit = (EditText) view.findViewById(R.id.amountEdit);
                         amountEdit.setText(amount);
+                        if (recipientImageResourceId != -1) {
+                            ImageView userImage = (ImageView) view.findViewById(R.id.profileImage);
+                            userImage.setImageDrawable(getResources().getDrawable(purchase.getRecipient().getImageResourceId()));
+                        }
+                        if (imageUrl != null && !imageUrl.equals("")) {
+                            ImageView purchasableView = (ImageView) view.findViewById(R.id.imagePurchasable);
+                            new DownloadImageTask(purchasableView).execute(imageUrl);
+                        }
+
                         mViewPager.setCurrentItem(2);
                     }
                 }

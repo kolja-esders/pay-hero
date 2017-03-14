@@ -23,10 +23,9 @@
         android:id="@+id/imagePurchasable"
         android:layout_marginTop="24dp"
         android:layout_height="200dp"
-        android:src="@drawable/purchasable_example"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
         android:elevation="4dp"
         android:background="@android:color/white"/>
 
@@ -41,6 +40,17 @@
         android:layout_alignTop="@+id/imagePurchasable"
         android:layout_alignParentStart="true"/>
 
+    <ImageView
+        android:layout_width="84dp"
+        android:layout_height="84dp"
+        android:layout_marginLeft="-2dp"
+        android:layout_marginTop="-2dp"
+        android:elevation="4dp"
+        app:srcCompat="@drawable/recipient_image_container"
+        android:id="@+id/profileImageContainer"
+        android:layout_alignTop="@+id/profileImage"
+        android:layout_alignStart="@+id/profileImage" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -51,17 +61,7 @@
         android:layout_marginTop="6dp"
         android:layout_below="@+id/imagePurchasable"
         android:layout_toEndOf="@+id/profileImageContainer"
-        android:textStyle="normal|bold"
         android:textColor="@color/colorPrimaryDark" />
-
-    <ImageView
-        android:layout_width="84dp"
-        android:layout_height="84dp"
-        android:elevation="4dp"
-        app:srcCompat="@drawable/recipient_image_container"
-        android:id="@+id/profileImageContainer"
-        android:layout_alignTop="@+id/profileImage"
-        android:layout_alignStart="@+id/profileImage" />
 
     <EditText
         android:text="23,45€"
