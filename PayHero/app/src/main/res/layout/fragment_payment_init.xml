@@ -99,7 +99,26 @@
         android:id="@+id/floatingActionButton"
         android:layout_above="@+id/navigation_background"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="22dp"
-        android:layout_marginBottom="15dp" />
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:elevation="2dp" />
+
+    <EditText
+        android:layout_height="wrap_content"
+        android:id="@+id/purchaseMessage"
+        android:hint="Share your purchase"
+        android:layout_marginRight="16dp"
+        android:elevation="2dp"
+        android:background="@drawable/chat_bg"
+        android:layout_width="wrap_content"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp"
+        android:layout_alignBottom="@+id/floatingActionButton"
+        android:layout_alignStart="@+id/amountEdit"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textSize="18dp"
+        android:layout_toStartOf="@+id/floatingActionButton"
+        android:inputType="textCapSentences|textShortMessage" />
 
 </RelativeLayout>
