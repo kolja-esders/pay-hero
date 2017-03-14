@@ -8,6 +8,7 @@ import com.google.android.gms.vision.barcode.Barcode;
 
 import org.greenrobot.eventbus.EventBus;
 
+import edu.pietro.team.payhero.event.OnErrorDuringDetectionPostProcessing;
 import edu.pietro.team.payhero.event.OnPaymentInit;
 import edu.pietro.team.payhero.helper.api.AmazonProductAdvertisingAPI;
 import edu.pietro.team.payhero.social.Item;
@@ -26,6 +27,8 @@ public class BarcodeTracker extends Tracker<Barcode> {
         if (item != null) {
             User seller = new User("Amazon", "DE64700700100203477500");
             EventBus.getDefault().post(new OnPaymentInit(new MoneyTransfer(seller, item, item.getRetailPrice())));
+        } else {
+            EventBus.getDefault().post(new OnErrorDuringDetectionPostProcessing("No product found."));
         }
     }
 
