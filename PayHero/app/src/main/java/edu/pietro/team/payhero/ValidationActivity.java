@@ -40,23 +40,23 @@ public class ValidationActivity extends AppCompatActivity {
         //setContentView(R.layout.activity_validation);
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        ((Button) findViewById(R.id.button)).setVisibility(View.VISIBLE);
-        ((ProgressBar) findViewById(R.id.progressTransaction)).setVisibility(View.INVISIBLE);
+        //((Button) findViewById(R.id.button)).setVisibility(View.VISIBLE);
+        //((ProgressBar) findViewById(R.id.progressTransaction)).setVisibility(View.INVISIBLE);
 
         //((RelativeLayout) findViewById(R.id.content_validation)).requestFocus();
 
         //setSupportActionBar(toolbar);
-        Button okay = (Button) findViewById(R.id.button);
-        okay.setOnClickListener(new View.OnClickListener() {
+        //Button okay = (Button) findViewById(R.id.button);
+        /*okay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Hide button and show loading
-                ((Button) findViewById(R.id.button)).setVisibility(View.INVISIBLE);
-                ((ProgressBar) findViewById(R.id.progressTransaction)).setVisibility(View.VISIBLE);
+                //((Button) findViewById(R.id.button)).setVisibility(View.INVISIBLE);
+                //((ProgressBar) findViewById(R.id.progressTransaction)).setVisibility(View.VISIBLE);
                 //((RelativeLayout) findViewById(R.id.content_validation)).requestFocus();
 
 
-                mName = ((EditText)findViewById(R.id.nameEdit)).getText().toString();
+                //mName = ((EditText)findViewById(R.id.nameEdit)).getText().toString();
                 mIban = ((TextView)findViewById(R.id.ibanEdit)).getText().toString();
                 mAmount = ((TextView)findViewById(R.id.amountEdit)).getText().toString();
                 new AsyncTask<String[],Void,Boolean>() {
@@ -82,12 +82,12 @@ public class ValidationActivity extends AppCompatActivity {
                                 startActivity(intent);
                             } else {
                                 ((Button) findViewById(R.id.button)).setVisibility(View.VISIBLE);
-                                ((ProgressBar) findViewById(R.id.progressTransaction)).setVisibility(View.INVISIBLE);
+                                //((ProgressBar) findViewById(R.id.progressTransaction)).setVisibility(View.INVISIBLE);
                             }
                         }
                     }.execute(new String[][]{{mIban,mName,mAmount}});
             }
-        });
+        });*/
         final EditText ibanEdit = (EditText) findViewById(R.id.ibanEdit);
 
         ibanEdit.addTextChangedListener(new TextWatcher() {
@@ -122,7 +122,7 @@ public class ValidationActivity extends AppCompatActivity {
         boolean hasIban = intent.hasExtra("iban");
         boolean hasName = intent.hasExtra("name");
         if (hasIban && hasName) {
-            ((EditText)findViewById(R.id.nameEdit)).setText(intent.getStringExtra("name"));
+            //((EditText)findViewById(R.id.nameEdit)).setText(intent.getStringExtra("name"));
             ((EditText)findViewById(R.id.ibanEdit)).setText(intent.getStringExtra("iban"));
         } else if (hasName) {
             ((TextView)findViewById(R.id.nameEdit)).setText(intent.getStringExtra("name"));
@@ -136,7 +136,7 @@ public class ValidationActivity extends AppCompatActivity {
 
         int img = AddressBook.getImgForName(intent.getStringExtra("name"));
         if (img >= 0) {
-            ((CircleImageView)findViewById(R.id.profileImage)).setImageResource(img);
+            //((CircleImageView)findViewById(R.id.profileImage)).setImageResource(img);
         }
     }
 }

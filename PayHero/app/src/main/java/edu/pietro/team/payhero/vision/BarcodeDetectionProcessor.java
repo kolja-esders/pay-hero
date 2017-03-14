@@ -6,7 +6,6 @@ import android.util.SparseArray;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 
-
 public class BarcodeDetectionProcessor implements Detector.Processor<Barcode> {
 
     private final static String TAG = "BarcodeDetectionProc.";

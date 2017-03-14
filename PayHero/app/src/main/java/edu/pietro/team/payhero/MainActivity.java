@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -236,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
                     if (name != null && iban != null && amount != null) {
                         View view = mCollectionPagerAdapter.getItem(2).getView();
-                        EditText nameEdit = (EditText) view.findViewById(R.id.nameEdit);
+                        TextView nameEdit = (TextView) view.findViewById(R.id.nameEdit);
                         nameEdit.setText(name);
                         EditText ibanEdit = (EditText) view.findViewById(R.id.ibanEdit);
                         ibanEdit.setText(iban);
@@ -253,7 +254,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     public void onMessageEvent(OnImageCaptureRequested e) {
         Log.d("EVENT_BUS", "Image capture requested.");
 
-        EditText et = (EditText) mCollectionPagerAdapter.getItem(2).getView().findViewById(R.id.nameEdit);
+        TextView et = (TextView) mCollectionPagerAdapter.getItem(2).getView().findViewById(R.id.nameEdit);
         et.setText("Test");
         mViewPager.setCurrentItem(2);
 

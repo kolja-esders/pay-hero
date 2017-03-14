@@ -6,98 +6,8 @@
     android:fitsSystemWindows="true"
     android:focusable="true"
     android:focusableInTouchMode="true"
+    android:clipToPadding="false"
     android:background="@android:color/background_light">
-
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/payment_init_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="?android:attr/actionBarSize"
-        android:paddingBottom="48dp"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:gravity="center_horizontal">
-
-        <Button
-            android:drawableRight="@drawable/send_white_24dp"
-            android:text="Confirm  "
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button"
-            android:paddingLeft="50dp"
-            android:paddingRight="50dp"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:background="@android:color/holo_green_dark"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:gravity="center"
-            android:layout_marginBottom="26dp"/>
-
-        <ProgressBar
-            android:id="@+id/progressTransaction"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="26dp"/>
-
-        <EditText
-            android:text="DE23 3847 2784 8374 2837 43"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/ibanEdit"
-            android:textColor="?android:attr/textColorSecondary"
-            android:gravity="center_vertical|center_horizontal"
-            android:layout_below="@+id/nameEdit"
-            android:layout_centerHorizontal="true"
-            android:textSize="16sp"
-            android:hint="IBAN MISSING"
-            android:background="@android:color/transparent" />
-
-        <EditText
-            android:text="23,45€"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/amountEdit"
-            android:gravity="center_vertical|center_horizontal"
-            android:textSize="50sp"
-            android:paddingTop="32dp"
-            android:paddingBottom="32dp"
-            android:paddingLeft="45dp"
-            android:paddingRight="45dp"
-            android:textStyle="normal|bold"
-            android:layout_centerHorizontal="true"
-            android:background="@color/bgColorAmount"
-            android:layout_below="@+id/ibanEdit"
-            android:layout_marginTop="20dp" />
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/nameEdit"
-            android:hint="Recipient"
-            android:gravity="center_vertical|center_horizontal"
-            android:textSize="36sp"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/profileImage"
-            android:inputType="textPersonName"
-            android:background="@android:color/transparent"/>
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profileImage"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/person_black_256dp"
-            app:civ_border_width="4dp"
-            app:civ_border_color="#FFD4D4D4"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
-
-    </RelativeLayout>
 
     <ImageView
         android:layout_width="fill_parent"
@@ -107,5 +17,89 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:id="@+id/navigation_background" />
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:id="@+id/imagePurchasable"
+        android:layout_marginTop="24dp"
+        android:layout_height="200dp"
+        android:src="@drawable/purchasable_example"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:scaleType="centerCrop"
+        android:elevation="4dp"
+        android:background="@android:color/white"/>
+
+    <ImageView
+        android:id="@+id/profileImage"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/kolja"
+        android:elevation="4dp"
+        android:layout_marginTop="165dp"
+        android:layout_marginLeft="18dp"
+        android:layout_alignTop="@+id/imagePurchasable"
+        android:layout_alignParentStart="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/nameEdit"
+        android:text="Kolja"
+        android:textSize="24sp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="6dp"
+        android:layout_below="@+id/imagePurchasable"
+        android:layout_toEndOf="@+id/profileImageContainer"
+        android:textStyle="normal|bold"
+        android:textColor="@color/colorPrimaryDark" />
+
+    <ImageView
+        android:layout_width="84dp"
+        android:layout_height="84dp"
+        android:elevation="4dp"
+        app:srcCompat="@drawable/recipient_image_container"
+        android:id="@+id/profileImageContainer"
+        android:layout_alignTop="@+id/profileImage"
+        android:layout_alignStart="@+id/profileImage" />
+
+    <EditText
+        android:text="23,45€"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/amountEdit"
+        android:gravity="center_vertical|center_horizontal"
+        android:textSize="50sp"
+        android:textStyle="normal|bold"
+        android:layout_marginTop="27dp"
+        android:layout_below="@+id/ibanEdit"
+        android:layout_alignStart="@+id/ibanEdit" />
+
+    <EditText
+        android:text="DE23 3847 2784 8374 2837 43"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ibanEdit"
+        android:textColor="@color/subtitleGrey"
+        android:gravity="center_vertical|center_horizontal"
+        android:textSize="12sp"
+        android:hint="IBAN MISSING"
+        android:background="@android:color/transparent"
+
+        android:layout_marginTop="91dp"
+        android:layout_below="@+id/profileImageContainer"
+        android:layout_alignStart="@+id/profileImageContainer" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:fabSize="normal"
+        app:srcCompat="@android:drawable/ic_menu_send"
+        android:id="@+id/floatingActionButton"
+        android:layout_above="@+id/navigation_background"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="22dp"
+        android:layout_marginBottom="15dp" />
 
 </RelativeLayout>
