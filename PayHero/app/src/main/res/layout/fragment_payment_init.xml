@@ -87,8 +87,24 @@
         android:layout_alignLeft="@+id/imagePurchasable"
         android:layout_marginLeft="16dp" />
 
+    <ImageView
+        android:textColorHint="@color/veryTransparentWhite"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:padding="6dp"
+        android:id="@+id/successIcon"
+        app:srcCompat="@drawable/success_transfer_checkmark"
+        android:background="@drawable/success_transfer"
+        android:elevation="8dp"
+        android:textColor="@android:color/white"
+        android:gravity="center_horizontal"
+        android:layout_alignTop="@+id/imagePurchasable"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="174dp" />
+
     <EditText
-        android:text="23,45€"
+        android:hint="0,00 €"
+        android:textColorHint="@color/veryTransparentWhite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/amountEdit"
@@ -105,16 +121,19 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="174dp" />
 
-    <TextView
+    <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/nameEdit"
-        android:text="Kolja"
+        android:hint="Enter name"
         android:textSize="18sp"
+        android:textColorHint="@color/veryTransparentWhite"
+        android:background="@android:color/transparent"
         android:textColor="@android:color/white"
         android:layout_marginLeft="16dp"
         android:layout_alignTop="@+id/profileImage"
-        android:layout_toEndOf="@+id/profileImage" />
+        android:layout_toEndOf="@+id/profileImage"
+        android:padding="0dp" />
 
     <TextView
         android:text="Recipient"
@@ -137,13 +156,13 @@
         android:layout_alignStart="@+id/textView2" />
 
     <EditText
-        android:text="DE23 3847 2784 8374 2837 43"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/ibanEdit"
+        android:textColorHint="@color/veryTransparentWhite"
         android:textColor="@color/transparentWhite"
         android:gravity="center_vertical|center_horizontal"
-        android:hint="IBAN MISSING"
+        android:hint="Enter IBAN"
         android:background="@android:color/transparent"
         android:layout_below="@+id/nameEdit"
         android:layout_alignStart="@+id/nameEdit"

@@ -1,16 +1,20 @@
 package edu.pietro.team.payhero;
 
+import android.animation.ObjectAnimator;
 import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnticipateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -75,7 +79,7 @@ public class PaymentInitFragment extends Fragment {
 
                 String name = ((TextView) v.findViewById(R.id.nameEdit)).getText().toString();
                 EditText ibanEdit = (EditText) v.findViewById(R.id.ibanEdit);
-                EditText amountEdit = (EditText) v.findViewById(R.id.amountEdit);
+                final EditText amountEdit = (EditText) v.findViewById(R.id.amountEdit);
                 ibanEdit.setEnabled(false);
                 amountEdit.setEnabled(false);
                 String iban = ibanEdit.getText().toString();
@@ -99,12 +103,24 @@ public class PaymentInitFragment extends Fragment {
                         super.onPostExecute(transerSuccessful);
                         ((ProgressBar) v.findViewById(R.id.payProgress)).setVisibility(View.INVISIBLE);
                         if (transerSuccessful) {
+                            //Looper.prepare();
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ObjectAnimator anim = ObjectAnimator.ofFloat(amountEdit, "translationX", 0, 500);
+                                    anim.setDuration(600);
+                                    anim.setInterpolator(new AnticipateInterpolator());
+                                    anim.start();
+                                }
+                            }, 100);
+
                             /*Intent intent = new Intent(ValidationActivity.this, PaymentSuccessActivity.class);
                             intent.putExtra("name", ValidationActivity.this.mName);
                             intent.putExtra("amount", ValidationActivity.this.mAmount);
                             startActivity(intent);*/
                             ((ImageView) v.findViewById(R.id.paySuccess)).setVisibility(View.VISIBLE);
                         } else {
+
                             EditText ibanEdit = (EditText) v.findViewById(R.id.ibanEdit);
                             EditText amountEdit = (EditText) v.findViewById(R.id.amountEdit);
                             ibanEdit.setEnabled(true);

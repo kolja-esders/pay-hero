@@ -267,38 +267,18 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
     @Subscribe
     public void showPaymentInit(OnPaymentInit e) {
-        final MoneyTransfer purchase = e.getPurchase();
+        final MoneyTransfer moneyTransfer = e.getPurchase();
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (mViewPager.getCurrentItem() == 1) {
-                    String name = purchase.getRecipient().getName();
-                    String iban = purchase.getRecipient().getIban();
-                    String amount = purchase.getAmount().getAmount().toString();
-                    String imageUrl = purchase.getItem() == null ?
-                            null : purchase.getItem().getImageUrl();
-                    int recipientImageResourceId = purchase.getRecipient().getImageResourceId();
+                if (mViewPager.getCurrentItem() == 1 && moneyTransfer.isValid()) {
+                    View view = mCollectionPagerAdapter.getItem(2).getView();
+                    populatePaymentInitView(view, moneyTransfer);
 
-                    if (name != null && iban != null && amount != null) {
-                        View view = mCollectionPagerAdapter.getItem(2).getView();
-                        TextView nameEdit = (TextView) view.findViewById(R.id.nameEdit);
-                        nameEdit.setText(name);
-                        EditText ibanEdit = (EditText) view.findViewById(R.id.ibanEdit);
-                        ibanEdit.setText(iban);
-                        EditText amountEdit = (EditText) view.findViewById(R.id.amountEdit);
-                        amountEdit.setText(amount);
-                        if (recipientImageResourceId != -1) {
-                            ImageView userImage = (ImageView) view.findViewById(R.id.profileImage);
-                            userImage.setImageDrawable(getResources().getDrawable(purchase.getRecipient().getImageResourceId()));
-                        }
-                        if (imageUrl != null && !imageUrl.equals("")) {
-                            ImageView purchasableView = (ImageView) view.findViewById(R.id.imagePurchasable);
-                            new DownloadImageTask(purchasableView).execute(imageUrl);
-                        }
-                        Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-                        v.vibrate(150);
-                        mViewPager.setCurrentItem(2);
-                    }
+                    Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                    v.vibrate(150);
+
+                    mViewPager.setCurrentItem(2);
                 }
             }
         });
@@ -400,5 +380,40 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         });
     }
 
-    ;
+    private void populatePaymentInitView(View v, MoneyTransfer mt) {
+        boolean isPurchase = mt.getItem() != null;
+
+        User recipient = mt.getRecipient();
+        String recipientName = recipient.getName();
+        String recipientIban = recipient.getIban();
+        int recipientImageResourceId = recipient.getImageResourceId();
+        String formattedAmount = mt.getAmount().getFormattedAmount();
+
+        EditText nameEdit = (EditText) v.findViewById(R.id.nameEdit);
+        EditText ibanEdit = (EditText) v.findViewById(R.id.ibanEdit);
+        EditText amountEdit = (EditText) v.findViewById(R.id.amountEdit);
+
+        if (isPurchase) {
+            String productImageUrl = mt.getItem().getImageUrl();
+            ImageView purchasableView = (ImageView) v.findViewById(R.id.imagePurchasable);
+            new DownloadImageTask(purchasableView).execute(productImageUrl);
+
+
+            // TODO: Disable editing of name and iban
+        }
+
+        nameEdit.setText(recipientName);
+        ibanEdit.setText(recipientIban);
+
+        amountEdit.setText(formattedAmount);
+        if (recipientImageResourceId != -1) {
+            ImageView userImage = (ImageView) v.findViewById(R.id.profileImage);
+            userImage.setImageDrawable(getResources().getDrawable(recipientImageResourceId));
+        }
+
+        amountEdit.setFocusable(!isPurchase);
+        nameEdit.setFocusable(!isPurchase);
+        ibanEdit.setFocusable(!isPurchase);
+    }
+
 }

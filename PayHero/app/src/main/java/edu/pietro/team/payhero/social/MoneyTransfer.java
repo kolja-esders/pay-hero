@@ -55,4 +55,9 @@ public class MoneyTransfer {
         return mAmount;
     }
 
+    public boolean isValid() {
+        return mRecipient != null && mRecipient.getName() != null && mRecipient.getIban() != null
+                && mAmount != null;
+    }
+
 }

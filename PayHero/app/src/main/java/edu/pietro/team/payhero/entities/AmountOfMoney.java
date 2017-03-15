@@ -1,7 +1,9 @@
 package edu.pietro.team.payhero.entities;
 
 
+import java.text.NumberFormat;
 import java.util.Currency;
+import java.util.Locale;
 
 public class AmountOfMoney {
 
@@ -29,5 +31,12 @@ public class AmountOfMoney {
 
     public Currency getCurrency() {
         return mCurrency;
+    }
+
+    public String getFormattedAmount() {
+        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.GERMANY);
+        nf.setCurrency(mCurrency);
+        nf.setMaximumFractionDigits(mCurrency.getDefaultFractionDigits());
+        return nf.format(mAmount);
     }
 }
