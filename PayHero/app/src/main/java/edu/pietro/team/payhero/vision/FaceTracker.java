@@ -1,6 +1,7 @@
 package edu.pietro.team.payhero.vision;
 
 
+import android.graphics.Rect;
 import android.media.Image;
 import android.util.Log;
 
