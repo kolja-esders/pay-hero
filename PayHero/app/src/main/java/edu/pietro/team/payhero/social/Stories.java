@@ -51,7 +51,7 @@ public class Stories {
     public static void filterPersonalStories() {
         DISPLAYED_ITEMS.clear();
         for (Story s : ALL_ITEMS) {
-            if (s.getBuyerName().equals("Kolja")) {
+            if (s.isOwn()) {
                 DISPLAYED_ITEMS.add(s);
             }
         }
@@ -70,9 +70,17 @@ public class Stories {
 
         private final String mMessage;
 
+        public final boolean mIsOwn;
+
         public Story(MoneyTransfer purchase, String message) {
             mPurchase = purchase;
             mMessage = message;
+            mIsOwn = true;
+        }
+        public Story(MoneyTransfer purchase, String message, boolean isown) {
+            mPurchase = purchase;
+            mMessage = message;
+            mIsOwn = isown;
         }
 
         public String getMessage() {
@@ -100,6 +108,10 @@ public class Stories {
 
         public MoneyTransfer getTransfer() {
             return mPurchase;
+        }
+
+        public boolean isOwn() {
+            return mIsOwn;
         }
 
         @Override

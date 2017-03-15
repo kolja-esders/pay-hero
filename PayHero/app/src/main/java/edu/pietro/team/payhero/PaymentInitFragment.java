@@ -96,6 +96,7 @@ public class PaymentInitFragment extends Fragment {
                 String purchaseString = ((EditText)v.findViewById(R.id.purchaseMessage)).getText().toString();
                 Stories.Story buyStory = new Stories.Story(( (MainActivity) getActivity()).getCurrentTransfer(), purchaseString);
                 Stories.DISPLAYED_ITEMS.add(buyStory);
+                Stories.ALL_ITEMS.add(buyStory);
 
                 new AsyncTask<String[], Void, Boolean>() {
                     @Override
