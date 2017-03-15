@@ -392,16 +392,23 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         EditText nameEdit = (EditText) v.findViewById(R.id.nameEdit);
         EditText ibanEdit = (EditText) v.findViewById(R.id.ibanEdit);
         EditText amountEdit = (EditText) v.findViewById(R.id.amountEdit);
+        TextView titleView = (TextView) v.findViewById(R.id.paymentTitleContent);
+        EditText message = (EditText) v.findViewById(R.id.purchaseMessage);
 
         if (isPurchase) {
             String productImageUrl = mt.getItem().getImageUrl();
+            String productName = mt.getItem().getName();
             ImageView purchasableView = (ImageView) v.findViewById(R.id.imagePurchasable);
             new DownloadImageTask(purchasableView).execute(productImageUrl);
-
-
+            titleView.setText(productName);
+            message.setHint("Share your purchase");
             // TODO: Disable editing of name and iban
+        } else {
+            titleView.setText("Money transfer");
+            message.setHint("Enter reference line");
         }
 
+        //titleView.setSelected(true);
         nameEdit.setText(recipientName);
         ibanEdit.setText(recipientIban);
 
@@ -411,9 +418,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             userImage.setImageDrawable(getResources().getDrawable(recipientImageResourceId));
         }
 
-        amountEdit.setFocusable(!isPurchase);
-        nameEdit.setFocusable(!isPurchase);
-        ibanEdit.setFocusable(!isPurchase);
+        amountEdit.setEnabled(!isPurchase);
+        nameEdit.setEnabled(!isPurchase);
+        ibanEdit.setEnabled(!isPurchase);
     }
 
 }

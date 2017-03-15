@@ -174,7 +174,7 @@ public class ImageFetchingDetector extends Detector {
                                     Log.e("FACE", "no corresponding user found for face");
                                 } else {
                                     EventBus.getDefault().post(new OnPaymentInit(new MoneyTransfer(
-                                        c, null, new AmountOfMoney(5.0)
+                                        c, null, new AmountOfMoney()
                                     )));
                                 }
                             }

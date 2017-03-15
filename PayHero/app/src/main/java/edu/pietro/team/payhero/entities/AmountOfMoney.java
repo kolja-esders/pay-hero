@@ -11,6 +11,11 @@ public class AmountOfMoney {
 
     private final Currency mCurrency;
 
+    public AmountOfMoney() {
+        mAmount = null;
+        mCurrency = Currency.getInstance("EUR");
+    }
+
     /**
      * Defaulting to EUR as currency.
      * @param amount of money
@@ -34,6 +39,9 @@ public class AmountOfMoney {
     }
 
     public String getFormattedAmount() {
+        if (mAmount == null) {
+            return "";
+        }
         NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.GERMANY);
         nf.setCurrency(mCurrency);
         nf.setMaximumFractionDigits(mCurrency.getDefaultFractionDigits());
