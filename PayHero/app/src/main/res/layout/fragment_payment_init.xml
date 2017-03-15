@@ -146,15 +146,6 @@
         android:layout_marginTop="16dp"
         android:textSize="18sp" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profileImage"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:src="@drawable/kolja"
-        android:layout_marginTop="15dp"
-        android:layout_below="@+id/recipientTitle"
-        android:layout_alignStart="@+id/recipientTitle" />
-
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -221,5 +212,14 @@
             android:textSize="24sp"
             android:maxLines="1" />
     </HorizontalScrollView>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profileImage"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/default_user"
+        android:layout_marginTop="15dp"
+        android:layout_below="@+id/recipientTitle"
+        android:layout_alignStart="@+id/recipientTitle" />
 
 </RelativeLayout>

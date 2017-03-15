@@ -50,6 +50,7 @@ import edu.pietro.team.payhero.event.OnImageCaptureRequested;
 import edu.pietro.team.payhero.event.OnPaymentInit;
 import edu.pietro.team.payhero.event.OnStartDetectionPostProcessing;
 import edu.pietro.team.payhero.helper.DownloadImageTask;
+import edu.pietro.team.payhero.helper.Utils;
 import edu.pietro.team.payhero.social.Item;
 import edu.pietro.team.payhero.social.MoneyTransfer;
 import edu.pietro.team.payhero.social.User;
@@ -394,23 +395,32 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         EditText amountEdit = (EditText) v.findViewById(R.id.amountEdit);
         TextView titleView = (TextView) v.findViewById(R.id.paymentTitleContent);
         EditText message = (EditText) v.findViewById(R.id.purchaseMessage);
+        ImageView purchasableView = (ImageView) v.findViewById(R.id.imagePurchasable);
+        ImageView recipientImage = (ImageView) v.findViewById(R.id.profileImage);
 
         if (isPurchase) {
             String productImageUrl = mt.getItem().getImageUrl();
             String productName = mt.getItem().getName();
-            ImageView purchasableView = (ImageView) v.findViewById(R.id.imagePurchasable);
             new DownloadImageTask(purchasableView).execute(productImageUrl);
             titleView.setText(productName);
             message.setHint("Share your purchase");
             // TODO: Disable editing of name and iban
         } else {
             titleView.setText("Money transfer");
+            purchasableView.setImageDrawable(getResources().getDrawable(R.drawable.ic_dollar_bill));
             message.setHint("Enter reference line");
         }
 
+        if (recipientImageResourceId != -1) {
+            recipientImage.setImageDrawable(getResources().getDrawable(recipientImageResourceId));
+        } else {
+            recipientImage.setImageDrawable(getResources().getDrawable(R.drawable.default_user));
+        }
+
+
         //titleView.setSelected(true);
         nameEdit.setText(recipientName);
-        ibanEdit.setText(recipientIban);
+        ibanEdit.setText(Utils.formatIBAN(recipientIban));
 
         amountEdit.setText(formattedAmount);
         if (recipientImageResourceId != -1) {
