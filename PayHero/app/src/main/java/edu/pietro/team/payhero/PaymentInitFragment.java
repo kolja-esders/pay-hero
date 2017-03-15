@@ -107,9 +107,9 @@ public class PaymentInitFragment extends Fragment {
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    ObjectAnimator anim = ObjectAnimator.ofFloat(amountEdit, "translationX", 0, 500);
-                                    anim.setDuration(600);
-                                    anim.setInterpolator(new AnticipateInterpolator());
+                                    ObjectAnimator anim = ObjectAnimator.ofFloat(amountEdit, "translationX", 0, 600);
+                                    anim.setDuration(500);
+                                    anim.setInterpolator(new AnticipateInterpolator(1.2f));
                                     anim.start();
                                 }
                             }, 100);
