@@ -57,6 +57,15 @@ public class Stories {
         }
     }
 
+    public static void filterFriendStories() {
+        DISPLAYED_ITEMS.clear();
+        for (Story s : ALL_ITEMS) {
+            if (!s.isOwn()) {
+                DISPLAYED_ITEMS.add(s);
+            }
+        }
+    }
+
     private static void addItem(Story item) {
         ALL_ITEMS.add(item);
     }

@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 if (mFeedFilterIsPublic) {
                     newTitle = "Show all purchases";
                 } else {
-                    newTitle = "Show your purchases";
+                    newTitle = "Show friends purchases";
                 }
                 mFeedFilterIsPublic ^= true;
                 EventBus.getDefault().post(new FeedFilterClicked(!mFeedFilterIsPublic));
@@ -338,7 +338,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             public void run() {
                 synchronized (mProcessingLock) {
                     if (mViewPager.getCurrentItem() == 1 && moneyTransfer.isValid()
-                            && mProcessingState == assumedProcessingState) {
+                            && (mProcessingState == assumedProcessingState || mProcessingState == ProcessingState.NOLOCK)) {
 
                         View view = mCollectionPagerAdapter.getItem(2).getView();
                         populatePaymentInitView(view, moneyTransfer);
