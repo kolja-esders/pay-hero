@@ -3,10 +3,13 @@ package edu.pietro.team.payhero;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +21,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -31,20 +35,36 @@ import com.google.android.gms.vision.text.TextRecognizer;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 
+import edu.pietro.team.payhero.entities.AmountOfMoney;
+import edu.pietro.team.payhero.event.FeedFilterClicked;
 import edu.pietro.team.payhero.event.OnImageCaptureRequested;
 import edu.pietro.team.payhero.event.OnPaymentInit;
+import edu.pietro.team.payhero.event.OnStartDetectionPostProcessing;
 import edu.pietro.team.payhero.helper.DownloadImageTask;
+import edu.pietro.team.payhero.social.Item;
 import edu.pietro.team.payhero.social.MoneyTransfer;
+import edu.pietro.team.payhero.social.User;
 import edu.pietro.team.payhero.vision.BarcodeTracker;
 import edu.pietro.team.payhero.vision.CameraSourcePreview;
-import edu.pietro.team.payhero.event.FeedFilterClicked;
 import edu.pietro.team.payhero.vision.FaceTracker;
 import edu.pietro.team.payhero.vision.FirstFocusingProcessor;
 import edu.pietro.team.payhero.vision.ImageFetchingDetector;
 import edu.pietro.team.payhero.vision.OcrDetectionProcessor;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 
 public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
@@ -130,8 +150,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         // We need to provide at least one detector to the camera :x
         FaceDetector faceDetector = new FaceDetector.Builder(ctx).build();
         faceDetector.setProcessor(
-                               new LargestFaceFocusingProcessor.Builder(faceDetector, new FaceTracker(imageFetchingDetector))
-                                                .build());
+                new LargestFaceFocusingProcessor.Builder(faceDetector, new FaceTracker(imageFetchingDetector))
+                        .build());
 
         BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(ctx).build();
         //barcodeDetector.setProcessor(new BarcodeDetectionProcessor());
@@ -240,13 +260,18 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        Log.d("Back", "I'll be back");
+    }
+
     @Subscribe
     public void showPaymentInit(OnPaymentInit e) {
         final MoneyTransfer purchase = e.getPurchase();
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(mViewPager.getCurrentItem() == 1) {
+                if (mViewPager.getCurrentItem() == 1) {
                     String name = purchase.getRecipient().getName();
                     String iban = purchase.getRecipient().getIban();
                     String amount = purchase.getAmount().getAmount().toString();
@@ -283,33 +308,42 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     public void onMessageEvent(OnImageCaptureRequested e) {
         Log.d("EVENT_BUS", "Image capture requested.");
 
-        TextView et = (TextView) mCollectionPagerAdapter.getItem(2).getView().findViewById(R.id.nameEdit);
-        et.setText("Test");
-        mViewPager.setCurrentItem(2);
+//        TextView et = (TextView) mCollectionPagerAdapter.getItem(2).getView().findViewById(R.id.nameEdit);
+//        et.setText("Test");
+//        mViewPager.setCurrentItem(2);
 
-        /*mCameraSource.takePicture(null, new CameraSource.PictureCallback() {
+        mCameraSource.takePicture(null, new CameraSource.PictureCallback() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onPictureTaken(final byte[] bytes) {
                 // @David: Da ist das IMG :)
 
-                Log.d("xP", "Image captured !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                EventBus.getDefault().post(new OnStartDetectionPostProcessing("Searching for product..."));
 
 
-                Thread thread = new Thread(new Runnable(){
+                Thread thread = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
-
+                            
                             String url = "http://1027cf3f.ngrok.io/obrec/";
+                            //String url = "http://d00d8906.ngrok.io/obrec/";
                             URL obj = new URL(url);
 
 
-                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes , 0, bytes.length);
-                            bitmap = Bitmap.createScaledBitmap(bitmap, 227 , 227, false );
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+                            Log.d("BS", bitmap.getWidth() + " x " + bitmap.getHeight());
+
+                            int newHeight = (int) (bitmap.getHeight() * 0.6);
+
+                            int hOffset = (bitmap.getHeight() - newHeight) / 2;
+
+                            bitmap = Bitmap.createBitmap(bitmap, 0, hOffset, bitmap.getWidth(), bitmap.getHeight() - hOffset);
+                            bitmap = Bitmap.createScaledBitmap(bitmap, 300, 300, false);
 
                             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                            bitmap.compress(Bitmap.CompressFormat.PNG, 80, stream);
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
                             byte[] byteArray = stream.toByteArray();
 
 
@@ -332,7 +366,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                             final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
 
                             RequestBody req = new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart("userid", "8457851245")
-                                    .addFormDataPart("file",filename, RequestBody.create(MEDIA_TYPE_PNG, file)).build();
+                                    .addFormDataPart("file", filename, RequestBody.create(MEDIA_TYPE_PNG, file)).build();
 
                             Request request = new Request.Builder()
                                     .url(url)
@@ -344,26 +378,17 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
                             String prdResp = response.body().string();
 
-                            Log.d("response", "uploadImage:"+prdResp);
+                            Log.d("response", "uploadImage:" + prdResp);
 
                             final JSONObject jsonProd = new JSONObject(prdResp);
 
-                            
-                            Context context = getApplicationContext();
+                            Item foundProduct = new Item(jsonProd.getString("name"), jsonProd.getString("brand"), jsonProd.getString("display_img_path"), new AmountOfMoney(jsonProd.getDouble("price")));
 
-                            MainActivity.this.runOnUiThread(new Runnable() {
-                                public void run() {
-                                    try {
-                                        Toast.makeText(MainActivity.this, jsonProd.getString("name"), Toast.LENGTH_LONG).show();
-                                    } catch (JSONException e1) {
-                                        e1.printStackTrace();
-                                    }
-                                }
-                            });
+                            User seller = User.ZALANDO;
+                            EventBus.getDefault().post(new OnPaymentInit(new MoneyTransfer(seller, foundProduct, foundProduct.getRetailPrice())));
 
 
-                        }
-                        catch(Exception x){
+                        } catch (Exception x) {
                             x.printStackTrace();
                         }
                     }
@@ -372,6 +397,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
             }
 
-        });*/
-    };
+        });
+    }
+
+    ;
 }

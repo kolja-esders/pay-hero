@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -17,6 +18,17 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:id="@+id/status_bar_background" />
+
+    <ImageView
+        android:id="@+id/paySuccess"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignBottom="@+id/payButton"
+        android:layout_alignEnd="@+id/payButton"
+        android:layout_alignStart="@+id/payButton"
+        android:layout_alignTop="@+id/payButton"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/ic_done_black_256dp" />
 
     <ImageView
         android:layout_width="fill_parent"
@@ -42,18 +54,19 @@
         android:paddingTop="16dp" />
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/payButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        app:fabSize="normal"
-        app:srcCompat="@drawable/send_white_24dp"
-        android:id="@+id/floatingActionButton"
         android:layout_above="@+id/navigation_background"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         app:elevation="2dp"
-        app:backgroundTint="#ff4444" />
+        app:backgroundTint="#ff4444"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:visibility="visible"
+        app:fabSize="normal"
+        app:srcCompat="@drawable/send_white_24dp" />
 
     <EditText
         android:layout_height="wrap_content"
@@ -65,11 +78,11 @@
         android:layout_width="wrap_content"
         android:paddingBottom="16dp"
         android:paddingTop="16dp"
-        android:layout_alignBottom="@+id/floatingActionButton"
+        android:layout_alignBottom="@+id/payButton"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:textSize="18dp"
-        android:layout_toStartOf="@+id/floatingActionButton"
+        android:layout_toStartOf="@+id/payButton"
         android:inputType="textCapSentences|textShortMessage"
         android:layout_alignLeft="@+id/imagePurchasable"
         android:layout_marginLeft="16dp" />
@@ -152,10 +165,19 @@
         android:layout_height="wrap_content"
         android:id="@+id/textView3"
         android:textColor="@android:color/white"
-        android:textSize="18sp"
         android:layout_below="@+id/profileImage"
-        android:layout_alignStart="@+id/view5"
         android:layout_marginTop="32dp"
+        android:textSize="18dp"
+        android:inputType="textCapSentences|textShortMessage"
         android:layout_marginLeft="16dp" />
+
+    <ProgressBar
+        android:id="@+id/payProgress"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/payButton"
+        android:layout_alignEnd="@+id/payButton"
+        tools:visibility="invisible" />
 
 </RelativeLayout>
