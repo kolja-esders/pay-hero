@@ -60,6 +60,7 @@ import edu.pietro.team.payhero.event.OnPaymentInit;
 import edu.pietro.team.payhero.event.OnStartDetectionPostProcessing;
 import edu.pietro.team.payhero.event.OnStopMessage;
 import edu.pietro.team.payhero.helper.DownloadImageTask;
+import edu.pietro.team.payhero.helper.ProcessingState;
 import edu.pietro.team.payhero.helper.Utils;
 import edu.pietro.team.payhero.social.Item;
 import edu.pietro.team.payhero.social.MoneyTransfer;
@@ -98,7 +99,12 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
     private ViewPager mViewPager;
 
+    private Object mProcessingLock = new Object();
+    private ProcessingState mProcessingState = ProcessingState.NOLOCK;
+
     private static MainActivity currentActivity = null;
+
+    private MoneyTransfer currentTransfer;
 
     public static MainActivity getCurrentActivity() {
         return currentActivity;
@@ -106,7 +112,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
     private static String[] BT_CONTEXT_DEVICES = new String[] {
             "04:59:06:09:52:06",
-            "f8:e0:79:4c:ea:e6"
+            "f8:e0:79:4c:ea:e6",
+            "b4:ce:f6:22:d7:16",
+            "78:02:f8:e7:96:ae"
     };
 
     private final BroadcastReceiver mBtReceiver = new BroadcastReceiver() {
@@ -128,7 +136,10 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                                     "http://guide.karlsruhe.de/db/de/zentrum_fuer_kunst_und_med/122/zkm_mnk_innen.jpg",
                                     new AmountOfMoney(6.0)
                             );
-                            EventBus.getDefault().post(new OnPaymentInit(new MoneyTransfer(seller, ticket, new AmountOfMoney(6.0))));
+                            EventBus.getDefault().post(new OnPaymentInit(
+                                    new MoneyTransfer(seller, ticket, new AmountOfMoney(6.0)),
+                                    ProcessingState.NOLOCK
+                            ));
                             break;
                         }
                     }
@@ -321,18 +332,24 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     @Subscribe
     public void showPaymentInit(OnPaymentInit e) {
         final MoneyTransfer moneyTransfer = e.getPurchase();
+        final ProcessingState assumedProcessingState = e.getAssumedProcessingState();
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (mViewPager.getCurrentItem() == 1 && moneyTransfer.isValid()) {
-                    View view = mCollectionPagerAdapter.getItem(2).getView();
-                    populatePaymentInitView(view, moneyTransfer);
+                synchronized (mProcessingLock) {
+                    if (mViewPager.getCurrentItem() == 1 && moneyTransfer.isValid()
+                            && mProcessingState == assumedProcessingState) {
 
-                    Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-                    v.vibrate(150);
-                    EventBus.getDefault().post(new OnStopMessage());
+                        View view = mCollectionPagerAdapter.getItem(2).getView();
+                        populatePaymentInitView(view, moneyTransfer);
 
-                    mViewPager.setCurrentItem(2);
+                        Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                        v.vibrate(150);
+                        EventBus.getDefault().post(new OnStopMessage());
+
+                        mViewPager.setCurrentItem(2);
+                        mProcessingState = ProcessingState.NOLOCK;
+                    }
                 }
             }
         });
@@ -351,6 +368,10 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             @Override
             public void onPictureTaken(final byte[] bytes) {
                 // @David: Da ist das IMG :)
+
+                if (!onTryStartProcessing(ProcessingState.OBJECT_LOCK)){
+                    return;
+                }
 
                 EventBus.getDefault().post(new OnStartDetectionPostProcessing("Searching for product..."));
 
@@ -419,11 +440,16 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                             Item foundProduct = new Item(jsonProd.getString("name"), jsonProd.getString("brand"), jsonProd.getString("display_img_path"), new AmountOfMoney(jsonProd.getDouble("price")));
 
                             User seller = User.ZALANDO;
-                            EventBus.getDefault().post(new OnPaymentInit(new MoneyTransfer(seller, foundProduct, foundProduct.getRetailPrice())));
+                            EventBus.getDefault().post(new OnPaymentInit(
+                                    new MoneyTransfer(seller, foundProduct, foundProduct.getRetailPrice()),
+                                    ProcessingState.OBJECT_LOCK
+                            ));
 
 
                         } catch (Exception x) {
                             x.printStackTrace();
+                        } finally {
+                            onStopProcessing(ProcessingState.OBJECT_LOCK);
                         }
                     }
                 });
@@ -436,6 +462,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
     private void populatePaymentInitView(View v, MoneyTransfer mt) {
         boolean isPurchase = mt.getItem() != null;
+
+        this.currentTransfer = mt;
 
         User recipient = mt.getRecipient();
         String recipientName = recipient.getName();
@@ -535,5 +563,27 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 ((ImageView) v.findViewById(R.id.paySuccess)).setVisibility(View.INVISIBLE);
             }
         });
+    }
+
+    public MoneyTransfer getCurrentTransfer(){
+        return this.currentTransfer;
+    }
+
+    public boolean onTryStartProcessing(ProcessingState ps) {
+        synchronized (mProcessingLock) {
+            if (mProcessingState == ProcessingState.NOLOCK && mViewPager.getCurrentItem() == 1) {
+                mProcessingState = ps;
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public void onStopProcessing(ProcessingState ps) {
+        synchronized (mProcessingLock) {
+            if (mProcessingState != ps)
+                Log.e(TAG, "Processing state reset by another process");
+            mProcessingState = ProcessingState.NOLOCK;
+        }
     }
 }

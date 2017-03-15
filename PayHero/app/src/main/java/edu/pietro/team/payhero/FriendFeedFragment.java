@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,8 +54,39 @@ public class FriendFeedFragment extends Fragment {
 
     @Override
     public void onStart() {
+        Log.d("0o", "on Start");
         super.onStart();
         EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onResume() {
+        Log.d("0o", "on Resume");
+        super.onResume();
+    }
+
+    @Override
+    public void setMenuVisibility(final boolean visible) {
+        super.setMenuVisibility(visible);
+        if (visible) {
+            RecyclerView recyclerView = (RecyclerView) this.getView().findViewById(R.id.story_list);
+
+            Toolbar toolbar = (Toolbar) this.getView().findViewById(R.id.feed_toolbar);
+            getActivity().setActionBar(toolbar);
+            toolbar.setTitle("Feed");
+
+            // Set the adapter
+            if (recyclerView != null) {
+                Context context = recyclerView.getContext();
+                if (mColumnCount <= 1) {
+                    recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                } else {
+                    recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+                }
+                mAdapter = new StoryRecyclerViewAdapter(Stories.DISPLAYED_ITEMS, mListener);
+                recyclerView.setAdapter(mAdapter);
+            }
+        }
     }
 
     @Override
@@ -115,6 +147,7 @@ public class FriendFeedFragment extends Fragment {
 
     @Subscribe
     public void onEvent(FeedFilterClicked event) {
+        Log.d("0o", "on Event");
         if (event.showOnlyPersonalStories) {
             Stories.filterPersonalStories();
         } else {

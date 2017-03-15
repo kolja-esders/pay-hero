@@ -1,6 +1,7 @@
 package edu.pietro.team.payhero;
 
 import android.animation.ObjectAnimator;
+import android.app.DownloadManager;
 import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
@@ -23,6 +24,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import edu.pietro.team.payhero.helper.PostHelper;
+import edu.pietro.team.payhero.social.Stories;
 
 
 /**
@@ -97,13 +99,21 @@ public class PaymentInitFragment extends Fragment {
                 amountEdit.setEnabled(false);
                 String iban = ibanEdit.getText().toString();
                 String amount = amountEdit.getText().toString();
+                String formattedAmount = ((Double)Double.parseDouble(amount.replace(",", ".").replace("€", "").replace(" ", "").replace("\u00A0",""))).toString();
+
+                // Add Story (might not be right here !!!!)
+                String purchaseString = ((EditText)v.findViewById(R.id.purchaseMessage)).getText().toString();
+                Stories.Story buyStory = new Stories.Story(( (MainActivity) getActivity()).getCurrentTransfer(), purchaseString);
+                Stories.DISPLAYED_ITEMS.add(buyStory);
+                Stories.ALL_ITEMS.add(buyStory);
 
                 new AsyncTask<String[], Void, Boolean>() {
                     @Override
                     protected Boolean doInBackground(String[]... strings) {
                         Log.d("HELP", strings.toString());
                         try {
-                            PostHelper.transfer(strings[0][0].replace(" ", ""), strings[0][1], strings[0][2].replace(",", ".").replace("€", "").replace(" ", ""));
+
+                            PostHelper.transfer(strings[0][0].replace(" ", ""), strings[0][1], strings[0][2]);
                             return true;
                         } catch (Exception e) {
                             Log.e("PAYMENT", "Payment failed :/", e);
@@ -142,10 +152,10 @@ public class PaymentInitFragment extends Fragment {
                             ibanEdit.setEnabled(true);
                             amountEdit.setEnabled(true);
                             ((FloatingActionButton) v.findViewById(R.id.payButton)).setVisibility(View.VISIBLE);*/
-                            MainActivity.getCurrentActivity().resetPaymentView(false);
+                            MainActivity.getCurrentActivity().resetPaymentView(true);
                         }
                     }
-                }.execute(new String[][]{{iban, name, amount}});
+                }.execute(new String[][]{{iban, name, formattedAmount}});
             }
         });
         return v;

@@ -19,11 +19,13 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 
+import edu.pietro.team.payhero.MainActivity;
 import edu.pietro.team.payhero.entities.AmountOfMoney;
 import edu.pietro.team.payhero.event.OnErrorDuringDetectionPostProcessing;
 import edu.pietro.team.payhero.event.OnPaymentInit;
 import edu.pietro.team.payhero.helper.AddressBook;
 import edu.pietro.team.payhero.helper.PostHelper;
+import edu.pietro.team.payhero.helper.ProcessingState;
 import edu.pietro.team.payhero.helper.SavePhotoTask;
 import edu.pietro.team.payhero.social.MoneyTransfer;
 import edu.pietro.team.payhero.social.User;
@@ -34,7 +36,6 @@ import edu.pietro.team.payhero.social.User;
 
 public class ImageFetchingDetector extends Detector {
     Frame lastFrame = null;
-    boolean isBusy = false;
 
     public SparseArray detect (Frame frame) {
         return null;
@@ -134,66 +135,62 @@ public class ImageFetchingDetector extends Detector {
     }
 
     public void tryRecognizeFace() {
-        if (!isBusy) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        isBusy = true;
-                        //int bytes = lastFrame.getBitmap().getByteCount();
-                        //or we can calculate bytes this way. Use a different value than 4 if you don't use 32bit images.
-                        //int bytes = b.getWidth()*b.getHeight()*4;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    //int bytes = lastFrame.getBitmap().getByteCount();
+                    //or we can calculate bytes this way. Use a different value than 4 if you don't use 32bit images.
+                    //int bytes = b.getWidth()*b.getHeight()*4;
 
-                        //ByteBuffer buffer = ByteBuffer.allocate(bytes); //Create a new buffer
-                        //lastFrame.getBitmap().copyPixelsToBuffer(buffer); //Move the byte data to the buffer
+                    //ByteBuffer buffer = ByteBuffer.allocate(bytes); //Create a new buffer
+                    //lastFrame.getBitmap().copyPixelsToBuffer(buffer); //Move the byte data to the buffer
 
-                        int w = lastFrame.getMetadata().getWidth();
-                        int h = lastFrame.getMetadata().getHeight();
+                    int w = lastFrame.getMetadata().getWidth();
+                    int h = lastFrame.getMetadata().getHeight();
 
-                        byte[] rotatedYuvBytes = rotateYUV420Degree90(lastFrame.getGrayscaleImageData().array(),w,h);
-                        //YuvImage yuvimage=new YuvImage(lastFrame.getGrayscaleImageData().array(),
-                        //        ImageFormat.NV21, w, h, null);
-                        YuvImage yuvimage=new YuvImage(rotatedYuvBytes,
-                                ImageFormat.NV21, h,w, null);
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        //yuvimage.compressToJpeg(new Rect(0, 0, w, h), 100, baos); // Where 100 is the quality of the generated jpeg
-                        yuvimage.compressToJpeg(new Rect(0, 0, h, w), 60, baos); // Where 100 is the quality of the generated jpeg
-                        byte[] jpegArray = baos.toByteArray();
+                    byte[] rotatedYuvBytes = rotateYUV420Degree90(lastFrame.getGrayscaleImageData().array(),w,h);
+                    //YuvImage yuvimage=new YuvImage(lastFrame.getGrayscaleImageData().array(),
+                    //        ImageFormat.NV21, w, h, null);
+                    YuvImage yuvimage=new YuvImage(rotatedYuvBytes,
+                            ImageFormat.NV21, h,w, null);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    //yuvimage.compressToJpeg(new Rect(0, 0, w, h), 100, baos); // Where 100 is the quality of the generated jpeg
+                    yuvimage.compressToJpeg(new Rect(0, 0, h, w), 60, baos); // Where 100 is the quality of the generated jpeg
+                    byte[] jpegArray = baos.toByteArray();
 
-                        new SavePhotoTask().execute(jpegArray);
-                        Log.d("ImageFetchingDetector", "saving pic");
+                    new SavePhotoTask().execute(jpegArray);
+                    Log.d("ImageFetchingDetector", "saving pic");
 
 
-                        String faceId = PostHelper.detectFace(jpegArray);
-                        Log.d("detectFace", faceId);
-                        if (faceId != "") {
-                            String personId = PostHelper.identifyFace(faceId);
-                            if (personId != "") {
-                                Log.d("PERSON", personId);
-                                User c = AddressBook.getByFace(personId);
-                                if (c==null){
-                                    Log.e("FACE", "no corresponding user found for face");
-                                    EventBus.getDefault().post(new OnErrorDuringDetectionPostProcessing("Face not recognized"));
-                                } else {
-                                    EventBus.getDefault().post(new OnPaymentInit(new MoneyTransfer(
-                                        c, null, new AmountOfMoney()
-                                    )));
-                                }
-                            } else {
+                    String faceId = PostHelper.detectFace(jpegArray);
+                    Log.d("detectFace", faceId);
+                    if (faceId != "") {
+                        String personId = PostHelper.identifyFace(faceId);
+                        if (personId != "") {
+                            Log.d("PERSON", personId);
+                            User c = AddressBook.getByFace(personId);
+                            if (c==null){
+                                Log.e("FACE", "no corresponding user found for face");
                                 EventBus.getDefault().post(new OnErrorDuringDetectionPostProcessing("Face not recognized"));
+                            } else {
+                                EventBus.getDefault().post(new OnPaymentInit(
+                                        new MoneyTransfer(c, null, new AmountOfMoney()),
+                                        ProcessingState.FACE_LOCK
+                                ));
                             }
                         } else {
                             EventBus.getDefault().post(new OnErrorDuringDetectionPostProcessing("Face not recognized"));
                         }
-                    } catch (Exception e) {
-                        Log.e("ERROR", e.toString(), e);
-
-                    } finally {
-                        isBusy = false;
+                    } else {
+                        EventBus.getDefault().post(new OnErrorDuringDetectionPostProcessing("Face not recognized"));
                     }
+                } catch (Exception e) {
+                    Log.e("ERROR", e.toString(), e);
+                } finally {
+                    MainActivity.getCurrentActivity().onStopProcessing(ProcessingState.FACE_LOCK);
                 }
-            }).start();
-        }
-
+            }
+        }).start();
     }
 }

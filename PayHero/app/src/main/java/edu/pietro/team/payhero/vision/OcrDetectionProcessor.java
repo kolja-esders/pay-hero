@@ -12,10 +12,12 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
+import edu.pietro.team.payhero.MainActivity;
 import edu.pietro.team.payhero.entities.AmountOfMoney;
 import edu.pietro.team.payhero.event.OnPaymentInit;
 import edu.pietro.team.payhero.helper.AddressBook;
 import edu.pietro.team.payhero.helper.LangAnalytics;
+import edu.pietro.team.payhero.helper.ProcessingState;
 import edu.pietro.team.payhero.social.Item;
 import edu.pietro.team.payhero.social.MoneyTransfer;
 import edu.pietro.team.payhero.social.User;
@@ -46,19 +48,18 @@ public class OcrDetectionProcessor implements Detector.Processor<TextBlock> {
         String amount = LangAnalytics.getAmount(ocrText);
         String contact = LangAnalytics.findFamiliarFriends(ocrText);
 
-        if (!amount.equals("")) {
-            if (!contact.equals("")) {
-                iban = AddressBook.getIBANforName(contact);
-            } else if (!iban.equals("")) {
-                contact = AddressBook.getNameforIBAN(iban);
-            }
-            if (!contact.equals("") && !iban.equals("")) {
-                User recipient = new User(contact, iban);
-                Item moneyTransferItem = new Item("Money Transfer", null, null, null);
-                EventBus.getDefault().post(new OnPaymentInit(
-                        new MoneyTransfer(recipient, moneyTransferItem,
-                                new AmountOfMoney(Double.valueOf(amount)))));
-            }
+        if (!iban.equals("")) {
+            contact = AddressBook.getNameforIBAN(iban);
+        } else if (!contact.equals("")) {
+            iban = AddressBook.getIBANforName(contact);
+        }
+        if (!iban.equals("") || !contact.equals("")) {
+            User recipient = new User(contact, iban);
+            Item moneyTransferItem = new Item("Money Transfer", null, null, null);
+            AmountOfMoney aom = amount.equals("") ? new AmountOfMoney(0.0)
+                    : new AmountOfMoney(Double.valueOf(amount));
+            EventBus.getDefault().post(new OnPaymentInit(
+                    new MoneyTransfer(recipient, moneyTransferItem, aom), ProcessingState.NOLOCK));
         }
     }
 
