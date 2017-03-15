@@ -16,7 +16,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         app:srcCompat="@drawable/kolja"
-        android:id="@+id/profileImage"
+        android:id="@+id/boughtprodimage"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
 
@@ -28,8 +28,8 @@
         android:gravity="center_vertical"
         android:layout_marginStart="4dp"
         android:textStyle="normal|bold"
-        android:layout_toEndOf="@id/profileImage"
-        android:layout_alignTop="@id/profileImage"
+        android:layout_toEndOf="@id/boughtprodimage"
+        android:layout_alignTop="@id/boughtprodimage"
         android:textColor="@color/titleBlack" />
 
     <TextView
@@ -40,8 +40,8 @@
         android:textSize="12sp"
         android:id="@+id/subtitle"
         android:layout_marginStart="4dp"
-        android:layout_toEndOf="@id/profileImage"
-        android:layout_alignBottom="@id/profileImage"
+        android:layout_toEndOf="@id/boughtprodimage"
+        android:layout_alignBottom="@id/boughtprodimage"
         android:gravity="center_vertical"
         android:textColor="@color/subtitleGrey" />
 
@@ -53,5 +53,24 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="48dp"
         android:textColor="@color/contentBlack" />
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:srcCompat="@drawable/kolja"
+        android:id="@+id/profileImage"
+        android:layout_marginEnd="12dp"
+        android:layout_alignTop="@+id/title"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profileImage"
+        android:layout_alignEnd="@+id/profileImage"
+        android:textSize="8sp"
+        android:textColor="@color/subtitleGrey"
+        android:id="@+id/sellerName" />
 
 </RelativeLayout>

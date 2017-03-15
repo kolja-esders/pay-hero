@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import edu.pietro.team.payhero.FriendFeedFragment.OnFriendFeedFragmentInteractionListener;
+import edu.pietro.team.payhero.helper.DownloadImageTask;
 import edu.pietro.team.payhero.social.Stories.Story;
 
 import java.util.List;
@@ -48,6 +49,9 @@ public class StoryRecyclerViewAdapter extends RecyclerView.Adapter<StoryRecycler
         holder.mTitleView.setText(mValues.get(position).getTransfer().getItem().getName());
         holder.mSubtitle.setText(mValues.get(position).getTransfer().getAmount().getFormattedAmount());
         holder.mMessageView.setText(mValues.get(position).getMessage());
+        holder.mSellerNameView.setText(mValues.get(position).getSellerName());
+
+        new DownloadImageTask(holder.mProductView).execute(mValues.get(position).getTransfer().getItem().getImageUrl());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,7 +74,9 @@ public class StoryRecyclerViewAdapter extends RecyclerView.Adapter<StoryRecycler
         public final View mView;
         public final TextView mTitleView;
         public final TextView mMessageView;
+        public final TextView mSellerNameView;
         public final ImageView mProfileImageView;
+        public final ImageView mProductView;
         public final TextView mSubtitle;
         public Story mStory;
 
@@ -79,7 +85,9 @@ public class StoryRecyclerViewAdapter extends RecyclerView.Adapter<StoryRecycler
             mView = view;
             mTitleView = (TextView) view.findViewById(R.id.title);
             mMessageView = (TextView) view.findViewById(R.id.message);
+            mSellerNameView = (TextView) view.findViewById(R.id.sellerName);
             mProfileImageView = (ImageView) view.findViewById(R.id.profileImage);
+            mProductView = (ImageView) view.findViewById(R.id.boughtprodimage);
             mSubtitle = (TextView) view.findViewById(R.id.subtitle);
         }
 
