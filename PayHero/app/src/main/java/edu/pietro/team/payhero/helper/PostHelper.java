@@ -350,6 +350,7 @@ public class PostHelper {
             JSONArray ja = new JSONArray(res);
             return ja.getJSONObject(0).getString("faceId");
         } catch (Exception e) {
+            e.printStackTrace();
             return "";
         }
 

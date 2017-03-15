@@ -3,9 +3,7 @@ package edu.pietro.team.payhero.social;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import edu.pietro.team.payhero.entities.AmountOfMoney;
@@ -37,7 +35,7 @@ public class Stories {
             User buyer = users[randUserIndex];
             User seller = users[(randUserIndex + 1) % users.length];
             Item purchasable = stuff[ThreadLocalRandom.current().nextInt(stuff.length)];
-            Purchase p = new Purchase(buyer, seller, purchasable, amount, c);
+            MoneyTransfer p = new MoneyTransfer(buyer, seller, purchasable, amount, c);
             addItem(createDummyItem(p, messages[ThreadLocalRandom.current().nextInt(messages.length)]));
         }
         DISPLAYED_ITEMS.addAll(ALL_ITEMS);
@@ -63,16 +61,16 @@ public class Stories {
         ALL_ITEMS.add(item);
     }
 
-    private static Story createDummyItem(Purchase purchase, String message) {
+    private static Story createDummyItem(MoneyTransfer purchase, String message) {
         return new Story(purchase, message);
     }
 
     public static class Story {
-        private final Purchase mPurchase;
+        private final MoneyTransfer mPurchase;
 
         private final String mMessage;
 
-        public Story(Purchase purchase, String message) {
+        public Story(MoneyTransfer purchase, String message) {
             mPurchase = purchase;
             mMessage = message;
         }
@@ -82,15 +80,15 @@ public class Stories {
         }
 
         public String getBuyerName() {
-            return mPurchase.getBuyer().getName();
+            return mPurchase.getSender().getName();
         }
 
         public String getSellerName() {
-            return mPurchase.getSeller().getName();
+            return mPurchase.getRecipient().getName();
         }
 
         public String getPurchasableName() {
-            return mPurchase.getItem().name;
+            return mPurchase.getItem().getName();
         }
 
         public String getFormattedDate() {

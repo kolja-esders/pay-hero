@@ -1,8 +1,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:id="@+id/scan_overlay">
+    android:id="@+id/scan_overlay"
+    android:animateLayoutChanges="true">
 
     <ImageView
         android:layout_width="50dp"
@@ -10,32 +12,23 @@
         app:srcCompat="@mipmap/ic_pay_hero_logo"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="26dp"
         android:id="@+id/payhero_logo" />
 
     <TextView
-        android:text="Touch to pay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/todo"
-        android:layout_marginBottom="66dp"
-        android:textSize="16sp"
-        android:textColor="@color/transparentWhite"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/payhero_logo"
         android:layout_centerHorizontal="true"
-        android:shadowColor="@color/transparentBlack"
-        android:shadowRadius="2"
-        android:textStyle="normal|bold" />
-
-    <ProgressBar
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="28dp"
-        android:id="@+id/processing"
-        android:layout_alignBottom="@+id/payhero_logo"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"/>
+        android:layout_marginTop="2dp"
+        android:id="@+id/processing_status"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:background="@drawable/status_background_processing"
+        android:textColor="@android:color/black"
+        android:visibility="invisible" />
 
     <ImageView
         android:layout_width="32dp"
