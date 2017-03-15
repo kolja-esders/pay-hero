@@ -26,7 +26,6 @@ public class FaceTracker extends Tracker<Face> {
         Log.i(TAG, "Face entered.");
         EventBus.getDefault().post(new OnStartDetectionPostProcessing("Processing face..."));
         mImageFetchingDetector.tryRecognizeFace();
-
     }
 
     public void onUpdate(Detector.Detections<Face> detections, Face face) {

@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -24,6 +25,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -56,6 +58,7 @@ import edu.pietro.team.payhero.event.FeedFilterClicked;
 import edu.pietro.team.payhero.event.OnImageCaptureRequested;
 import edu.pietro.team.payhero.event.OnPaymentInit;
 import edu.pietro.team.payhero.event.OnStartDetectionPostProcessing;
+import edu.pietro.team.payhero.event.OnStopMessage;
 import edu.pietro.team.payhero.helper.DownloadImageTask;
 import edu.pietro.team.payhero.helper.Utils;
 import edu.pietro.team.payhero.social.Item;
@@ -327,6 +330,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
                     Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                     v.vibrate(150);
+                    EventBus.getDefault().post(new OnStopMessage());
 
                     mViewPager.setCurrentItem(2);
                 }
@@ -522,8 +526,11 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 titleView.setText("Money transfer");
                 purchasableView.setImageDrawable(getResources().getDrawable(R.drawable.ic_dollar_bill));
                 message.setHint("Enter reference line");
+                message.setText("");
 
-                ((FloatingActionButton) v.findViewById(R.id.payButton)).setVisibility(View.VISIBLE);
+                Button payBtn = (Button) v.findViewById(R.id.payButton);
+                payBtn.setText("SEND NOW");
+                payBtn.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.right_24dp), null);
                 ((ProgressBar) v.findViewById(R.id.payProgress)).setVisibility(View.INVISIBLE);
                 ((ImageView) v.findViewById(R.id.paySuccess)).setVisibility(View.INVISIBLE);
             }

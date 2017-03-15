@@ -72,13 +72,22 @@ public class PaymentInitFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_payment_init, container, false);
-        final FloatingActionButton confirm = (FloatingActionButton) v.findViewById(R.id.payButton);
+        final Button confirm = (Button) v.findViewById(R.id.payButton);
+        final ProgressBar progressBar = (ProgressBar) v.findViewById(R.id.payProgress);
+        progressBar.setVisibility(View.INVISIBLE);
+        progressBar.getIndeterminateDrawable().setColorFilter(0xFFFFFFFF,
+                android.graphics.PorterDuff.Mode.MULTIPLY);
+
+
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 MainActivity.getCurrentActivity().disableScrolling();
                 // Hide button and show loading
-                ((FloatingActionButton) v.findViewById(R.id.payButton)).setVisibility(View.INVISIBLE);
+                //((Button) v.findViewById(R.id.payButton)).setVisibility(View.INVISIBLE);
+                Button payButton = (Button) v.findViewById(R.id.payButton);
+                payButton.setText("");
+                payButton.setCompoundDrawables(null, null, null, null);
                 ((ProgressBar) v.findViewById(R.id.payProgress)).setVisibility(View.VISIBLE);
 
                 String name = ((TextView) v.findViewById(R.id.nameEdit)).getText().toString();
@@ -117,6 +126,7 @@ public class PaymentInitFragment extends Fragment {
                             intent.putExtra("name", ValidationActivity.this.mName);
                             intent.putExtra("amount", ValidationActivity.this.mAmount);
                             startActivity(intent);*/
+                            ((Button) v.findViewById(R.id.payButton)).setText("DONE");
                             ((ProgressBar) v.findViewById(R.id.payProgress)).setVisibility(View.INVISIBLE);
                             ((ImageView) v.findViewById(R.id.paySuccess)).setVisibility(View.VISIBLE);
                             mHandler.removeMessages(0);

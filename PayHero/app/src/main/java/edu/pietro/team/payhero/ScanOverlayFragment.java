@@ -23,6 +23,7 @@ import edu.pietro.team.payhero.event.OnStartDetectionPostProcessing;
 import org.greenrobot.eventbus.EventBus;
 
 import edu.pietro.team.payhero.event.OnImageCaptureRequested;
+import edu.pietro.team.payhero.event.OnStopMessage;
 
 public class ScanOverlayFragment extends Fragment {
 
@@ -105,6 +106,12 @@ public class ScanOverlayFragment extends Fragment {
     public void onEvent(OnErrorDuringDetectionPostProcessing event) {
         mIsProcessing = false;
         startErrorStatus(event.message, TIME_ERROR_MILLIS);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(OnStopMessage event) {
+        mIsProcessing = false;
+        stopStatus();
     }
 
     // OnSwitchToPayment ...

@@ -20,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 
 import edu.pietro.team.payhero.entities.AmountOfMoney;
+import edu.pietro.team.payhero.event.OnErrorDuringDetectionPostProcessing;
 import edu.pietro.team.payhero.event.OnPaymentInit;
 import edu.pietro.team.payhero.helper.AddressBook;
 import edu.pietro.team.payhero.helper.PostHelper;
@@ -172,12 +173,17 @@ public class ImageFetchingDetector extends Detector {
                                 User c = AddressBook.getByFace(personId);
                                 if (c==null){
                                     Log.e("FACE", "no corresponding user found for face");
+                                    EventBus.getDefault().post(new OnErrorDuringDetectionPostProcessing("Face not recognized"));
                                 } else {
                                     EventBus.getDefault().post(new OnPaymentInit(new MoneyTransfer(
                                         c, null, new AmountOfMoney()
                                     )));
                                 }
+                            } else {
+                                EventBus.getDefault().post(new OnErrorDuringDetectionPostProcessing("Face not recognized"));
                             }
+                        } else {
+                            EventBus.getDefault().post(new OnErrorDuringDetectionPostProcessing("Face not recognized"));
                         }
                     } catch (Exception e) {
                         Log.e("ERROR", e.toString(), e);
