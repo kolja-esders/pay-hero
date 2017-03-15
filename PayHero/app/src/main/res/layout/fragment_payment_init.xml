@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -8,6 +9,17 @@
     android:focusableInTouchMode="true"
     android:clipToPadding="false"
     android:background="@android:color/background_light">
+
+    <ImageView
+        android:id="@+id/paySuccess"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignBottom="@+id/payButton"
+        android:layout_alignEnd="@+id/payButton"
+        android:layout_alignStart="@+id/payButton"
+        android:layout_alignTop="@+id/payButton"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/ic_done_black_256dp" />
 
     <ImageView
         android:layout_width="fill_parent"
@@ -92,17 +104,18 @@
         android:layout_alignStart="@+id/profileImageContainer" />
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/payButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        app:fabSize="normal"
-        app:srcCompat="@drawable/send_white_24dp"
-        android:id="@+id/floatingActionButton"
         android:layout_above="@+id/navigation_background"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        app:elevation="2dp" />
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:visibility="visible"
+        app:elevation="2dp"
+        app:fabSize="normal"
+        app:srcCompat="@drawable/send_white_24dp" />
 
     <EditText
         android:layout_height="wrap_content"
@@ -114,12 +127,20 @@
         android:layout_width="wrap_content"
         android:paddingBottom="16dp"
         android:paddingTop="16dp"
-        android:layout_alignBottom="@+id/floatingActionButton"
-        android:layout_alignStart="@+id/amountEdit"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:textSize="18dp"
-        android:layout_toStartOf="@+id/floatingActionButton"
-        android:inputType="textCapSentences|textShortMessage" />
+        android:inputType="textCapSentences|textShortMessage"
+        android:layout_alignBottom="@+id/paySuccess"
+        android:layout_alignStart="@+id/profileImage" />
+
+    <ProgressBar
+        android:id="@+id/payProgress"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/payButton"
+        android:layout_alignEnd="@+id/payButton"
+        tools:visibility="invisible" />
 
 </RelativeLayout>

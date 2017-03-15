@@ -156,7 +156,7 @@ public class ImageFetchingDetector extends Detector {
                                 ImageFormat.NV21, h,w, null);
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         //yuvimage.compressToJpeg(new Rect(0, 0, w, h), 100, baos); // Where 100 is the quality of the generated jpeg
-                        yuvimage.compressToJpeg(new Rect(0, 0, h, w), 80, baos); // Where 100 is the quality of the generated jpeg
+                        yuvimage.compressToJpeg(new Rect(0, 0, h, w), 60, baos); // Where 100 is the quality of the generated jpeg
                         byte[] jpegArray = baos.toByteArray();
 
                         new SavePhotoTask().execute(jpegArray);

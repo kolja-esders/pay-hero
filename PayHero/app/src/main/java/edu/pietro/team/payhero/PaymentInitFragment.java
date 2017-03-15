@@ -3,11 +3,21 @@ package edu.pietro.team.payhero;
 import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import edu.pietro.team.payhero.helper.PostHelper;
 
 
 /**
@@ -54,7 +64,58 @@ public class PaymentInitFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_payment_init, container, false);
+        final View v = inflater.inflate(R.layout.fragment_payment_init, container, false);
+        final FloatingActionButton confirm = (FloatingActionButton) v.findViewById(R.id.payButton);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Hide button and show loading
+                ((FloatingActionButton) v.findViewById(R.id.payButton)).setVisibility(View.INVISIBLE);
+                ((ProgressBar) v.findViewById(R.id.payProgress)).setVisibility(View.VISIBLE);
+
+                String name = ((TextView) v.findViewById(R.id.nameEdit)).getText().toString();
+                EditText ibanEdit = (EditText) v.findViewById(R.id.ibanEdit);
+                EditText amountEdit = (EditText) v.findViewById(R.id.amountEdit);
+                ibanEdit.setEnabled(false);
+                amountEdit.setEnabled(false);
+                String iban = ibanEdit.getText().toString();
+                String amount = amountEdit.getText().toString();
+
+                new AsyncTask<String[], Void, Boolean>() {
+                    @Override
+                    protected Boolean doInBackground(String[]... strings) {
+                        Log.d("HELP", strings.toString());
+                        try {
+                            PostHelper.transfer(strings[0][0].replace(" ", ""), strings[0][1], strings[0][2].replace(",", ".").replace("€", "").replace(" ", ""));
+                            return true;
+                        } catch (Exception e) {
+                            Log.e("PAYMENT", "Payment failed :/", e);
+                        }
+                        return false;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Boolean transerSuccessful) {
+                        super.onPostExecute(transerSuccessful);
+                        ((ProgressBar) v.findViewById(R.id.payProgress)).setVisibility(View.INVISIBLE);
+                        if (transerSuccessful) {
+                            /*Intent intent = new Intent(ValidationActivity.this, PaymentSuccessActivity.class);
+                            intent.putExtra("name", ValidationActivity.this.mName);
+                            intent.putExtra("amount", ValidationActivity.this.mAmount);
+                            startActivity(intent);*/
+                            ((ImageView) v.findViewById(R.id.paySuccess)).setVisibility(View.VISIBLE);
+                        } else {
+                            EditText ibanEdit = (EditText) v.findViewById(R.id.ibanEdit);
+                            EditText amountEdit = (EditText) v.findViewById(R.id.amountEdit);
+                            ibanEdit.setEnabled(true);
+                            amountEdit.setEnabled(true);
+                            ((FloatingActionButton) v.findViewById(R.id.payButton)).setVisibility(View.VISIBLE);
+                        }
+                    }
+                }.execute(new String[][]{{iban, name, amount}});
+            }
+        });
+        return v;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
