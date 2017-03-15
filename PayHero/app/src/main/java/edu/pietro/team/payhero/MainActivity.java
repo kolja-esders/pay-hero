@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -269,7 +270,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                             ImageView purchasableView = (ImageView) view.findViewById(R.id.imagePurchasable);
                             new DownloadImageTask(purchasableView).execute(imageUrl);
                         }
-
+                        Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                        v.vibrate(150);
                         mViewPager.setCurrentItem(2);
                     }
                 }

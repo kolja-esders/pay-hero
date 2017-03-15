@@ -33,7 +33,7 @@
         android:layout_marginTop="24dp"
         android:layout_height="200dp"
         android:scaleType="fitCenter"
-        android:elevation="4dp"
+        android:elevation="8dp"
         android:background="@android:color/white"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
@@ -52,7 +52,8 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        app:elevation="2dp" />
+        app:elevation="2dp"
+        app:backgroundTint="#ff4444" />
 
     <EditText
         android:layout_height="wrap_content"
@@ -80,7 +81,7 @@
         android:id="@+id/amountEdit"
         android:textSize="24dp"
         android:background="@drawable/amount_bg"
-        android:elevation="4dp"
+        android:elevation="8dp"
         android:textColor="@android:color/white"
         android:paddingLeft="24dp"
         android:paddingRight="24dp"
@@ -91,25 +92,36 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="174dp" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profileImage"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:src="@drawable/kolja"
-        android:layout_marginLeft="16dp"
-        android:layout_centerVertical="true"
-        android:layout_alignStart="@+id/purchaseMessage" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/nameEdit"
         android:text="Kolja"
-        android:textSize="24sp"
+        android:textSize="18sp"
         android:textColor="@android:color/white"
         android:layout_marginLeft="16dp"
         android:layout_alignTop="@+id/profileImage"
         android:layout_toEndOf="@+id/profileImage" />
+
+    <TextView
+        android:text="Recipient"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView2"
+        android:textColor="@android:color/white"
+        android:layout_below="@+id/amountEdit"
+        android:layout_alignStart="@+id/purchaseMessage"
+        android:layout_marginTop="32dp"
+        android:textSize="18sp" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profileImage"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/kolja"
+        android:layout_marginTop="15dp"
+        android:layout_below="@+id/textView2"
+        android:layout_alignStart="@+id/textView2" />
 
     <EditText
         android:text="DE23 3847 2784 8374 2837 43"
@@ -118,10 +130,32 @@
         android:id="@+id/ibanEdit"
         android:textColor="@color/transparentWhite"
         android:gravity="center_vertical|center_horizontal"
-        android:textSize="12sp"
         android:hint="IBAN MISSING"
         android:background="@android:color/transparent"
         android:layout_below="@+id/nameEdit"
-        android:layout_alignStart="@+id/nameEdit" />
+        android:layout_alignStart="@+id/nameEdit"
+        android:textSize="14sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/veryTransparentWhite"
+        android:layout_below="@+id/profileImage"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp" />
+
+    <TextView
+        android:text="Details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView3"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:layout_below="@+id/profileImage"
+        android:layout_alignStart="@+id/view5"
+        android:layout_marginTop="32dp"
+        android:layout_marginLeft="16dp" />
 
 </RelativeLayout>
