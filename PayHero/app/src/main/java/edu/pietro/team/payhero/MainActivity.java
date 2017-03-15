@@ -420,16 +420,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             recipientImage.setImageDrawable(getResources().getDrawable(R.drawable.default_user));
         }
 
-
-        //titleView.setSelected(true);
         nameEdit.setText(recipientName);
         ibanEdit.setText(Utils.formatIBAN(recipientIban));
-
         amountEdit.setText(formattedAmount);
-        if (recipientImageResourceId != -1) {
-            ImageView userImage = (ImageView) v.findViewById(R.id.profileImage);
-            userImage.setImageDrawable(getResources().getDrawable(recipientImageResourceId));
-        }
 
         amountEdit.setEnabled(!isPurchase);
         nameEdit.setEnabled(!isPurchase);
@@ -458,10 +451,31 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 mViewPager.setCurrentItem(1);
 
                 View v = mCollectionPagerAdapter.getItem(2).getView();
+
+                EditText nameEdit = (EditText) v.findViewById(R.id.nameEdit);
                 EditText ibanEdit = (EditText) v.findViewById(R.id.ibanEdit);
                 EditText amountEdit = (EditText) v.findViewById(R.id.amountEdit);
+                TextView titleView = (TextView) v.findViewById(R.id.paymentTitleContent);
+                EditText message = (EditText) v.findViewById(R.id.purchaseMessage);
+                ImageView purchasableView = (ImageView) v.findViewById(R.id.imagePurchasable);
+                ImageView recipientImage = (ImageView) v.findViewById(R.id.profileImage);
+
+                recipientImage.setImageDrawable(getResources().getDrawable(R.drawable.default_user));
+
                 ibanEdit.setEnabled(true);
+                nameEdit.setEnabled(true);
                 amountEdit.setEnabled(true);
+
+                nameEdit.setText("");
+                amountEdit.setText("");
+                ibanEdit.setText("");
+
+                //amountEdit.setTranslationX(-600.f);
+                amountEdit.clearAnimation();
+                titleView.setText("Money transfer");
+                purchasableView.setImageDrawable(getResources().getDrawable(R.drawable.ic_dollar_bill));
+                message.setHint("Enter reference line");
+
                 ((FloatingActionButton) v.findViewById(R.id.payButton)).setVisibility(View.VISIBLE);
                 ((ProgressBar) v.findViewById(R.id.payProgress)).setVisibility(View.INVISIBLE);
                 ((ImageView) v.findViewById(R.id.paySuccess)).setVisibility(View.INVISIBLE);

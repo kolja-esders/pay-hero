@@ -13,6 +13,8 @@ import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.AnticipateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
@@ -105,15 +107,11 @@ public class PaymentInitFragment extends Fragment {
                         super.onPostExecute(transerSuccessful);
                         if (transerSuccessful) {
                             //Looper.prepare();
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ObjectAnimator anim = ObjectAnimator.ofFloat(amountEdit, "translationX", 0, 600);
-                                    anim.setDuration(500);
-                                    anim.setInterpolator(new AnticipateInterpolator(1.2f));
-                                    anim.start();
-                                }
-                            }, 100);
+
+                            Animation anim = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.slide);
+                            anim.setInterpolator(new AnticipateInterpolator(1.2f));
+                            anim.setFillAfter(true);
+                            amountEdit.startAnimation(anim);
 
                             /*Intent intent = new Intent(ValidationActivity.this, PaymentSuccessActivity.class);
                             intent.putExtra("name", ValidationActivity.this.mName);
