@@ -1,7 +1,11 @@
 package edu.pietro.team.payhero;
 
 import android.Manifest;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -97,6 +101,41 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         return currentActivity;
     }
 
+    private static String[] BT_CONTEXT_DEVICES = new String[] {
+            "04:59:06:09:52:06"
+    };
+
+    private final BroadcastReceiver mBtReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            switch (action){
+                case BluetoothDevice.ACTION_ACL_CONNECTED:
+                    BluetoothDevice dev = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    Log.d("BLUETOOTH", "connected to " + dev.getAddress());
+                    for (String d : BT_CONTEXT_DEVICES) {
+                        if (d.equals(dev.getAddress())){
+                            User seller = User.ZKM;
+                            Item ticket = new Item(
+                                    "Admission ticket",
+                                    "ZKM Karlsruhe",
+                                    "http://guide.karlsruhe.de/db/de/zentrum_fuer_kunst_und_med/122/zkm_mnk_innen.jpg",
+                                    new AmountOfMoney(6.0)
+                            );
+                            EventBus.getDefault().post(new OnPaymentInit(new MoneyTransfer(seller, ticket, new AmountOfMoney(6.0))));
+                            break;
+                        }
+                    }
+                    break;
+                case BluetoothDevice.ACTION_ACL_DISCONNECTED:
+                    Log.d("BLUETOOTH", "disconnected");
+                    break;
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,6 +146,11 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 "android.permission.WRITE_EXTERNAL_STORAGE"
         };
         ActivityCompat.requestPermissions(this, permissions, RC_HANDLE_STORAGE_PERM);
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        registerReceiver(mBtReceiver, filter);
 
         mCollectionPagerAdapter =
                 new CollectionPagerAdapter(getFragmentManager());
@@ -262,6 +306,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         if (mCameraSource != null) {
             mCameraSource.release();
         }
+        unregisterReceiver(mBtReceiver);
     }
 
     @Override
@@ -443,12 +488,14 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         });
     }
 
-    public void resetPaymentView() {
+    public void resetPaymentView(final boolean switchToMain) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 mViewPager.setOnTouchListener(null);
-                mViewPager.setCurrentItem(1);
+
+                if (switchToMain)
+                    mViewPager.setCurrentItem(1);
 
                 View v = mCollectionPagerAdapter.getItem(2).getView();
 
