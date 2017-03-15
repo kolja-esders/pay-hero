@@ -90,6 +90,7 @@ public class PaymentInitFragment extends Fragment {
                 amountEdit.setEnabled(false);
                 String iban = ibanEdit.getText().toString();
                 String amount = amountEdit.getText().toString();
+                String formattedAmount = ((Double)Double.parseDouble(amount.replace(",", ".").replace("€", "").replace(" ", "").replace("\u00A0",""))).toString();
 
                 // Add Story (might not be right here !!!!)
                 String purchaseString = ((EditText)v.findViewById(R.id.purchaseMessage)).getText().toString();
@@ -101,7 +102,8 @@ public class PaymentInitFragment extends Fragment {
                     protected Boolean doInBackground(String[]... strings) {
                         Log.d("HELP", strings.toString());
                         try {
-                            PostHelper.transfer(strings[0][0].replace(" ", ""), strings[0][1], strings[0][2].replace(",", ".").replace("€", "").replace(" ", ""));
+
+                            PostHelper.transfer(strings[0][0].replace(" ", ""), strings[0][1], strings[0][2]);
                             return true;
                         } catch (Exception e) {
                             Log.e("PAYMENT", "Payment failed :/", e);
@@ -139,10 +141,10 @@ public class PaymentInitFragment extends Fragment {
                             ibanEdit.setEnabled(true);
                             amountEdit.setEnabled(true);
                             ((FloatingActionButton) v.findViewById(R.id.payButton)).setVisibility(View.VISIBLE);*/
-                            MainActivity.getCurrentActivity().resetPaymentView(false);
+                            MainActivity.getCurrentActivity().resetPaymentView(true);
                         }
                     }
-                }.execute(new String[][]{{iban, name, amount}});
+                }.execute(new String[][]{{iban, name, formattedAmount}});
             }
         });
         return v;
