@@ -517,7 +517,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 amountEdit.setText("");
                 ibanEdit.setText("");
 
-                //amountEdit.setTranslationX(-600.f);
                 amountEdit.clearAnimation();
                 titleView.setText("Money transfer");
                 purchasableView.setImageDrawable(getResources().getDrawable(R.drawable.ic_dollar_bill));
