@@ -7,7 +7,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+<<<<<<< HEAD
 import android.os.Looper;
+=======
+>>>>>>> 0eeef90a359f21ba888d1ad885e3ec0298ef94b8
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -44,6 +47,8 @@ public class PaymentInitFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    private Handler mHandler = new Handler();
+
     public PaymentInitFragment() {
         // Required empty public constructor
     }
@@ -73,6 +78,7 @@ public class PaymentInitFragment extends Fragment {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                MainActivity.getCurrentActivity().disableScrolling();
                 // Hide button and show loading
                 ((FloatingActionButton) v.findViewById(R.id.payButton)).setVisibility(View.INVISIBLE);
                 ((ProgressBar) v.findViewById(R.id.payProgress)).setVisibility(View.VISIBLE);
@@ -101,7 +107,6 @@ public class PaymentInitFragment extends Fragment {
                     @Override
                     protected void onPostExecute(Boolean transerSuccessful) {
                         super.onPostExecute(transerSuccessful);
-                        ((ProgressBar) v.findViewById(R.id.payProgress)).setVisibility(View.INVISIBLE);
                         if (transerSuccessful) {
                             //Looper.prepare();
                             new Handler().postDelayed(new Runnable() {
@@ -118,14 +123,22 @@ public class PaymentInitFragment extends Fragment {
                             intent.putExtra("name", ValidationActivity.this.mName);
                             intent.putExtra("amount", ValidationActivity.this.mAmount);
                             startActivity(intent);*/
+                            ((ProgressBar) v.findViewById(R.id.payProgress)).setVisibility(View.INVISIBLE);
                             ((ImageView) v.findViewById(R.id.paySuccess)).setVisibility(View.VISIBLE);
+                            mHandler.removeMessages(0);
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    MainActivity.getCurrentActivity().resetPaymentView();
+                                }
+                            }, 2000);
                         } else {
-
-                            EditText ibanEdit = (EditText) v.findViewById(R.id.ibanEdit);
+                            /*EditText ibanEdit = (EditText) v.findViewById(R.id.ibanEdit);
                             EditText amountEdit = (EditText) v.findViewById(R.id.amountEdit);
                             ibanEdit.setEnabled(true);
                             amountEdit.setEnabled(true);
-                            ((FloatingActionButton) v.findViewById(R.id.payButton)).setVisibility(View.VISIBLE);
+                            ((FloatingActionButton) v.findViewById(R.id.payButton)).setVisibility(View.VISIBLE);*/
+                            MainActivity.getCurrentActivity().resetPaymentView();
                         }
                     }
                 }.execute(new String[][]{{iban, name, amount}});
