@@ -1,6 +1,7 @@
 package edu.pietro.team.payhero;
 
 import android.animation.ObjectAnimator;
+import android.app.DownloadManager;
 import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
@@ -23,6 +24,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import edu.pietro.team.payhero.helper.PostHelper;
+import edu.pietro.team.payhero.social.Stories;
 
 
 /**
@@ -88,6 +90,11 @@ public class PaymentInitFragment extends Fragment {
                 amountEdit.setEnabled(false);
                 String iban = ibanEdit.getText().toString();
                 String amount = amountEdit.getText().toString();
+
+                // Add Story (might not be right here !!!!)
+                String purchaseString = ((EditText)v.findViewById(R.id.purchaseMessage)).getText().toString();
+                Stories.Story buyStory = new Stories.Story(( (MainActivity) getActivity()).getCurrentTransfer(), purchaseString);
+                Stories.DISPLAYED_ITEMS.add(buyStory);
 
                 new AsyncTask<String[], Void, Boolean>() {
                     @Override

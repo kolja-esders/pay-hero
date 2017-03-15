@@ -13,33 +13,33 @@ public class Stories {
     /**
      * An array of sample (dummy) items.
      */
-    public static final List<Story> DISPLAYED_ITEMS = new ArrayList<>();
+    public static List<Story> DISPLAYED_ITEMS = new ArrayList<>();
 
-    public static final List<Story> ALL_ITEMS = new ArrayList<>();
+    public static List<Story> ALL_ITEMS = new ArrayList<>();
 
     private static final int COUNT = 25;
 
-    static {
-        User[] users = {new User("Kolja", "XXX"), new User("David", "YYY"),
-                new User("Maxim", "ZZZ"), new User("Random Dude", "ABC")};
-        String[] messages = {"Fuck yeah!", "Dabbing all the way O_o", "#teampietro",
-                "Du bist die Schlampe, ich bin normaler Mensch!!!", "AIAIAIAIIII"};
-        Item[] stuff = {new Item("Dopen shit"),
-                new Item("Fitz Backpacks")};
-
-        for (int i = 1; i <= COUNT; i++) {
-            Calendar c = GregorianCalendar.getInstance();
-            c.set(2016, 10, 23, 16, 37);
-            AmountOfMoney amount = new AmountOfMoney(ThreadLocalRandom.current().nextDouble(500.f));
-            int randUserIndex = ThreadLocalRandom.current().nextInt(users.length);
-            User buyer = users[randUserIndex];
-            User seller = users[(randUserIndex + 1) % users.length];
-            Item purchasable = stuff[ThreadLocalRandom.current().nextInt(stuff.length)];
-            MoneyTransfer p = new MoneyTransfer(buyer, seller, purchasable, amount, c);
-            addItem(createDummyItem(p, messages[ThreadLocalRandom.current().nextInt(messages.length)]));
-        }
-        DISPLAYED_ITEMS.addAll(ALL_ITEMS);
-    }
+//    static {
+//        User[] users = {new User("Kolja", "XXX"), new User("David", "YYY"),
+//                new User("Maxim", "ZZZ"), new User("Random Dude", "ABC")};
+//        String[] messages = {"Fuck yeah!", "Dabbing all the way O_o", "#teampietro",
+//                "Du bist die Schlampe, ich bin normaler Mensch!!!", "AIAIAIAIIII"};
+//        Item[] stuff = {new Item("Dopen shit"),
+//                new Item("Fitz Backpacks")};
+//
+//        for (int i = 1; i <= COUNT; i++) {
+//            Calendar c = GregorianCalendar.getInstance();
+//            c.set(2016, 10, 23, 16, 37);
+//            AmountOfMoney amount = new AmountOfMoney(ThreadLocalRandom.current().nextDouble(500.f));
+//            int randUserIndex = ThreadLocalRandom.current().nextInt(users.length);
+//            User buyer = users[randUserIndex];
+//            User seller = users[(randUserIndex + 1) % users.length];
+//            Item purchasable = stuff[ThreadLocalRandom.current().nextInt(stuff.length)];
+//            MoneyTransfer p = new MoneyTransfer(buyer, seller, purchasable, amount, c);
+//            addItem(createDummyItem(p, messages[ThreadLocalRandom.current().nextInt(messages.length)]));
+//        }
+//        DISPLAYED_ITEMS.addAll(ALL_ITEMS);
+//    }
 
     // TODO(kolja): Could change later on to void filter(Filter.ALL_STORIES).
     public static void filterReset() {
@@ -80,6 +80,9 @@ public class Stories {
         }
 
         public String getBuyerName() {
+            if(mPurchase.getSender() == null){
+                return "";
+            }
             return mPurchase.getSender().getName();
         }
 
@@ -93,6 +96,10 @@ public class Stories {
 
         public String getFormattedDate() {
             return mPurchase.getTimeOfPurchase().toString();
+        }
+
+        public MoneyTransfer getTransfer() {
+            return mPurchase;
         }
 
         @Override

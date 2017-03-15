@@ -97,6 +97,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
     private static MainActivity currentActivity = null;
 
+    private MoneyTransfer currentTransfer;
+
     public static MainActivity getCurrentActivity() {
         return currentActivity;
     }
@@ -433,6 +435,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     private void populatePaymentInitView(View v, MoneyTransfer mt) {
         boolean isPurchase = mt.getItem() != null;
 
+        this.currentTransfer = mt;
+
         User recipient = mt.getRecipient();
         String recipientName = recipient.getName();
         String recipientIban = recipient.getIban();
@@ -528,5 +532,11 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 ((ImageView) v.findViewById(R.id.paySuccess)).setVisibility(View.INVISIBLE);
             }
         });
+    }
+
+    public MoneyTransfer getCurrentTransfer(){
+
+        return this.currentTransfer;
+
     }
 }
