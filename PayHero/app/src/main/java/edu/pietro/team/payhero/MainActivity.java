@@ -9,6 +9,7 @@ import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -16,9 +17,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -395,6 +398,39 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
             }
 
+        });
+    }
+
+    public void disableScrolling() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mViewPager.setOnTouchListener(new View.OnTouchListener() {
+
+                    public boolean onTouch(View arg0, MotionEvent arg1) {
+                        return true;
+                    }
+                });
+            }
+        });
+    }
+
+    public void resetPaymentView() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mViewPager.setOnTouchListener(null);
+                mViewPager.setCurrentItem(1);
+
+                View v = mCollectionPagerAdapter.getItem(2).getView();
+                EditText ibanEdit = (EditText) v.findViewById(R.id.ibanEdit);
+                EditText amountEdit = (EditText) v.findViewById(R.id.amountEdit);
+                ibanEdit.setEnabled(true);
+                amountEdit.setEnabled(true);
+                ((FloatingActionButton) v.findViewById(R.id.payButton)).setVisibility(View.VISIBLE);
+                ((ProgressBar) v.findViewById(R.id.payProgress)).setVisibility(View.INVISIBLE);
+                ((ImageView) v.findViewById(R.id.paySuccess)).setVisibility(View.INVISIBLE);
+            }
         });
     }
 
