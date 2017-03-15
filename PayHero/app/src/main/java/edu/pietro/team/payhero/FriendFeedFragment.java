@@ -71,10 +71,6 @@ public class FriendFeedFragment extends Fragment {
         if (visible) {
             RecyclerView recyclerView = (RecyclerView) this.getView().findViewById(R.id.story_list);
 
-            Toolbar toolbar = (Toolbar) this.getView().findViewById(R.id.feed_toolbar);
-            getActivity().setActionBar(toolbar);
-            toolbar.setTitle("Feed");
-
             // Set the adapter
             if (recyclerView != null) {
                 Context context = recyclerView.getContext();
@@ -112,7 +108,7 @@ public class FriendFeedFragment extends Fragment {
 
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.feed_toolbar);
         getActivity().setActionBar(toolbar);
-        toolbar.setTitle("Feed");
+        toolbar.setTitle("Friend Feed");
 
         // Set the adapter
         if (recyclerView != null) {
@@ -148,10 +144,13 @@ public class FriendFeedFragment extends Fragment {
     @Subscribe
     public void onEvent(FeedFilterClicked event) {
         Log.d("0o", "on Event");
+        Toolbar toolbar = (Toolbar) this.getView().findViewById(R.id.feed_toolbar);
         if (event.showOnlyPersonalStories) {
             Stories.filterPersonalStories();
+            toolbar.setTitle("Own");
         } else {
-            Stories.filterReset();
+            Stories.filterFriendStories();
+            toolbar.setTitle("Friends");
         }
         mAdapter.notifyDataSetChanged();
     }

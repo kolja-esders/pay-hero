@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 if (mFeedFilterIsPublic) {
                     newTitle = "Show all purchases";
                 } else {
-                    newTitle = "Show your purchases";
+                    newTitle = "Show friends purchases";
                 }
                 mFeedFilterIsPublic ^= true;
                 EventBus.getDefault().post(new FeedFilterClicked(!mFeedFilterIsPublic));
