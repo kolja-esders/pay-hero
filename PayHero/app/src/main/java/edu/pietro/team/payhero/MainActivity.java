@@ -149,8 +149,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         // We need to provide at least one detector to the camera :x
         FaceDetector faceDetector = new FaceDetector.Builder(ctx).build();
         faceDetector.setProcessor(
-                               new LargestFaceFocusingProcessor.Builder(faceDetector, new FaceTracker(imageFetchingDetector))
-                                                .build());
+                new LargestFaceFocusingProcessor.Builder(faceDetector, new FaceTracker(imageFetchingDetector))
+                        .build());
 
         BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(ctx).build();
         //barcodeDetector.setProcessor(new BarcodeDetectionProcessor());
@@ -259,13 +259,18 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        Log.d("Back", "I'll be back");
+    }
+
     @Subscribe
     public void showPaymentInit(OnPaymentInit e) {
         final MoneyTransfer purchase = e.getPurchase();
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(mViewPager.getCurrentItem() == 1) {
+                if (mViewPager.getCurrentItem() == 1) {
                     String name = purchase.getRecipient().getName();
                     String iban = purchase.getRecipient().getIban();
                     String amount = purchase.getAmount().getAmount().toString();
@@ -314,28 +319,26 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 EventBus.getDefault().post(new OnStartDetectionPostProcessing("Searching for product..."));
 
 
-                Thread thread = new Thread(new Runnable(){
+                Thread thread = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
-
-
-
+                            
                             String url = "http://1027cf3f.ngrok.io/obrec/";
                             //String url = "http://d00d8906.ngrok.io/obrec/";
                             URL obj = new URL(url);
 
 
-                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes , 0, bytes.length);
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
-                            Log.d("BS" , bitmap.getWidth() + " x " + bitmap.getHeight());
+                            Log.d("BS", bitmap.getWidth() + " x " + bitmap.getHeight());
 
                             int newHeight = (int) (bitmap.getHeight() * 0.6);
 
                             int hOffset = (bitmap.getHeight() - newHeight) / 2;
 
                             bitmap = Bitmap.createBitmap(bitmap, 0, hOffset, bitmap.getWidth(), bitmap.getHeight() - hOffset);
-                            bitmap = Bitmap.createScaledBitmap(bitmap, 300 , 300, false );
+                            bitmap = Bitmap.createScaledBitmap(bitmap, 300, 300, false);
 
                             ByteArrayOutputStream stream = new ByteArrayOutputStream();
                             bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
@@ -361,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                             final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
 
                             RequestBody req = new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart("userid", "8457851245")
-                                    .addFormDataPart("file",filename, RequestBody.create(MEDIA_TYPE_PNG, file)).build();
+                                    .addFormDataPart("file", filename, RequestBody.create(MEDIA_TYPE_PNG, file)).build();
 
                             Request request = new Request.Builder()
                                     .url(url)
@@ -373,7 +376,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
                             String prdResp = response.body().string();
 
-                            Log.d("response", "uploadImage:"+prdResp);
+                            Log.d("response", "uploadImage:" + prdResp);
 
                             final JSONObject jsonProd = new JSONObject(prdResp);
 
@@ -383,10 +386,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                             EventBus.getDefault().post(new OnPaymentInit(new MoneyTransfer(seller, foundProduct, foundProduct.getRetailPrice())));
 
 
-
-
-                        }
-                        catch(Exception x){
+                        } catch (Exception x) {
                             x.printStackTrace();
                         }
                     }
@@ -396,5 +396,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             }
 
         });
-    };
+    }
+
+    ;
 }
