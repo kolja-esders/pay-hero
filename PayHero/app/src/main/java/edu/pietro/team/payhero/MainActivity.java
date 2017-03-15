@@ -236,14 +236,23 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                         try {
 
                             String url = "http://1027cf3f.ngrok.io/obrec/";
+                            //String url = "http://d00d8906.ngrok.io/obrec/";
                             URL obj = new URL(url);
 
 
                             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes , 0, bytes.length);
-                            bitmap = Bitmap.createScaledBitmap(bitmap, 227 , 227, false );
+
+                            Log.d("BS" , bitmap.getWidth() + " x " + bitmap.getHeight());
+
+                            int newHeight = (int) (bitmap.getHeight() * 0.6);
+
+                            int hOffset = (bitmap.getHeight() - newHeight) / 2;
+
+                            bitmap = Bitmap.createBitmap(bitmap, 0, hOffset, bitmap.getWidth(), bitmap.getHeight() - hOffset);
+                            bitmap = Bitmap.createScaledBitmap(bitmap, 300 , 300, false );
 
                             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                            bitmap.compress(Bitmap.CompressFormat.PNG, 80, stream);
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
                             byte[] byteArray = stream.toByteArray();
 
 
@@ -282,7 +291,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
                             final JSONObject jsonProd = new JSONObject(prdResp);
 
-                            
+
                             Context context = getApplicationContext();
 
                             MainActivity.this.runOnUiThread(new Runnable() {
