@@ -125,7 +125,7 @@ public class PaymentInitFragment extends Fragment {
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    MainActivity.getCurrentActivity().resetPaymentView();
+                                    MainActivity.getCurrentActivity().resetPaymentView(true);
                                 }
                             }, 2000);
                         } else {
@@ -134,7 +134,7 @@ public class PaymentInitFragment extends Fragment {
                             ibanEdit.setEnabled(true);
                             amountEdit.setEnabled(true);
                             ((FloatingActionButton) v.findViewById(R.id.payButton)).setVisibility(View.VISIBLE);*/
-                            MainActivity.getCurrentActivity().resetPaymentView();
+                            MainActivity.getCurrentActivity().resetPaymentView(false);
                         }
                     }
                 }.execute(new String[][]{{iban, name, amount}});

@@ -495,12 +495,14 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         });
     }
 
-    public void resetPaymentView() {
+    public void resetPaymentView(final boolean switchToMain) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 mViewPager.setOnTouchListener(null);
-                mViewPager.setCurrentItem(1);
+
+                if (switchToMain)
+                    mViewPager.setCurrentItem(1);
 
                 View v = mCollectionPagerAdapter.getItem(2).getView();
                 EditText ibanEdit = (EditText) v.findViewById(R.id.ibanEdit);
