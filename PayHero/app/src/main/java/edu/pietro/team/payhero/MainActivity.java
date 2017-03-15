@@ -109,7 +109,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
     private static String[] BT_CONTEXT_DEVICES = new String[] {
             "04:59:06:09:52:06",
-            "f8:e0:79:4c:ea:e6"
+            "f8:e0:79:4c:ea:e6",
+            "b4:ce:f6:22:d7:16"
     };
 
     private final BroadcastReceiver mBtReceiver = new BroadcastReceiver() {
