@@ -7,10 +7,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-<<<<<<< HEAD
-import android.os.Looper;
-=======
->>>>>>> 0eeef90a359f21ba888d1ad885e3ec0298ef94b8
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
