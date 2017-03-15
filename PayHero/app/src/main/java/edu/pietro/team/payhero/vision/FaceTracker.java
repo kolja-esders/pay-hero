@@ -11,7 +11,9 @@ import com.google.android.gms.vision.face.Face;
 
 import org.greenrobot.eventbus.EventBus;
 
+import edu.pietro.team.payhero.MainActivity;
 import edu.pietro.team.payhero.event.OnStartDetectionPostProcessing;
+import edu.pietro.team.payhero.helper.ProcessingState;
 
 public class FaceTracker extends Tracker<Face> {
 
@@ -24,9 +26,10 @@ public class FaceTracker extends Tracker<Face> {
 
     public void onNewItem(int id, Face face) {
         Log.i(TAG, "Face entered.");
-        EventBus.getDefault().post(new OnStartDetectionPostProcessing("Processing face..."));
-        mImageFetchingDetector.tryRecognizeFace();
-
+        if (MainActivity.getCurrentActivity().onTryStartProcessing(ProcessingState.FACE_LOCK)) {
+            EventBus.getDefault().post(new OnStartDetectionPostProcessing("Processing face..."));
+            mImageFetchingDetector.tryRecognizeFace();
+        }
     }
 
     public void onUpdate(Detector.Detections<Face> detections, Face face) {

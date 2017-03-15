@@ -11,6 +11,7 @@ import org.greenrobot.eventbus.EventBus;
 import edu.pietro.team.payhero.event.OnErrorDuringDetectionPostProcessing;
 import edu.pietro.team.payhero.event.OnPaymentInit;
 import edu.pietro.team.payhero.event.OnStartDetectionPostProcessing;
+import edu.pietro.team.payhero.helper.ProcessingState;
 import edu.pietro.team.payhero.helper.api.AmazonProductAdvertisingAPI;
 import edu.pietro.team.payhero.social.Item;
 import edu.pietro.team.payhero.social.MoneyTransfer;
@@ -29,7 +30,10 @@ public class BarcodeTracker extends Tracker<Barcode> {
         Item item = AmazonProductAdvertisingAPI.findByEAN13(ean13);
         if (item != null) {
             User seller = User.AMAZON;
-            EventBus.getDefault().post(new OnPaymentInit(new MoneyTransfer(seller, item, item.getRetailPrice())));
+            EventBus.getDefault().post(new OnPaymentInit(
+                    new MoneyTransfer(seller, item, item.getRetailPrice()),
+                    ProcessingState.NOLOCK
+            ));
         } else {
             EventBus.getDefault().post(new OnErrorDuringDetectionPostProcessing("No product found"));
         }

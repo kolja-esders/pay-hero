@@ -12,10 +12,12 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
+import edu.pietro.team.payhero.MainActivity;
 import edu.pietro.team.payhero.entities.AmountOfMoney;
 import edu.pietro.team.payhero.event.OnPaymentInit;
 import edu.pietro.team.payhero.helper.AddressBook;
 import edu.pietro.team.payhero.helper.LangAnalytics;
+import edu.pietro.team.payhero.helper.ProcessingState;
 import edu.pietro.team.payhero.social.Item;
 import edu.pietro.team.payhero.social.MoneyTransfer;
 import edu.pietro.team.payhero.social.User;
@@ -57,7 +59,7 @@ public class OcrDetectionProcessor implements Detector.Processor<TextBlock> {
             AmountOfMoney aom = amount.equals("") ? new AmountOfMoney(0.0)
                     : new AmountOfMoney(Double.valueOf(amount));
             EventBus.getDefault().post(new OnPaymentInit(
-                    new MoneyTransfer(recipient, moneyTransferItem, aom)));
+                    new MoneyTransfer(recipient, moneyTransferItem, aom), ProcessingState.NOLOCK));
         }
     }
 
