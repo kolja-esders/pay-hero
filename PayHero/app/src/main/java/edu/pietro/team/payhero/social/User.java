@@ -6,6 +6,7 @@ import edu.pietro.team.payhero.helper.AddressBook;
 public final class User {
 
     public static final User AMAZON = new User("Amazon", "DE64700700100203477500", R.drawable.amazon_logo);
+    public static final User ZALANDO = new User("Zalando", "DE86210700200123010101", R.drawable.zalando_logo);
 
     private String mName;
 

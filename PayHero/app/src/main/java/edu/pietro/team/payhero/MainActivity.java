@@ -3,10 +3,12 @@ package edu.pietro.team.payhero;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.net.Uri;
-import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -15,11 +17,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -33,21 +34,36 @@ import com.google.android.gms.vision.text.TextRecognizer;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 
+import edu.pietro.team.payhero.entities.AmountOfMoney;
+import edu.pietro.team.payhero.event.FeedFilterClicked;
 import edu.pietro.team.payhero.event.OnImageCaptureRequested;
 import edu.pietro.team.payhero.event.OnPaymentInit;
+import edu.pietro.team.payhero.event.OnStartDetectionPostProcessing;
 import edu.pietro.team.payhero.helper.DownloadImageTask;
-import edu.pietro.team.payhero.helper.PostHelper;
+import edu.pietro.team.payhero.social.Item;
 import edu.pietro.team.payhero.social.MoneyTransfer;
+import edu.pietro.team.payhero.social.User;
 import edu.pietro.team.payhero.vision.BarcodeTracker;
 import edu.pietro.team.payhero.vision.CameraSourcePreview;
-import edu.pietro.team.payhero.event.FeedFilterClicked;
 import edu.pietro.team.payhero.vision.FaceTracker;
 import edu.pietro.team.payhero.vision.FirstFocusingProcessor;
 import edu.pietro.team.payhero.vision.ImageFetchingDetector;
 import edu.pietro.team.payhero.vision.OcrDetectionProcessor;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 
 public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
@@ -285,23 +301,25 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     public void onMessageEvent(OnImageCaptureRequested e) {
         Log.d("EVENT_BUS", "Image capture requested.");
 
-        TextView et = (TextView) mCollectionPagerAdapter.getItem(2).getView().findViewById(R.id.nameEdit);
-        et.setText("Test");
-        mViewPager.setCurrentItem(2);
+//        TextView et = (TextView) mCollectionPagerAdapter.getItem(2).getView().findViewById(R.id.nameEdit);
+//        et.setText("Test");
+//        mViewPager.setCurrentItem(2);
 
-        /*mCameraSource.takePicture(null, new CameraSource.PictureCallback() {
+        mCameraSource.takePicture(null, new CameraSource.PictureCallback() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onPictureTaken(final byte[] bytes) {
                 // @David: Da ist das IMG :)
 
-                Log.d("xP", "Image captured !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                EventBus.getDefault().post(new OnStartDetectionPostProcessing("Searching for product..."));
 
 
                 Thread thread = new Thread(new Runnable(){
                     @Override
                     public void run() {
                         try {
+
+
 
                             String url = "http://1027cf3f.ngrok.io/obrec/";
                             //String url = "http://d00d8906.ngrok.io/obrec/";
@@ -359,18 +377,12 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
                             final JSONObject jsonProd = new JSONObject(prdResp);
 
+                            Item foundProduct = new Item(jsonProd.getString("name"), jsonProd.getString("brand"), jsonProd.getString("display_img_path"), new AmountOfMoney(jsonProd.getDouble("price")));
 
-                            Context context = getApplicationContext();
+                            User seller = User.ZALANDO;
+                            EventBus.getDefault().post(new OnPaymentInit(new MoneyTransfer(seller, foundProduct, foundProduct.getRetailPrice())));
 
-                            MainActivity.this.runOnUiThread(new Runnable() {
-                                public void run() {
-                                    try {
-                                        Toast.makeText(MainActivity.this, jsonProd.getString("name"), Toast.LENGTH_LONG).show();
-                                    } catch (JSONException e1) {
-                                        e1.printStackTrace();
-                                    }
-                                }
-                            });
+
 
 
                         }
@@ -383,6 +395,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
             }
 
-        });*/
+        });
     };
 }
