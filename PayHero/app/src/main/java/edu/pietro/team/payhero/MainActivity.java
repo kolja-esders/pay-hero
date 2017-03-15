@@ -335,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             public void run() {
                 synchronized (mProcessingLock) {
                     if (mViewPager.getCurrentItem() == 1 && moneyTransfer.isValid()
-                            && mProcessingState == assumedProcessingState) {
+                            && (mProcessingState == assumedProcessingState || mProcessingState == ProcessingState.NOLOCK)) {
 
                         View view = mCollectionPagerAdapter.getItem(2).getView();
                         populatePaymentInitView(view, moneyTransfer);
