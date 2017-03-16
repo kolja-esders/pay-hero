@@ -37,7 +37,7 @@ public class StoryRecyclerViewAdapter extends RecyclerView.Adapter<StoryRecycler
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
-        int recipientImageResourceId = mValues.get(position).getTransfer().getRecipient().getImageResourceId();
+        int recipientImageResourceId = mValues.get(position).getRecpientResId();
 
         if (recipientImageResourceId != -1) {
             holder.mProfileImageView.setImageDrawable(holder.mView.getResources().getDrawable(recipientImageResourceId));
@@ -46,12 +46,12 @@ public class StoryRecyclerViewAdapter extends RecyclerView.Adapter<StoryRecycler
         }
 
         holder.mStory = mValues.get(position);
-        holder.mTitleView.setText(mValues.get(position).getTransfer().getItem().getName());
-        holder.mSubtitle.setText(mValues.get(position).getTransfer().getAmount().getFormattedAmount());
+        holder.mTitleView.setText(mValues.get(position).getItemName());
+        holder.mSubtitle.setText(mValues.get(position).getTransferAmount());
         holder.mMessageView.setText(mValues.get(position).getMessage());
         holder.mSellerNameView.setText(mValues.get(position).getSellerName());
 
-        new DownloadImageTask(holder.mProductView).execute(mValues.get(position).getTransfer().getItem().getImageUrl());
+        new DownloadImageTask(holder.mProductView).execute(mValues.get(position).getItemUrl());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

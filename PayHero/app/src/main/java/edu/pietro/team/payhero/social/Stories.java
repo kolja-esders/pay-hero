@@ -107,6 +107,36 @@ public class Stories {
             return mPurchase.getRecipient().getName();
         }
 
+        public String getItemName(){
+            if(this.mPurchase.getItem() != null){
+                if (this.mPurchase.getItem().getName() != null)
+                    return this.mPurchase.getItem().getName();
+            }
+            return "";
+        }
+
+        public String getTransferAmount(){
+            if(this.mPurchase.getAmount() != null){
+                    return this.mPurchase.getAmount().getFormattedAmount();
+            }
+            return "";
+        }
+
+        public String getItemUrl(){
+            if(this.mPurchase.getItem() != null){
+                if (this.mPurchase.getItem().getImageUrl() != null)
+                    return this.mPurchase.getItem().getImageUrl();
+            }
+            return "";
+        }
+
+        public int getRecpientResId(){
+            if(this.mPurchase.getRecipient() != null){
+                return this.mPurchase.getRecipient().getImageResourceId();
+            }
+            return -1;
+        }
+
         public String getPurchasableName() {
             return mPurchase.getItem().getName();
         }
