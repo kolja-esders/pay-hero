@@ -101,7 +101,7 @@ public class AddressBook {
             new User("Kolja Esders", "DE07660000000066001535", R.drawable.kolja, "2f154220-39bf-4b64-8b36-b2cce3a68492"),
             new User("Maxim Köhler", "DE45700500003901190315", R.drawable.maxim, "829e847e-29d4-45aa-aba2-4704981d27f1"),
             new User("David Zimmerer", "DE34390500000000014522", R.drawable.david, "0704a7f3-dda2-4001-b064-e082f9ee036c"),
-            new User("Polizei Stuttgart", "DE81100100100005578146")
+            new User("Parkverwaltung", "DE81100100100005578146")
     };
 
 
