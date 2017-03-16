@@ -19,7 +19,30 @@ public class Stories {
 
     private static final int COUNT = 25;
 
-//    static {
+    static {
+
+        Story s1 = new Story(new MoneyTransfer(User.ELON,
+                new Item("How to Build Your Own Spaceship: The Science of Personal Space Travel", "Piers Bizony", "https://images-na.ssl-images-amazon.com/images/I/51ZFP0p6j9L._SY344_BO1,204,203,200_.jpg", new AmountOfMoney(15.99)),
+                new AmountOfMoney(15.99)),
+                "The sky is the limit!", false);
+
+        Story s2 = new Story(new MoneyTransfer(User.PIETRO,
+                new Item("Baby Schnuller", "MAM", "http://mytoys.scene7.com/is/image/myToys/ext/2268900-01.jpg", new AmountOfMoney(4.95)),
+                new AmountOfMoney(4.95)),
+                "So süß. Alessio liebt sie <3.", false);
+
+        Story s3 = new Story(new MoneyTransfer(User.MAXIM,
+                new Item("ChariTea Mate", "ChariTea", "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcQsHj3Sledkg2_RrZBPqoJYbCl9fi8eYFGYUPEXGPoGPfSS68KS3rtRNkWUg2iU7VOxyy3fUW4&usqp=CAE", new AmountOfMoney(1.79)),
+                new AmountOfMoney(1.79)),
+                "Beste Mate.", false);
+
+        DISPLAYED_ITEMS.add(s1);
+        ALL_ITEMS.add(s1);
+        DISPLAYED_ITEMS.add(s3);
+        ALL_ITEMS.add(s3);
+        DISPLAYED_ITEMS.add(s2);
+        ALL_ITEMS.add(s2);
+
 //        User[] users = {new User("Kolja", "XXX"), new User("David", "YYY"),
 //                new User("Maxim", "ZZZ"), new User("Random Dude", "ABC")};
 //        String[] messages = {"Fuck yeah!", "Dabbing all the way O_o", "#teampietro",
@@ -39,7 +62,7 @@ public class Stories {
 //            addItem(createDummyItem(p, messages[ThreadLocalRandom.current().nextInt(messages.length)]));
 //        }
 //        DISPLAYED_ITEMS.addAll(ALL_ITEMS);
-//    }
+    }
 
     // TODO(kolja): Could change later on to void filter(Filter.ALL_STORIES).
     public static void filterReset() {

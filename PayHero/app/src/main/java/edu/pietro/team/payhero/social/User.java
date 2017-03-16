@@ -8,6 +8,11 @@ public final class User {
     public static final User AMAZON = new User("Amazon", "DE64700700100203477500", R.drawable.amazon_logo);
     public static final User ZALANDO = new User("Zalando", "DE86210700200123010101", R.drawable.zalando_logo);
     public static final User ZKM = new User("ZKM Karlsruhe", "DE11660501010009116419", R.drawable.zkm);
+    public static final User ELON = new User("Elon Msuk", "DE11660501010009116419", R.drawable.elon);
+    public static final User PIETRO = new User("Pietro Lombardi", "DE11660501010009116419", R.drawable.pietro);
+    public static final User MAXIM = new User("Maxim Köhler", "DE11660501010009116419", R.drawable.maxim);
+    public static final User KOLJA = new User("Kolja Esders", "DE11660501010009116419", R.drawable.kolja);
+    public static final User DAVID = new User("David Zimmerer", "DE11660501010009116419", R.drawable.david);
 
     private String mName;
 
