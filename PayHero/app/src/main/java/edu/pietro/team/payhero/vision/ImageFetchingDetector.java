@@ -175,7 +175,7 @@ public class ImageFetchingDetector extends Detector {
                                 EventBus.getDefault().post(new OnErrorDuringDetectionPostProcessing("Face not recognized"));
                             } else {
                                 EventBus.getDefault().post(new OnPaymentInit(
-                                        new MoneyTransfer(c, null, new AmountOfMoney()),
+                                        new MoneyTransfer(c, null, new AmountOfMoney(5.0)),
                                         ProcessingState.FACE_LOCK
                                 ));
                             }
