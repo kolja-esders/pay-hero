@@ -275,9 +275,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             case R.id.action_favorite:
                 String newTitle;
                 if (mFeedFilterIsPublic) {
-                    newTitle = "Show all purchases";
-                } else {
                     newTitle = "Show friends purchases";
+                } else {
+                    newTitle = "Show own purchases";
                 }
                 mFeedFilterIsPublic ^= true;
                 EventBus.getDefault().post(new FeedFilterClicked(!mFeedFilterIsPublic));
@@ -567,6 +567,10 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
     public MoneyTransfer getCurrentTransfer(){
         return this.currentTransfer;
+    }
+
+    public void setCurrentTransfer(MoneyTransfer trans){
+        this.currentTransfer = trans;
     }
 
     public boolean onTryStartProcessing(ProcessingState ps) {

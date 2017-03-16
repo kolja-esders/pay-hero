@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -23,7 +24,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.apache.commons.validator.routines.IBANValidator;
+
 import edu.pietro.team.payhero.entities.AmountOfMoney;
+import edu.pietro.team.payhero.helper.LangAnalytics;
 import edu.pietro.team.payhero.helper.PostHelper;
 import edu.pietro.team.payhero.social.Item;
 import edu.pietro.team.payhero.social.MoneyTransfer;
@@ -88,13 +92,9 @@ public class PaymentInitFragment extends Fragment {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivity.getCurrentActivity().disableScrolling();
-                // Hide button and show loading
-                //((Button) v.findViewById(R.id.payButton)).setVisibility(View.INVISIBLE);
-                Button payButton = (Button) v.findViewById(R.id.payButton);
-                payButton.setText("");
-                payButton.setCompoundDrawables(null, null, null, null);
-                ((ProgressBar) v.findViewById(R.id.payProgress)).setVisibility(View.VISIBLE);
+
+                final Button payButton = (Button) v.findViewById(R.id.payButton);
+
 
                 String name = ((TextView) v.findViewById(R.id.nameEdit)).getText().toString();
                 EditText ibanEdit = (EditText) v.findViewById(R.id.ibanEdit);
@@ -108,6 +108,32 @@ public class PaymentInitFragment extends Fragment {
                 }
                 Double doubleAmount = (Double)Double.parseDouble(amount.replace(",", ".").replace("€", "").replace(" ", "").replace("\u00A0",""));
                 String formattedAmount = (doubleAmount).toString();
+
+                if(doubleAmount <= 0.0 || name.equals("") || !IBANValidator.getInstance().isValid(iban.replace(" ", ""))){
+
+                    payButton.setText("Invalid Transaction");
+                    payButton.setActivated(false);
+
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            payButton.setText("Send Now");
+                            payButton.setActivated(true);
+                        }
+                    }, 2000);
+
+                    Vibrator v = (Vibrator) ((MainActivity) getActivity()).getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                    v.vibrate(150);
+                    return;
+                }
+
+                MainActivity.getCurrentActivity().disableScrolling();
+                // Hide button and show loading
+                payButton.setText("");
+                //Button payButton = (Button) v.findViewById(R.id.payButton);
+                payButton.setCompoundDrawables(null, null, null, null);
+                ((ProgressBar) v.findViewById(R.id.payProgress)).setVisibility(View.VISIBLE);
+
 
                 // Add Story (might not be right here !!!!)
                 String purchaseString = ((EditText)v.findViewById(R.id.purchaseMessage)).getText().toString();
@@ -154,6 +180,8 @@ public class PaymentInitFragment extends Fragment {
                             ((Button) v.findViewById(R.id.payButton)).setText("DONE");
                             ((ProgressBar) v.findViewById(R.id.payProgress)).setVisibility(View.INVISIBLE);
                             ((ImageView) v.findViewById(R.id.paySuccess)).setVisibility(View.VISIBLE);
+                            ((MainActivity) getActivity()).setCurrentTransfer(null);
+
                             mHandler.removeMessages(0);
                             mHandler.postDelayed(new Runnable() {
                                 @Override
