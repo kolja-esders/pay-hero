@@ -52,6 +52,7 @@ public class PaymentInitFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private boolean isActive = false;
 
     private OnFragmentInteractionListener mListener;
 
@@ -93,8 +94,13 @@ public class PaymentInitFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                final Button payButton = (Button) v.findViewById(R.id.payButton);
+                Log.d("Active?", "  "+isActive);
 
+                if(isActive)
+                    return;
+
+                final Button payButton = (Button) v.findViewById(R.id.payButton);
+                payButton.setActivated(false);
 
                 String name = ((TextView) v.findViewById(R.id.nameEdit)).getText().toString();
                 EditText ibanEdit = (EditText) v.findViewById(R.id.ibanEdit);
@@ -112,7 +118,6 @@ public class PaymentInitFragment extends Fragment {
                 if(doubleAmount <= 0.0 || name.equals("") || !IBANValidator.getInstance().isValid(iban.replace(" ", ""))){
 
                     payButton.setText("Invalid Transaction");
-                    payButton.setActivated(false);
 
                     mHandler.postDelayed(new Runnable() {
                         @Override
@@ -127,6 +132,8 @@ public class PaymentInitFragment extends Fragment {
                     return;
                 }
 
+
+                isActive = true;
                 MainActivity.getCurrentActivity().disableScrolling();
                 // Hide button and show loading
                 payButton.setText("");
@@ -180,13 +187,15 @@ public class PaymentInitFragment extends Fragment {
                             ((Button) v.findViewById(R.id.payButton)).setText("DONE");
                             ((ProgressBar) v.findViewById(R.id.payProgress)).setVisibility(View.INVISIBLE);
                             ((ImageView) v.findViewById(R.id.paySuccess)).setVisibility(View.VISIBLE);
-                            ((MainActivity) getActivity()).setCurrentTransfer(null);
+
 
                             mHandler.removeMessages(0);
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
+                                    ((MainActivity) getActivity()).setCurrentTransfer(null);
                                     MainActivity.getCurrentActivity().resetPaymentView(true);
+                                    isActive = false;
                                 }
                             }, 2000);
                         } else {
@@ -196,9 +205,12 @@ public class PaymentInitFragment extends Fragment {
                             amountEdit.setEnabled(true);
                             ((FloatingActionButton) v.findViewById(R.id.payButton)).setVisibility(View.VISIBLE);*/
                             MainActivity.getCurrentActivity().resetPaymentView(true);
+                            isActive = false;
                         }
                     }
                 }.execute(new String[][]{{iban, name, formattedAmount}});
+
+
             }
         });
         return v;

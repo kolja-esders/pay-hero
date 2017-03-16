@@ -35,6 +35,8 @@ public class FriendFeedFragment extends Fragment {
 
     private RecyclerView.Adapter mAdapter;
 
+    private int displayStatus = 0;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -72,7 +74,14 @@ public class FriendFeedFragment extends Fragment {
             RecyclerView recyclerView = (RecyclerView) this.getView().findViewById(R.id.story_list);
 
             Toolbar toolbar = (Toolbar) this.getView().findViewById(R.id.feed_toolbar);
-            toolbar.setTitle("Recent");
+
+            if(displayStatus == 1){
+                Stories.filterPersonalStories();
+                toolbar.setTitle("Own");
+            } else {
+                Stories.filterFriendStories();
+                toolbar.setTitle("Friends");
+            }
 
             // Set the adapter
             if (recyclerView != null) {
@@ -111,7 +120,14 @@ public class FriendFeedFragment extends Fragment {
 
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.feed_toolbar);
         getActivity().setActionBar(toolbar);
-        toolbar.setTitle("Friend Feed");
+
+        if(displayStatus == 1){
+            Stories.filterPersonalStories();
+            toolbar.setTitle("Own");
+        } else {
+            Stories.filterFriendStories();
+            toolbar.setTitle("Friends");
+        }
 
         // Set the adapter
         if (recyclerView != null) {
@@ -149,9 +165,11 @@ public class FriendFeedFragment extends Fragment {
         Log.d("0o", "on Event");
         Toolbar toolbar = (Toolbar) this.getView().findViewById(R.id.feed_toolbar);
         if (event.showOnlyPersonalStories) {
+            this.displayStatus = 1;
             Stories.filterPersonalStories();
             toolbar.setTitle("Own");
         } else {
+            this.displayStatus = 0;
             Stories.filterFriendStories();
             toolbar.setTitle("Friends");
         }

@@ -1,6 +1,7 @@
 package edu.pietro.team.payhero.event;
 
 
+import edu.pietro.team.payhero.MainActivity;
 import edu.pietro.team.payhero.helper.ProcessingState;
 import edu.pietro.team.payhero.social.MoneyTransfer;
 
@@ -12,6 +13,9 @@ public class OnPaymentInit {
     public OnPaymentInit(MoneyTransfer purchase, ProcessingState assumedPS) {
         mPurchase = purchase;
         mAssumedProcessingState = assumedPS;
+
+        MainActivity.getCurrentActivity().setCurrentTransfer(mPurchase);
+
     }
 
     public MoneyTransfer getPurchase() {
