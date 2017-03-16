@@ -190,11 +190,11 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="56dp"
-        android:background="#ff4444"
+        android:background="#14582D"
         android:id="@+id/payButton"
         android:paddingLeft="130dp"
         android:paddingRight="130dp"
-        android:elevation="0dp"
+        android:elevation="21dp"
         android:maxLines="1"
         android:text="Send now"
         android:layout_above="@+id/navigation_background"
