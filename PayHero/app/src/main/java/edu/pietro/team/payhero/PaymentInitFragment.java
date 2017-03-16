@@ -23,8 +23,12 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import edu.pietro.team.payhero.entities.AmountOfMoney;
 import edu.pietro.team.payhero.helper.PostHelper;
+import edu.pietro.team.payhero.social.Item;
+import edu.pietro.team.payhero.social.MoneyTransfer;
 import edu.pietro.team.payhero.social.Stories;
+import edu.pietro.team.payhero.social.User;
 
 
 /**
@@ -102,13 +106,21 @@ public class PaymentInitFragment extends Fragment {
                 if (amount.equals("")) {
                     amount = "0";
                 }
-                String formattedAmount = ((Double)Double.parseDouble(amount.replace(",", ".").replace("€", "").replace(" ", "").replace("\u00A0",""))).toString();
+                Double doubleAmount = (Double)Double.parseDouble(amount.replace(",", ".").replace("€", "").replace(" ", "").replace("\u00A0",""));
+                String formattedAmount = (doubleAmount).toString();
 
                 // Add Story (might not be right here !!!!)
                 String purchaseString = ((EditText)v.findViewById(R.id.purchaseMessage)).getText().toString();
-                Stories.Story buyStory = new Stories.Story(( (MainActivity) getActivity()).getCurrentTransfer(), purchaseString);
-                Stories.DISPLAYED_ITEMS.add(buyStory);
-                Stories.ALL_ITEMS.add(buyStory);
+                MoneyTransfer curTrans = ((MainActivity) getActivity()).getCurrentTransfer();
+
+                if(curTrans == null){
+                    curTrans = new MoneyTransfer(new User(name, iban), new Item("Transfer"), new AmountOfMoney(doubleAmount));
+                }
+
+
+                Stories.Story buyStory = new Stories.Story(curTrans , purchaseString);
+                Stories.DISPLAYED_ITEMS.add(0, buyStory);
+                Stories.ALL_ITEMS.add(0, buyStory);
 
                 new AsyncTask<String[], Void, Boolean>() {
                     @Override

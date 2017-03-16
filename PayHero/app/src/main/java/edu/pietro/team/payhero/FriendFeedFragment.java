@@ -71,6 +71,9 @@ public class FriendFeedFragment extends Fragment {
         if (visible) {
             RecyclerView recyclerView = (RecyclerView) this.getView().findViewById(R.id.story_list);
 
+            Toolbar toolbar = (Toolbar) this.getView().findViewById(R.id.feed_toolbar);
+            toolbar.setTitle("Recent");
+
             // Set the adapter
             if (recyclerView != null) {
                 Context context = recyclerView.getContext();

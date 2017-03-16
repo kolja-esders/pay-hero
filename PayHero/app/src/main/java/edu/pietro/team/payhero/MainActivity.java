@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
     private static MainActivity currentActivity = null;
 
-    private MoneyTransfer currentTransfer;
+    private MoneyTransfer currentTransfer = null;
 
     public static MainActivity getCurrentActivity() {
         return currentActivity;
