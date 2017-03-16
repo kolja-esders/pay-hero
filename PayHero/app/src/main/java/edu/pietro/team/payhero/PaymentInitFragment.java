@@ -99,6 +99,9 @@ public class PaymentInitFragment extends Fragment {
                 amountEdit.setEnabled(false);
                 String iban = ibanEdit.getText().toString();
                 String amount = amountEdit.getText().toString();
+                if (amount.equals("")) {
+                    amount = "0";
+                }
                 String formattedAmount = ((Double)Double.parseDouble(amount.replace(",", ".").replace("€", "").replace(" ", "").replace("\u00A0",""))).toString();
 
                 // Add Story (might not be right here !!!!)
