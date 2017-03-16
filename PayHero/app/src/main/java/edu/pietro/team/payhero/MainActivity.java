@@ -363,15 +363,15 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 //        et.setText("Test");
 //        mViewPager.setCurrentItem(2);
 
+        if (!onTryStartProcessing(ProcessingState.OBJECT_LOCK)){
+            return;
+        }
+
         mCameraSource.takePicture(null, new CameraSource.PictureCallback() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onPictureTaken(final byte[] bytes) {
                 // @David: Da ist das IMG :)
-
-                if (!onTryStartProcessing(ProcessingState.OBJECT_LOCK)){
-                    return;
-                }
 
                 EventBus.getDefault().post(new OnStartDetectionPostProcessing("Searching for product..."));
 
