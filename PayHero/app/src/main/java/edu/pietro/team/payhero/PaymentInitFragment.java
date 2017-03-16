@@ -103,7 +103,7 @@ public class PaymentInitFragment extends Fragment {
                 payButton.setActivated(false);
 
                 String name = ((TextView) v.findViewById(R.id.nameEdit)).getText().toString();
-                EditText ibanEdit = (EditText) v.findViewById(R.id.ibanEdit);
+                final EditText ibanEdit = (EditText) v.findViewById(R.id.ibanEdit);
                 final EditText amountEdit = (EditText) v.findViewById(R.id.amountEdit);
                 ibanEdit.setEnabled(false);
                 amountEdit.setEnabled(false);
@@ -115,7 +115,7 @@ public class PaymentInitFragment extends Fragment {
                 Double doubleAmount = (Double)Double.parseDouble(amount.replace(",", ".").replace("€", "").replace(" ", "").replace("\u00A0",""));
                 String formattedAmount = (doubleAmount).toString();
 
-                if(doubleAmount <= 0.0 || name.equals("") || !IBANValidator.getInstance().isValid(iban.replace(" ", ""))){
+                if (doubleAmount <= 0.0 || name.equals("") || !IBANValidator.getInstance().isValid(iban.replace(" ", ""))) {
 
                     payButton.setText("Invalid Transaction");
 
@@ -129,6 +129,10 @@ public class PaymentInitFragment extends Fragment {
 
                     Vibrator v = (Vibrator) ((MainActivity) getActivity()).getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                     v.vibrate(150);
+
+                    ibanEdit.setEnabled(true);
+                    amountEdit.setEnabled(true);
+                    payButton.setActivated(true);
                     return;
                 }
 
@@ -172,22 +176,21 @@ public class PaymentInitFragment extends Fragment {
                     @Override
                     protected void onPostExecute(Boolean transerSuccessful) {
                         super.onPostExecute(transerSuccessful);
+
+                        ibanEdit.setEnabled(true);
+                        amountEdit.setEnabled(true);
+                        payButton.setActivated(true);
+
                         if (transerSuccessful) {
-                            //Looper.prepare();
 
                             Animation anim = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.slide);
                             anim.setInterpolator(new AnticipateInterpolator(1.2f));
                             anim.setFillAfter(true);
                             amountEdit.startAnimation(anim);
 
-                            /*Intent intent = new Intent(ValidationActivity.this, PaymentSuccessActivity.class);
-                            intent.putExtra("name", ValidationActivity.this.mName);
-                            intent.putExtra("amount", ValidationActivity.this.mAmount);
-                            startActivity(intent);*/
                             ((Button) v.findViewById(R.id.payButton)).setText("DONE");
                             ((ProgressBar) v.findViewById(R.id.payProgress)).setVisibility(View.INVISIBLE);
                             ((ImageView) v.findViewById(R.id.paySuccess)).setVisibility(View.VISIBLE);
-
 
                             mHandler.removeMessages(0);
                             mHandler.postDelayed(new Runnable() {
