@@ -123,7 +123,6 @@
         android:id="@+id/ibanEdit"
         android:textColorHint="@color/veryTransparentWhite"
         android:textColor="@color/transparentWhite"
-        android:gravity="center_vertical|center_horizontal"
         android:hint="Enter IBAN"
         android:background="@android:color/transparent"
         android:layout_below="@+id/nameEdit"
