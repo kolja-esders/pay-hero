@@ -55,6 +55,7 @@ import java.net.URL;
 
 import edu.pietro.team.payhero.entities.AmountOfMoney;
 import edu.pietro.team.payhero.event.FeedFilterClicked;
+import edu.pietro.team.payhero.event.OnErrorDuringDetectionPostProcessing;
 import edu.pietro.team.payhero.event.OnImageCaptureRequested;
 import edu.pietro.team.payhero.event.OnPaymentInit;
 import edu.pietro.team.payhero.event.OnStartDetectionPostProcessing;
@@ -447,6 +448,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
 
                         } catch (Exception x) {
+                            EventBus.getDefault().post(new OnErrorDuringDetectionPostProcessing("No internet connection"));
+
                             x.printStackTrace();
                         } finally {
                             onStopProcessing(ProcessingState.OBJECT_LOCK);
@@ -482,6 +485,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         if (isPurchase) {
             String productImageUrl = mt.getItem().getImageUrl();
             String productName = mt.getItem().getName();
+            purchasableView.setVisibility(View.INVISIBLE);
             new DownloadImageTask(purchasableView).execute(productImageUrl);
             titleView.setText(productName);
             message.setHint("Share your purchase");

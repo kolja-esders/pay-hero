@@ -17,6 +17,8 @@ public class Stories {
 
     public static List<Story> ALL_ITEMS = new ArrayList<>();
 
+    public static boolean updated = false;
+
     private static final int COUNT = 25;
 
     static {

@@ -55,7 +55,7 @@ public class OcrDetectionProcessor implements Detector.Processor<TextBlock> {
         }
         if (!iban.equals("") || !contact.equals("")) {
             User recipient = new User(contact, iban);
-            Item moneyTransferItem = new Item("Money Transfer", "", "", null);
+            Item moneyTransferItem = new Item("Money transfer", "", "", null);
             AmountOfMoney aom = amount.equals("") ? new AmountOfMoney(0.0)
                     : new AmountOfMoney(Double.valueOf(amount));
             EventBus.getDefault().post(new OnPaymentInit(

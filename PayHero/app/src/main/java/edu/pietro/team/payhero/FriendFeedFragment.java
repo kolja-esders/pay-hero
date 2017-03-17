@@ -84,7 +84,7 @@ public class FriendFeedFragment extends Fragment {
             }
 
             // Set the adapter
-            if (recyclerView != null) {
+            if (recyclerView != null && Stories.updated) {
                 Context context = recyclerView.getContext();
                 if (mColumnCount <= 1) {
                     recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -93,6 +93,7 @@ public class FriendFeedFragment extends Fragment {
                 }
                 mAdapter = new StoryRecyclerViewAdapter(Stories.DISPLAYED_ITEMS, mListener);
                 recyclerView.setAdapter(mAdapter);
+                Stories.updated = false;
             }
         }
     }

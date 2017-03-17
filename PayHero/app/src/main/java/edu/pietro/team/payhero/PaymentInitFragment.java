@@ -158,6 +158,7 @@ public class PaymentInitFragment extends Fragment {
                 Stories.Story buyStory = new Stories.Story(curTrans , purchaseString);
                 Stories.DISPLAYED_ITEMS.add(0, buyStory);
                 Stories.ALL_ITEMS.add(0, buyStory);
+                Stories.updated = true;
 
                 new AsyncTask<String[], Void, Boolean>() {
                     @Override
