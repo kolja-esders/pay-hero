@@ -156,11 +156,11 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String[] permissions = {
+        /*String[] permissions = {
                 "android.permission.READ_EXTERNAL_STORAGE",
                 "android.permission.WRITE_EXTERNAL_STORAGE"
         };
-        ActivityCompat.requestPermissions(this, permissions, RC_HANDLE_STORAGE_PERM);
+        ActivityCompat.requestPermissions(this, permissions, RC_HANDLE_STORAGE_PERM);*/
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
