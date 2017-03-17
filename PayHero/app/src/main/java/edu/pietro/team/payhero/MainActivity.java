@@ -129,15 +129,15 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     Log.d("BLUETOOTH", "connected to " + dev.getAddress());
                     for (String d : BT_CONTEXT_DEVICES) {
                         if (d.equals(dev.getAddress())){
-                            User seller = User.ZKM;
+                            User seller = User.DISNEY;
                             Item ticket = new Item(
-                                    "Admission ticket",
-                                    "ZKM Karlsruhe",
-                                    "http://guide.karlsruhe.de/db/de/zentrum_fuer_kunst_und_med/122/zkm_mnk_innen.jpg",
-                                    new AmountOfMoney(6.0)
+                                    "Family ticket",
+                                    "Disneyland",
+                                    "http://www.parkerlebnis.de/wp-content/uploads/2013/11/disneyland-paris.jpg",
+                                    new AmountOfMoney(99.0)
                             );
                             EventBus.getDefault().post(new OnPaymentInit(
-                                    new MoneyTransfer(seller, ticket, new AmountOfMoney(6.0)),
+                                    new MoneyTransfer(seller, ticket, new AmountOfMoney(99.0)),
                                     ProcessingState.NOLOCK
                             ));
                             break;
